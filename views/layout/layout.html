@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{block 'title'}} 张帅的博客 {{/block}}</title>
+    <link rel="stylesheet" href="/css/test.css">
+    <!--私有css-->
+    {{block 'css'}}{{/block}}
+</head>
+<body>
+    <!--头部-->
+    {{include "../common/header.html"}}
+
+    <!--内容-->
+    {{block 'content'}}{{/block}}
+
+    <!--尾部-->
+    {{include "../common/footer.html" }}
+
+    <!--私有js-->
+    {{block 'js'}}{{/block}}
+</body>
+</html>
