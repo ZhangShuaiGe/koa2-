@@ -33,5 +33,5 @@ app.on('error', err => {
 });
 
 app.listen(3000);
-
+console.log("服务启动:127.0.0.1:3000");
 global.info_logger.info("服务启动----监听3000端口");
