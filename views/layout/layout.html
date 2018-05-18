@@ -26,6 +26,22 @@
     <!--公共js-->
     <script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
     <script src="/lib/layui/layui/layui.js"></script>
+    <script>
+        layui.cache.page = '';
+        layui.cache.user = {
+            username: '游客'
+            ,uid: -1
+            ,avatar: 'lib/layui/images/avatar/00.jpg'
+            ,experience: 83
+            ,sex: '男'
+        };
+        layui.config({
+            version: "3.0.0"
+            ,base: '/lib/layui/mods/' //这里实际使用时，建议改成绝对路径
+        }).extend({
+            fly: 'index'
+        }).use('fly');
+    </script>
     <!--私有js-->
     {{block 'js'}}{{/block}}
 </body>

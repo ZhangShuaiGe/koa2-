@@ -5,6 +5,12 @@ const static = require('koa-static');
 const index = require("./router/index");
 const setting = require("./config/setting");
 
+// post参数 body配置
+app.use(bodyParser());
+// app.use(async ctx => {
+//     ctx.body = ctx.request.body;
+// })
+
 // cookie 加密
 app.keys = ["zhangshuai"];
 
@@ -16,9 +22,6 @@ setting.session(app);
 
 // 模板配置
 setting.template(app);
-
-// post参数 body配置
-app.use(bodyParser());
 
 // 静态资源配置
 app.use(static(__dirname + '/static'));
@@ -33,5 +36,5 @@ app.on('error', err => {
 });
 
 app.listen(3000);
-console.log("服务启动:127.0.0.1:3000");
+console.log("服务启动=======127.0.0.1:3000");
 global.info_logger.info("服务启动----监听3000端口");
