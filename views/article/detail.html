@@ -1,0 +1,120 @@
+{{extend "../layout/layout.html"}}
+
+{{block "title"}}首页{{/block}}
+
+{{block "css"}}
+
+{{/block}}
+
+{{block "content"}}
+<div class="layui-container">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12 content detail">
+            <div class="fly-panel detail-box">
+                <h1>{{data.TITLE}}</h1>
+                <div class="fly-detail-info">
+                    <span>{{data.DATE}}</span>
+                    <span class="fly-list-nums">
+                        <a href="#comment"><i class="iconfont" title="回答"></i> 66</a>
+                        <i class="iconfont" title="人气"></i> 99999
+                    </span>
+                </div>
+                <div class="detail-body photos">
+                    {{@data.CONTENT}}
+                </div>
+            </div>
+
+            <div class="fly-panel detail-box" id="flyReply">
+                <fieldset class="layui-elem-field layui-field-title" style="text-align: center;">
+                    <legend>回帖</legend>
+                </fieldset>
+
+                <div class="layui-form layui-form-pane">
+                    <form action="/replay" method="post" class="js-replay-form">
+                        <div class="layui-form-item layui-form-text">
+                            <a name="comment"></a>
+                            <div class="layui-input-block">
+                                <!--回复内容-->
+                                <textarea id="L_content" name="content" required lay-verify="required" placeholder="请输入内容"  class="layui-textarea fly-editor js-replay-text" style="height: 150px;"></textarea>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <!--文章id-->
+                            <input type="hidden" name="id" value="{{data.ID}}">
+                            <a href="javascript:;" class="layui-btn js-replay-submit">提交回复</a>
+                        </div>
+                    </form>
+                </div>
+
+                <ul class="jieda" id="jieda">
+                    {{each replay}}
+                        <li data-id="111">
+                            <a name="item-1111111111"></a>
+                            <div class="detail-about detail-about-reply">
+                                <a class="fly-avatar" href="">
+                                    <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg"
+                                         alt=" ">
+                                </a>
+                                <div class="fly-detail-user">
+                                    <a href="" class="fly-link">
+                                        <cite>{{$value.NIKENAME}}</cite>
+                                    </a>
+                                </div>
+                                <div class="detail-hits">
+                                    <span>{{$value.TIME}}</span>
+                                </div>
+                            </div>
+                            <div class="detail-body jieda-body photos">
+                                <p>{{$value.REPLY_CON}}</p>
+                            </div>
+                            <div class="jieda-reply">
+                                <span class="jieda-zan" type="zan">
+                                    <i class="iconfont icon-zan"></i>
+                                    <em>0</em>
+                                </span>
+                                <span type="reply">
+                                    <i class="iconfont icon-svgmoban53"></i>
+                                    回复
+                                </span>
+                                <!--<div class="jieda-admin">-->
+                                    <!--<span type="edit">编辑</span>-->
+                                    <!--<span type="del">删除</span>-->
+                                    <!--<span class="jieda-accept" type="accept">采纳</span>-->
+                                <!--</div>-->
+                            </div>
+                        </li>
+                    {{/each}}
+
+                    <!-- 无数据时 -->
+                    <!-- <li class="fly-none">消灭零回复</li> -->
+                </ul>
+
+        </div>
+        <!--<div class="layui-col-md4">-->
+
+        <!--</div>-->
+    </div>
+</div>
+{{/block}}
+
+{{block "js"}}
+    <script>
+        $(function () {
+            $(".js-replay-submit").on("click",function(){
+                var text = $(".js-replay-text").val();
+                if(text){
+                    http({
+                        "url":"/replay",
+                        "data": $(".js-replay-form").serialize(),
+                    },function (data) {
+                        window.location.reload();
+                        console.log(data);
+                    });
+                }else{
+                    layer.msg("请输入留言内容");
+                }
+                return false;
+            })
+       })
+    </script>
+{{/block}}

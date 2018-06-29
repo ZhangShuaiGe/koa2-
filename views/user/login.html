@@ -15,7 +15,7 @@
             <div class="layui-form layui-tab-content" id="LAY_ucm" style="padding: 20px 0;">
                 <div class="layui-tab-item layui-show">
                     <div class="layui-form layui-form-pane">
-                        <form method="post">
+                        <form method="post" class="js-login_form">
                             <div class="layui-form-item">
                                 <label for="L_email" class="layui-form-label">邮箱</label>
                                 <div class="layui-input-inline">
@@ -25,20 +25,20 @@
                             <div class="layui-form-item">
                                 <label for="L_pass" class="layui-form-label">密码</label>
                                 <div class="layui-input-inline">
-                                    <input type="password" id="L_pass" name="pass" required lay-verify="required" autocomplete="off" class="layui-input">
+                                    <input type="password" id="L_pass" name="password" required lay-verify="required" autocomplete="off" class="layui-input">
                                 </div>
                             </div>
                             <div class="layui-form-item">
                                 <label for="L_vercode" class="layui-form-label">人类验证</label>
                                 <div class="layui-input-inline">
-                                    <input type="text" id="L_vercode" name="vercode" required lay-verify="required" placeholder="请回答后面的问题" autocomplete="off" class="layui-input">
+                                    <input type="text" id="L_vercode" name="vercode" required lay-verify="required" placeholder="请输入验证码" autocomplete="off" class="layui-input">
                                 </div>
                                 <div class="layui-form-mid">
-                                    <span style="color: #c00;"></span>
+                                    <span style="color: #c00;"><img src="{{vercode}}" alt=""></span>
                                 </div>
                             </div>
                             <div class="layui-form-item">
-                                <button class="layui-btn" lay-filter="*" lay-submit>立即登录</button>
+                                <button class="layui-btn js-login_btn" lay-filter="*">立即登录</button>
                                 <span style="padding-left:20px;">
                   <a href="forget.html">忘记密码？</a>
                 </span>
@@ -55,4 +55,21 @@
         </div>
     </div>
 </div>
+{{/block}}
+
+{{block "js"}}
+<script>
+    $(function () {
+        $(".js-login_btn").on("click",function () {
+            var data = $(".js-login_form").serialize();
+            http({
+                url:"/login",
+                data:data
+            },function (data) {
+                window.location.href="/";
+            });
+            return false;
+        });
+    })
+</script>
 {{/block}}

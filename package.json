@@ -1,6 +1,8 @@
 {
   "dependencies": {
     "art-template": "^4.12.2",
+    "captchapng": "^0.0.1",
+    "dateformat": "^3.0.3",
     "koa": "^2.5.1",
     "koa-art-template": "^1.1.1",
     "koa-bodyparser": "^4.2.0",
