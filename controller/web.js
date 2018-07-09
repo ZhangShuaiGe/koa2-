@@ -1,88 +1,90 @@
-const mysql = require("./mysql");
-const utils = require("./utils");
-const {resJson} = require("./utils");
-
+// const mysql = require("./mysql");
+const {resJson,md5,captchapng,dateformat} = require("./utils");
 // 首页
 exports.index = async (ctx) => {
-    let result = {};
-
-    // 首页分页控制
+    // 当前页
+    let currpage = 0;
     if(ctx.query.page){
-        ctx.query.page = Number(ctx.query.page) - 1;
-    }else{
-        ctx.query.page = 0;
+        currpage = Number(ctx.query.page) - 1;
+    }
+    // 动态where
+    function where() {
+        if(ctx.query.type){
+            return {type: ctx.query.type};
+        }
+        else{
+            return {};
+        }
     }
 
-    // 根据分页加载首页 文章列表
-    let query = {page:ctx.query.page,type:ctx.query.type};
-    let list = mysql.articleList(query).then((data)=>{
-        return data;
+    await ArticleModel.findAndCountAll({
+        attributes:{exclude: ["content"]},
+        limit:15,
+        offset: currpage * 15 || 0, //跳过的数据数量
+        order:[['ID','DESC']],
+        where: where(),
+    }).then( data => {
+         ctx.render("index",{
+            "data":data.rows,
+            "count": data.count,
+            "type":ctx.query.type
+         });
+    }).catch( err => {
+        error_logger.error(err);
     });
-
-    //查询总页数，分页插件要用，传的字段是(类型,表名)
-    let queryPage = {condition:ctx.query.type,from:"ARTICLE_CONTENT"};
-    let count = mysql.pageCount(queryPage).then((data)=>{
-        return data;
-    });
-
-    // all 的目的是让上面 两条 sql 查询 异步执行
-    await Promise.all([list,count]).then( (data) => {
-        result.data = data[0];
-        result.count = data[1][0].count;
-    }).catch((data)=>{
-        error_logger.error(data);
-    });
-
-    await ctx.render("index",{
-        "data":result.data,
-        "count": result.count,
-        "type":ctx.query.type
-    });
-
 };
 
 //文章详情
 exports.articleDetail = async (ctx) => {
-    // 文章信息
-    let query1 = mysql.articleDetail(ctx.query.id).then( (data) => {
-        return data;
-    });
-    //查询当前文章的 留言信息
-    let query2 = mysql.queryreplay(ctx.query.id).then((data)=>{
-        return data;
-    });
-
-    await Promise.all([query1,query2]).then((data)=>{
+    await ArticleModel.findAndCountAll({
+        where:{
+            id: ctx.query.id
+        },
+        include: [{
+            model: ArticleReplyModel,
+            as: 'replay',
+        }]
+    }).then( data => {
         ctx.render("article/detail",{
-            "data":data[0][0],
-            "replay":data[1]
+            "data":data.rows[0],
+            "count":data.count,
         });
-    })
+    }).catch( err => {
+        console.log("报错:",err);
+        error_logger.error(err);
+    });
 };
 
 // 登录
 exports.login = async(ctx) => {
-
     if (ctx.method == "POST") {
+
         let captchapng = ctx.cookies.get('vercode');
+
+        // 获取数据
         let {email,password,vercode} = ctx.request.body;
+
+        // 验证码校验
         if(captchapng != vercode){
             resJson(ctx,0,"验证码错误!");
             return;
         }
-        // 校验 用户名 和密码
-        await mysql.login([email,utils.md5(password)]).then( async(data) => {
-            if (data.length) {
 
+        // 校验 用户名 和密码
+        await WebUserModel.findOne({
+            where:{
+                email: email,
+                password: md5(password),
+            }
+        }).then( data => {
+
+            if(data){
                 // 登录邮箱是唯一
-                ctx.session.TOKEN = utils.md5(email);
+                ctx.session.TOKEN = md5(email);
                 //存储登录邮箱 留言要用
                 ctx.session.email = email;
-                // 查询用户昵称
-                let nikename = await mysql.queryUserNickname(email).then((data) => {
-                    return data[0].username;
-                });
                 // 存昵称node
+                let nikename = data.dataValues.username;
                 ctx.session.nikename = nikename;
                 // 存昵称到客户端，全局要用, cookie 不能设置中文 ，转为 Unicode 字符串
                 ctx.cookies.set("nikename",encodeURI(nikename),{
@@ -90,14 +92,18 @@ exports.login = async(ctx) => {
                     httpOnly:false //设置为false 客户端 才可以读取到
                 });
                 resJson(ctx,1);
-
-            } else {
+            }else {
                 resJson(ctx,0,"用户名或密码错误！");
             }
-        });
+
+        }).catch( err => {
+            console.log("进入err:",err);
+            resJson(ctx,0,"用户名或密码错误！");
+        })
+
     } else {
         //调用验证码
-        let vercode = utils.captchapng(ctx);
+        let vercode = captchapng(ctx);
         ctx.render("user/login",{
             "vercode":vercode
         });
@@ -126,29 +132,30 @@ exports.register = async (ctx) => {
             };
             return;
         }
-        // 查询用户名是否存在
-        let queryUserName = await mysql.queryUserName([email]).then((data)=>{
-            if(data.length){
-                resJson(ctx,0,"邮箱已存在！");
-                return true;
+
+        //查询用户名是否存在, 不存在创建
+        await  WebUserModel.findOrCreate({
+            where:{
+                email: email,
+            },
+            defaults:{
+                email: email,
+                password: md5(password),
+                username: username
             }
-        });
-
-        // 如果存在，打断后续执行
-        if(queryUserName){
-            return;
-        }
-
-        // 注册信息存入sql
-        await mysql.register([email,username,utils.md5(password)]).then(function (data) {
-            console.log(data);
-            resJson(ctx,1,{resultMsg:"注册成功！"});
+        })
+        .spread((user, created) => {
+            if(created){
+                resJson(ctx,1,{resultMsg:"注册成功！"});
+            }else{
+                resJson(ctx,0,"邮箱已存在！");
+            }
         });
 
     } else {
 
         //调用验证码
-        let vercode = utils.captchapng(ctx);
+        let vercode = captchapng(ctx);
         // get请求 渲染页面
         ctx.render("user/register",{
             "vercode": vercode
@@ -159,10 +166,15 @@ exports.register = async (ctx) => {
 
 //回复
 exports.replay = async(ctx) => {
-    let {id,content} = ctx.request.body;
-    let date = utils.dateformat(new Date());
+    let {articleId,content} = ctx.request.body;
+
     if(ctx.session.TOKEN){
-        await mysql.replay([id,content,ctx.session.email,date,ctx.session.nikename]).then( (data) => {
+        await ArticleReplyModel.create({
+            articleId:articleId,
+            reply_con: content,
+            email:ctx.session.email,
+            nikename:ctx.session.nikename
+        }).then( data => {
             resJson(ctx,1);
         });
     }else{

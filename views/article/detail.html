@@ -11,16 +11,16 @@
     <div class="layui-row layui-col-space15">
         <div class="layui-col-md12 content detail">
             <div class="fly-panel detail-box">
-                <h1>{{data.TITLE}}</h1>
+                <h1>{{data.title}}</h1>
                 <div class="fly-detail-info">
-                    <span>{{data.DATE}}</span>
+                    <span>{{data.time}}</span>
                     <span class="fly-list-nums">
                         <a href="#comment"><i class="iconfont" title="回答"></i> 66</a>
                         <i class="iconfont" title="人气"></i> 99999
                     </span>
                 </div>
                 <div class="detail-body photos">
-                    {{@data.CONTENT}}
+                    {{@data.content}}
                 </div>
             </div>
 
@@ -40,14 +40,14 @@
                         </div>
                         <div class="layui-form-item">
                             <!--文章id-->
-                            <input type="hidden" name="id" value="{{data.ID}}">
+                            <input type="hidden" name="articleId" value="{{data.id}}">
                             <a href="javascript:;" class="layui-btn js-replay-submit">提交回复</a>
                         </div>
                     </form>
                 </div>
 
                 <ul class="jieda" id="jieda">
-                    {{each replay}}
+                    {{each data.replay}}
                         <li data-id="111">
                             <a name="item-1111111111"></a>
                             <div class="detail-about detail-about-reply">
@@ -57,15 +57,15 @@
                                 </a>
                                 <div class="fly-detail-user">
                                     <a href="" class="fly-link">
-                                        <cite>{{$value.NIKENAME}}</cite>
+                                        <cite>{{$value.nikename}}</cite>
                                     </a>
                                 </div>
                                 <div class="detail-hits">
-                                    <span>{{$value.TIME}}</span>
+                                    <span>{{$value.time}}</span>
                                 </div>
                             </div>
                             <div class="detail-body jieda-body photos">
-                                <p>{{$value.REPLY_CON}}</p>
+                                <p>{{$value.reply_con}}</p>
                             </div>
                             <div class="jieda-reply">
                                 <span class="jieda-zan" type="zan">

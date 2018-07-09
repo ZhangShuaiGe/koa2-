@@ -1,6 +1,5 @@
 const router = require("koa-router")();
 const web = require("../controller/web");
-const admin = require("../controller/admin");
 
 // 首页
 router.get("/",web.index);

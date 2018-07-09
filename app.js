@@ -21,6 +21,9 @@ setting.session(app);
 // 模板配置
 setting.template(app);
 
+// sql全局
+setting.mysql();
+
 // 静态资源配置
 app.use(static(__dirname + '/static'));
 

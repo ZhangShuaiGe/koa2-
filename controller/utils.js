@@ -23,21 +23,33 @@ exports.md5 = (password) => {
 };
 
 // 返回数据格式化
-exports.resJson = (ctx,code,data) => {
+exports.resJson = (ctx,code,data,sql) => {
     if(code == "1"){
        ctx.body = {
            "resultCode":1,
            "resultdata":data
        }
     }else if(code == "0"){
-        ctx.body = {
-            "resultCode":0,
-            "resultMsg": data
-        };
+        // sql 报错走这里
+        if(sql){
+            ctx.body = {
+                "resultCode":0,
+                "resultMsg": data.errors[0].message
+            };
+        }else{
+            ctx.body = {
+                "resultCode":0,
+                "resultMsg": data
+            };
+        }
     }
 };
 
 // 时间格式化
-exports.dateformat = (nowdate) => {
-    return dateFormat(nowdate, "yyyy-mm-dd HH:MM:ss");
+exports.dateformat = (nowdate,format) => {
+    if(format){
+        return dateFormat(nowdate,format);
+    }else{
+        return dateFormat(nowdate, "yyyy-mm-dd HH:MM:ss");
+    }
 };

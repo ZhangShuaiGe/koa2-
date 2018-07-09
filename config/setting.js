@@ -1,8 +1,10 @@
 const loggers = require("logger");
-const date = require("../utils/date");
+const {dateformat} = require("../controller/utils");
 const session = require("koa-session");
 const path = require("path");
 const render = require('koa-art-template');
+// mysql 配置
+const sequelize = require("./dbConfig");
 
 // 模板配置
 exports.template = function (app) {
@@ -17,9 +19,15 @@ exports.template = function (app) {
 // 日志配置
 exports.logger = function () {
     // 业务日志  日志类型：'fatal', 'error', 'warn', 'info', 'debug'
-    global.info_logger = loggers.createLogger("logs/info/log_" + date.format(Date.now(),"yyyy-MM-dd") + ".log");
+    global.info_logger = loggers.createLogger("logs/info/log_" + dateformat(Date.now(),"yyyy-mm-dd") + ".log");
+    info_logger.format = function (level, date, message) {
+        return "[" + level + "]" + ":" + dateformat(new Date()) + message;
+    };
     // 报错日志
-    global.error_logger = loggers.createLogger("logs/error/log_" + date.format(Date.now(),"yyyy-MM-dd") + ".log");
+    global.error_logger = loggers.createLogger("logs/error/log_" + dateformat(Date.now(),"yyyy-mm-dd") + ".log");
+    error_logger.format = function (level, date, message) {
+        return "[" + level + "]" + ":" + dateformat(new Date()) + message;
+    };
 };
 
 // session 配置
@@ -37,5 +45,18 @@ exports.session = function (app) {
         renew: true, /** (boolean) renew session when session is nearly expired, so we can always keep user logged in. (default is false)*/
     };
     app.use(session(CONFIG, app));
+};
+
+// sql 全局配置
+exports.mysql = async function () {
+    // 文章表，全局配置，全局随时可以调用
+    //文章表
+    global.ArticleModel = sequelize.import('../schema/article_content');
+    // 文章回复表
+    global.ArticleReplyModel = sequelize.import('../schema/article_reply');
+    //web用户表
+    global.WebUserModel = sequelize.import('../schema/web_user');
+    // 文章和回复表 关联
+    ArticleModel.hasMany(ArticleReplyModel, {foreignKey: 'articleId', targetKey: 'id', as:"replay"});
 };
 

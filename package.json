@@ -10,7 +10,9 @@
     "koa-session": "^5.8.1",
     "koa-static": "^4.0.2",
     "logger": "^0.0.1",
-    "mysql": "^2.15.0"
+    "mysql": "^2.15.0",
+    "mysql2": "^1.5.3",
+    "sequelize": "^4.38.0"
   },
   "scripts": {
     "dev": "supervisor app.js"
