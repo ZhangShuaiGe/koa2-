@@ -1,3 +1,4 @@
+var moment = require('moment');
 module.exports = function (sequelize, DataTypes) {
     return sequelize.define("web_user", {
         id: {
@@ -39,6 +40,20 @@ module.exports = function (sequelize, DataTypes) {
                 notEmpty: {
                     msg: '邮箱！'
                 },
+            }
+        },
+        createdAt: {
+            type: DataTypes.DATE,
+            comment:'创建时间',
+            get() {
+                return moment(this.getDataValue('createdAt')).format('YYYY-MM-DD HH:mm:ss');
+            }
+        },
+        updatedAt: {
+            type: DataTypes.DATE,
+            comment:'更新时间',
+            get() {
+                return moment(this.getDataValue('updatedAt')).format('YYYY-MM-DD HH:mm:ss');
             }
         }
     },{

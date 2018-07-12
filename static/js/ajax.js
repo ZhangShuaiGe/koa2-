@@ -1,9 +1,10 @@
 function http(setting,callback) {
     $.ajax({
         type:"post",
-        url: setting.url,
+        url: "/api" + setting.url,
         data: setting.data,
         async: setting.async || false,
+        headers: {'Authorization': $.cookie('token')},
         success:function (data) {
             if (data.resultCode == "1") {
                 callback(data.resultdata);

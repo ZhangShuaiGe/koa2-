@@ -28,7 +28,8 @@ exports.resJson = (ctx,code,data,sql) => {
        ctx.body = {
            "resultCode":1,
            "resultdata":data
-       }
+       };
+       return;
     }else if(code == "0"){
         // sql 报错走这里
         if(sql){
@@ -36,12 +37,20 @@ exports.resJson = (ctx,code,data,sql) => {
                 "resultCode":0,
                 "resultMsg": data.errors[0].message
             };
+            return;
         }else{
             ctx.body = {
                 "resultCode":0,
                 "resultMsg": data
             };
+            return;
         }
+    }else if(code == "-1"){
+        ctx.body = {
+            "resultCode":-1,
+            "resultMsg": data
+        };
+        return;
     }
 };
 

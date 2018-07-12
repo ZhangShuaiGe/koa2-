@@ -56,6 +56,8 @@ exports.mysql = async function () {
     global.ArticleReplyModel = sequelize.import('../schema/article_reply');
     //web用户表
     global.WebUserModel = sequelize.import('../schema/web_user');
+    // admin用户表
+    global.AdminUserModel = sequelize.import('../schema/admin_user');
     // 文章和回复表 关联
     ArticleModel.hasMany(ArticleReplyModel, {foreignKey: 'articleId', targetKey: 'id', as:"replay"});
 };

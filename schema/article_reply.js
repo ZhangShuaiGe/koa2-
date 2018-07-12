@@ -1,3 +1,4 @@
+var moment = require('moment');
 module.exports = function (sequelize, DataTypes) {
     return sequelize.define('article_reply', {
         id: {
@@ -22,6 +23,9 @@ module.exports = function (sequelize, DataTypes) {
             allowNull: false,
             defaultValue: DataTypes.NOW,
             comment:'时间',
+            get() {
+                return moment(this.getDataValue('time')).format('YYYY-MM-DD HH:mm:ss');
+            }
         },
         reply_con:{
             type:DataTypes.TEXT,
@@ -42,7 +46,22 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.STRING,
             defaultValue: 0,
             comment:'点赞数',
+        },
+        createdAt: {
+            type: DataTypes.DATE,
+            comment:'创建时间',
+            get() {
+                return moment(this.getDataValue('createdAt')).format('YYYY-MM-DD HH:mm:ss');
+            }
+        },
+        updatedAt: {
+            type: DataTypes.DATE,
+            comment:'更新时间',
+            get() {
+                return moment(this.getDataValue('updatedAt')).format('YYYY-MM-DD HH:mm:ss');
+            }
         }
+
     },
     {
         // 如果为 true 则表的名称和 model 相同，即 user

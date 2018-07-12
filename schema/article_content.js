@@ -1,39 +1,40 @@
+var moment = require('moment');
 module.exports = function (sequelize, DataTypes) {
     return sequelize.define('article_content', {
-        // 文章ID
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             allowNull: false,
             autoIncrement: true,
-            field:"id"
+            field:"id",
+            comment:'文章ID',
         },
-        // 文章标题
         title: {
             type: DataTypes.TEXT,
             allowNull: false,
             field:"title",
+            comment:'文章标题',
             validate:{
                 notEmpty: {
                     msg: '文章标题不能为空'
                 },
             }
         },
-        // 文章内容
         content: {
             type: DataTypes.TEXT,
             allowNull: false,
             field:"content",
+            comment:'文章内容',
             validate:{
                 notEmpty: {
                     msg: '文章内容不能为空'
                 },
             }
         },
-        // 文章分类
         type: {
             type: DataTypes.STRING,
             allowNull: false,
+            comment:'文章分类',
             notEmpty: {
                 msg: '文章分类不能为空'
             },
@@ -43,6 +44,24 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.DATE,
             allowNull: false,
             defaultValue: DataTypes.NOW,
+            comment:'时间',
+            get() {
+                return moment(this.getDataValue('time')).format('YYYY-MM-DD HH:mm:ss');
+            }
+        },
+        createdAt: {
+            type: DataTypes.DATE,
+            comment:'创建时间',
+            get() {
+                return moment(this.getDataValue('createdAt')).format('YYYY-MM-DD HH:mm:ss');
+            }
+        },
+        updatedAt: {
+            type: DataTypes.DATE,
+            comment:'更新时间',
+            get() {
+                return moment(this.getDataValue('updatedAt')).format('YYYY-MM-DD HH:mm:ss');
+            }
         }
     },
     {

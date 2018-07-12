@@ -6,7 +6,6 @@ const sequelize = new Sequelize({
     username:"root",
     password:"12345678",
     port: 3307,
-    // timezone : 'yyyy-MM-dd hh:mm:ss',
     timezone:'+08:00', //东八时区
     pool: {
         max: 5,

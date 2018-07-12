@@ -1,15 +1,35 @@
 const router = require("koa-router")();
 const admin = require("../controller/admin");
+const {resJson} = require("../controller/utils");
 
 router.prefix('/admin');
 
+// 中间件校验登录信息
+router.use( async (ctx,next) => {
+    if(ctx.method == "POST"){
+        // 登录接口不设置 token 验证
+        if(ctx.url == "/admin/login"){
+            await next();
+        }else if(ctx.session.AdminTOKEN){
+            await next();
+        }else {
+            await resJson(ctx,-1,"会话过期，请重新登录！");
+        }
+    }else{
+        // 登录接口不设置 token 验证
+        if(ctx.url == "/admin/login"){
+            await next();
+        }else if(ctx.session.AdminTOKEN){
+            await next();
+        } else {
+            ctx.redirect("/admin/login");
+        }
+    }
+});
+
 // vue页面渲染
 router.get("*",function (ctx) {
-    if(ctx.session.adminToken){
-        ctx.render("admin/index");
-    }else{
-        ctx.redirect("/admin/login");
-    }
+    ctx.render("admin/index");
 });
 
 //后台登录

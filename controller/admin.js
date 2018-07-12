@@ -1,4 +1,3 @@
-// const mysql = require("./mysql");
 const {resJson} = require("./utils");
 
 // 发布文章
@@ -36,7 +35,8 @@ exports.articleList = async (ctx) => {
             "list": data.rows, //总数据
         })
     }).catch( err => {
-        resJson(ctx,0,"查询失败");
+        console.log(err);
+        resJson(ctx,0,err,"sql");
     });
 
 };
@@ -82,7 +82,8 @@ exports.updateArticle = async (ctx) => {
     }).then( data => {
         resJson(ctx,1);
     }).catch( err => {
-        resJson(ctx,0,"更新失败");
+        error_logger.error("报错：" + err);
+        info_logger.info("报错：" + err);
     });
 
 };
@@ -90,6 +91,21 @@ exports.updateArticle = async (ctx) => {
 // 后台登录
 exports.login = async (ctx) => {
     let {username,password} = ctx.request.body;
-    // await mysql.login();
+    await AdminUserModel.findOne({
+        where:{
+            username: username,
+            password:password
+        }
+    }).then( data=> {
+        if(data){
+            ctx.session.AdminTOKEN = username;
+            resJson(ctx,1);
+        }else{
+            resJson(ctx,0,"用户名或密码错误！");
+        }
+    }).catch(err => {
+        error_logger.error("报错：" + err);
+        info_logger.info("报错：" + err);
+    })
 };
 
