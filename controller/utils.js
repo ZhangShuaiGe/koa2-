@@ -4,6 +4,10 @@ const captchapng = require("captchapng");
 const crypto = require('crypto');
 // 时间格式化
 const dateFormat = require('dateformat');
+//文件上传
+const multer = require('koa-multer');
+//发送邮件
+const nodemailer = require('nodemailer');
 
 // 验证码
 exports.captchapng = (ctx) => {
@@ -56,9 +60,72 @@ exports.resJson = (ctx,code,data,sql) => {
 
 // 时间格式化
 exports.dateformat = (nowdate,format) => {
-    if(format){
+    if (format) {
         return dateFormat(nowdate,format);
-    }else{
+    } else {
         return dateFormat(nowdate, "yyyy-mm-dd HH:MM:ss");
     }
+};
+
+// 文件上传
+exports.upload = () => {
+    //配置
+    var storage = multer.diskStorage({
+        //文件保存路径
+        destination: function (req, file, cb) {
+            cb(null, 'static/blogUploads/');
+        },
+        //修改文件名称
+        filename: function (req, file, cb) {
+            var fileFormat = (file.originalname).split(".");
+            cb(null,Date.now() + "." + fileFormat[fileFormat.length - 1]);
+        }
+    });
+    //加载配置
+    return multer({ storage: storage });
+
+};
+
+//发送邮件
+exports.sendEmail = (email) => {
+    // 6位随机数
+    function jsrandom () {
+        // 0-9的随机数
+        let arr = [];//容器
+        for(let i =0;i<6;i++){//循环六次
+            let num = Math.random()*9;//Math.random();每次生成(0-1)之间的数;
+            num = parseInt(num,10);
+            arr.push(num);
+        }
+        return arr.join("");
+    };
+    let code = jsrandom();
+    // 创建一个SMTP客户端配置
+    const transporter = nodemailer.createTransport({
+        service: 'qq',
+        port: 465, // SMTP 端口
+        secureConnection: false, // use SSL
+        auth: {
+            "user": '1071296726@qq.com', // 邮箱账号
+            "pass": 'davtyqmzociibeih'  // 其他邮箱为授权码，在阿里云是SMTP密码，需要设置一下
+        }
+    });
+
+    var mailOptions = {
+        from :"渣渣帅的博客<1071296726@qq.com>", //发信邮箱
+        to : email, //接收者邮箱
+        subject: "邮箱验证码", //邮件主题
+        html : `<h1>验证码为:${code}</h1>`
+    };
+
+    // 发送邮件
+    transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+            return false;
+            console.log(error)
+        } else {
+            return code;
+        }
+    });
+
 };

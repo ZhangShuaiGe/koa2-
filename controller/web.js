@@ -4,6 +4,8 @@ const {resJson,md5,captchapng,dateformat} = require("./utils");
 
 // 首页
 exports.index = async (ctx) => {
+    console.log(123);
+    debugger;
     // 当前页
     let currpage = 0;
     if(ctx.query.page){
@@ -66,7 +68,7 @@ exports.login = async(ctx) => {
     });
 };
 
-//登录api
+//登录 post
 exports.apiLogin = async(ctx) => {
 
     let captchapng = ctx.cookies.get('vercode');
@@ -87,7 +89,7 @@ exports.apiLogin = async(ctx) => {
             password: md5(password),
         }
     }).then( data => {
-        if(data){
+        if (data) {
             // 存昵称node
             let nikename = data.dataValues.username;
 
@@ -110,7 +112,7 @@ exports.apiLogin = async(ctx) => {
             });
 
             resJson(ctx,1);
-        }else {
+        } else {
             resJson(ctx,0,"用户名或密码错误！");
         }
 

@@ -1,26 +1,9 @@
 const router = require("koa-router")();
 const PostRouter = require("koa-router")();
 const web = require("../controller/web");
-const {resJson} = require("../controller/utils");
+const {resJson,sendEmail} = require("../controller/utils");
 const jwt = require('jsonwebtoken'); //生成token
 const secret = 'jwtlihailewodege'; //加密规则
-
-// router.get("/test", async (ctx) => {
-//     let token = jwt.sign({ username: '1071296726@qq.com'}, secret ,{ expiresIn: 60 * 60 });
-//     console.log(token);
-//     let payload;
-//     try {
-//         payload = jwt.verify(token, secret);  // 解密payload，获取用户名和ID
-//         console.log(3,payload);
-//     } catch (err) {
-//         console.log('token verify fail: ', err)
-//     }
-//     console.log(2,payload);
-//     ctx.body = {
-//         a:token
-//     }
-// });
-
 
 // 首页
 router.get("/",web.index);
@@ -33,14 +16,12 @@ router.get("/register",web.register);
 //退出登录
 router.get("/loginOut",web.loginOut);
 
-
-
-
+// post
 PostRouter.prefix('/api');
 
 PostRouter.use( async (ctx,next) => {
     // 登录，注册，验证码 不做登录验证
-    if(ctx.url == "/api/login" || ctx.url == "/api/register" || ctx.url == "/api/vercode"){
+    if(ctx.url == "/api/login" || ctx.url == "/api/register" || ctx.url == "/api/vercode" || ctx.url == "/api/test"){
         await next();
     } else {
         try {
@@ -54,6 +35,12 @@ PostRouter.use( async (ctx,next) => {
             }
         }
     }
+});
+
+PostRouter.post("/test", (ctx) => {
+    console.log("进入！！！！！！");
+    var a = sendEmail("1071296726@qq.com");
+    console.log("aaa=====",a);
 });
 
 // 登录 post

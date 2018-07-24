@@ -62,3 +62,4 @@ exports.mysql = async function () {
     ArticleModel.hasMany(ArticleReplyModel, {foreignKey: 'articleId', targetKey: 'id', as:"replay"});
 };
 
+

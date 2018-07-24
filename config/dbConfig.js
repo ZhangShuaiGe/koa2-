@@ -4,8 +4,8 @@ const sequelize = new Sequelize({
     host: 'localhost',
     database:"web", //数据库名
     username:"root",
-    password:"12345678",
-    port: 3307,
+    password:"root",
+    port: 3306,
     timezone:'+08:00', //东八时区
     pool: {
         max: 5,

@@ -1,4 +1,7 @@
 const {resJson} = require("./utils");
+const fs = require("fs");
+const util = require('util');
+const unlink = util.promisify(fs.unlink);
 
 // 发布文章
 exports.article = async (ctx)=> {
@@ -16,6 +19,31 @@ exports.article = async (ctx)=> {
         resJson(ctx,0,err,"sql");
     });
 
+};
+
+//图片上传
+exports.upload = async (ctx) => {
+    resJson(ctx,1,{
+        url:"/blogUploads/" + ctx.req.file.filename,
+        name: ctx.req.file.filename
+    });
+};
+
+//删除图片
+exports.remove = async (ctx) => {
+    await new Promise(function (resolve, reject) {
+        fs.unlink("static" + ctx.request.body.url, (err) => {
+            if (err){
+                reject(err);
+            }else{
+                resolve();
+            }
+        });
+    }).then( data => {
+        resJson(ctx,1)
+    }).catch( err => {
+        resJson(ctx,0,"删除失败！");
+    });
 };
 
 // 文章列表管理

@@ -1,6 +1,6 @@
 const router = require("koa-router")();
 const admin = require("../controller/admin");
-const {resJson} = require("../controller/utils");
+const {resJson,upload} = require("../controller/utils");
 
 router.prefix('/admin');
 
@@ -37,6 +37,12 @@ router.post("/login",admin.login);
 
 // 发表文章
 router.post("/article",admin.article);
+
+// 图片上传
+router.post("/upload",upload().single('file'),admin.upload);
+
+// 图片删除
+router.post("/remove",admin.remove);
 
 //文章列表管理
 router.post("/articleList",admin.articleList);
