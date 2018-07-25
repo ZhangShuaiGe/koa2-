@@ -40,6 +40,6 @@ app.on('error', err => {
     console.log("报错：",err);
 });
 
-app.listen(3000);
+app.listen(80);
 console.log("服务启动=======127.0.0.1:3000");
 info_logger.info("服务启动----监听3000端口");
