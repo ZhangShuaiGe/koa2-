@@ -10,3 +10,6 @@
 body {
   margin-top: 100px!important;
 }
+.ui-detail-box .ui-textarea {
+  margin: 20px 0 20px 0;
+}

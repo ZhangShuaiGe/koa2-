@@ -39,6 +39,18 @@ module.exports = function (sequelize, DataTypes) {
                 msg: '文章分类不能为空'
             },
         },
+        replyNum:{
+            type: DataTypes.INTEGER,
+            defaultValue:0,
+            allowNull: false,
+            comment:'留言个数',
+        },
+        browse:{
+            type: DataTypes.INTEGER,
+            defaultValue:0,
+            allowNull: false,
+            comment:"浏览数",
+        },
         //发布时间
         time:{
             type: DataTypes.DATE,

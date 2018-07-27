@@ -29,5 +29,4 @@ sequelize
 // 同步所有尚未在数据库中的模型, 如果没有模型中的表，将会自动创建
 sequelize.sync();
 //sequelize.sync({force: true}) // 破坏性操作 这将先丢弃表，然后重新创建它，慎用，重启会导致表 清空
-
 module.exports = sequelize;

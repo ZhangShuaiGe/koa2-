@@ -52,12 +52,16 @@ exports.mysql = async function () {
     // 文章表，全局配置，全局随时可以调用
     //文章表
     global.ArticleModel = sequelize.import('../schema/article_content');
+    ArticleModel.sync({alter: true}); // 添加字段，数据库同步
     // 文章回复表
     global.ArticleReplyModel = sequelize.import('../schema/article_reply');
+    ArticleReplyModel.sync({alter:true});
     //web用户表
     global.WebUserModel = sequelize.import('../schema/web_user');
+    WebUserModel.sync({alter:true});
     // admin用户表
     global.AdminUserModel = sequelize.import('../schema/admin_user');
+    AdminUserModel.sync({alter:true});
     // 文章和回复表 关联
     ArticleModel.hasMany(ArticleReplyModel, {foreignKey: 'articleId', targetKey: 'id', as:"replay"});
 };

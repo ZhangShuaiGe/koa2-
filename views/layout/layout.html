@@ -3,13 +3,14 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta name="keywords" content="前端技术博客,技术博客,张帅,渣渣帅">
-    <meta name="description" content="张帅的个人博客">
+    <meta name="keywords" content="张帅的个人博客,前端技术博客,node,javascript">
+    <meta name="description" content="研究前端技术，共享和交流前端技术">
+    <meta name="Author" content="张帅，1071296726@qq.com">
     <link rel="stylesheet" href="/lib/layui/layui/css/layui.css">
     <link rel="stylesheet" href="/lib/layui/css/global.css">
     <!--公共css-->
     <link rel="stylesheet" href="/css/public.css">
-    <title>渣渣帅的博客-{{block 'title'}} {{/block}}</title>
+    <title>张帅的博客-{{block 'title'}} {{/block}}</title>
     <!--私有css-->
     {{block 'css'}}{{/block}}
 </head>
@@ -26,34 +27,34 @@
     <!--公共js-->
     <script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
     <script src="/lib/jquery.cookie.js"></script>
-    <script src="/lib/layui/layui/layui.js"></script>
+    <script src="/lib/layui/layui/layui.all.js"></script>
     <script src="/js/ajax.js"></script>
     <script src="/js/utils.js"></script>
     <script>
         var nikename = $.cookie('nikename');
-        if(nikename){
+        if (nikename) {
             $(".js-login").show();
             $(".js-nikename").html(decodeURI(nikename));
-        }else{
+        } else {
             $(".js-loginOut").show();
         }
     </script>
-    <script>
-        layui.cache.page = '';
-        layui.cache.user = {
-            username: '游客'
-            ,uid: -1
-            ,avatar: 'lib/layui/images/avatar/00.jpg'
-            ,experience: 83
-            ,sex: '男'
-        };
-        layui.config({
-            version: "3.0.0"
-            ,base: '/lib/layui/mods/' //这里实际使用时，建议改成绝对路径
-        }).extend({
-            fly: 'index'
-        }).use('fly');
-    </script>
+    <!--<script>-->
+        <!--layui.cache.page = '';-->
+        <!--layui.cache.user = {-->
+            <!--username: '游客'-->
+            <!--,uid: -1-->
+            <!--,avatar: 'lib/layui/images/avatar/00.jpg'-->
+            <!--,experience: 83-->
+            <!--,sex: '男'-->
+        <!--};-->
+        <!--layui.config({-->
+            <!--version: "3.0.0"-->
+            <!--,base: '/lib/layui/mods/' //这里实际使用时，建议改成绝对路径-->
+        <!--}).extend({-->
+            <!--fly: 'index'-->
+        <!--}).use('fly');-->
+    <!--</script>-->
     <!--私有js-->
     {{block 'js'}}{{/block}}
 </body>

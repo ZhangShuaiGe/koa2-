@@ -1,11 +1,10 @@
 const jwt = require('jsonwebtoken'); //生成token
 const secret = 'jwtlihailewodege'; //加密规则
 const {resJson,md5,captchapng,dateformat} = require("./utils");
+const sequelize = require("../config/dbConfig");
 
 // 首页
 exports.index = async (ctx) => {
-    console.log(123);
-    debugger;
     // 当前页
     let currpage = 0;
     if(ctx.query.page){
@@ -40,18 +39,43 @@ exports.index = async (ctx) => {
 
 //文章详情
 exports.articleDetail = async (ctx) => {
+    // 当前页
+    let currpage = 0;
+    if(ctx.query.page){
+        currpage = Number(ctx.query.page) - 1;
+    }
+
+    await sequelize.query("").spread((results, metadata) => {
+        console.log(1111);
+        // 结果将是一个空数组，元数据将包含受影响的行数。
+    });
+
+    // 查询对应文章的留言总数
+    let reply_conut = await ArticleReplyModel.count({
+        where:{
+            articleId: ctx.query.id
+        }
+    }).then((data)=>{
+        return data;
+    });
+
+    // 查询文章内容
     await ArticleModel.findAndCountAll({
         where:{
             id: ctx.query.id
         },
+        // 查询关联的留言
         include: [{
             model: ArticleReplyModel,
             as: 'replay',
+            order:[['ID','DESC']],
+            limit:15,
+            offset: currpage * 15 || 0, //跳过的数据数量
         }]
     }).then( data => {
         ctx.render("article/detail",{
             "data":data.rows[0],
-            "count":data.count,
+            "count":reply_conut,
         });
     }).catch( err => {
         console.log("报错:",err);
