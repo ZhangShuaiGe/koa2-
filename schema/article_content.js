@@ -39,13 +39,22 @@ module.exports = function (sequelize, DataTypes) {
                 msg: '文章分类不能为空'
             },
         },
+        istop: {
+            type:DataTypes.INTEGER,
+            defaultValue:0,
+            comment:'置顶',
+        },
+        coverImgUrl:{
+            type:DataTypes.STRING,
+            comment:'封面图片',
+        },
         replyNum:{
             type: DataTypes.INTEGER,
             defaultValue:0,
             allowNull: false,
             comment:'留言个数',
         },
-        browse:{
+        browse: {
             type: DataTypes.INTEGER,
             defaultValue:0,
             allowNull: false,

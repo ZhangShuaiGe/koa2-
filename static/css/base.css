@@ -1,0 +1,79 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+img {
+  vertical-align: middle;
+  border: none;
+}
+ul,
+ol {
+  list-style: none;
+}
+.clearfix::after {
+  content: " ";
+  width: 0;
+  height: 0;
+  line-height: 0;
+  display: block;
+  clear: both;
+  overflow: visible;
+}
+body {
+  font-family: "微软雅黑";
+  font-size: 14px;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: normal;
+}
+a,
+em {
+  font-style: normal;
+  display: inline-block;
+}
+.g-logo {
+  margin-top: 10px;
+  width: 107px;
+  height: auto;
+  vertical-align: middle;
+}
+.fly-logo {
+  top: 5px;
+}
+.ui-detail-box .ui-textarea {
+  margin: 20px 0 20px 0;
+}
+.ui-title-nav {
+  background: #fff;
+  height: 50px;
+  line-height: 50px;
+  margin-bottom: 16px;
+  box-shadow: 2px 2px 6px #e5e5e5;
+}
+.ui-title-nav > div {
+  width: 1170px;
+  margin: 0 auto;
+}
+.ui-title-nav > div a {
+  margin-right: 45px;
+}
+.ui-serch-box {
+  float: right;
+}
+.ui-serch-box .ui-serch {
+  border: 1px solid #e5e5e5;
+  height: 30px;
+  line-height: 30px;
+  padding: 0 10px;
+  vertical-align: middle;
+}
+.ui-serch-box .ui-serch-icon {
+  font-size: 22px;
+  cursor: pointer;
+  vertical-align: middle;
+}

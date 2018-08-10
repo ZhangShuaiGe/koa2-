@@ -5,13 +5,15 @@ const unlink = util.promisify(fs.unlink);
 
 // 发布文章
 exports.article = async (ctx)=> {
-    let {title,content,date,type,keyword} = ctx.request.body.form;
+    let {title,content,date,type,istop,coverImg} = ctx.request.body.form;
 
     await ArticleModel.create({
         "title":title,
         "content":content,
         "time":date,
         "type":type,
+        "istop":istop || 0,
+        "coverImgUrl": coverImg,
     }).then( data => {
         resJson(ctx,1);
     }).catch( err => {
@@ -96,13 +98,15 @@ exports.compileArticle = async (ctx) => {
 
 //更新文章
 exports.updateArticle = async (ctx) => {
-    let {id,title,content,type,time} = ctx.request.body.form;
+    let {id,title,content,type,time,istop,coverImg} = ctx.request.body.form;
 
     await ArticleModel.update({
         "title":title,
         "content":content,
         "type":type,
         "time":time,
+        "istop":istop,
+        "coverImgUrl": coverImg,
     },{
         where:{
             "id":id

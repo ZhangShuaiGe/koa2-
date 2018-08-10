@@ -38,15 +38,6 @@ router.post("/login",admin.login);
 // 发表文章
 router.post("/article",admin.article);
 
-// 图片上传
-router.post("/upload",upload().single('file'),admin.upload);
-
-// 图片删除
-router.post("/remove",admin.remove);
-
-//文章列表管理
-router.post("/articleList",admin.articleList);
-
 // 编辑文章
 router.post("/compileArticle",admin.compileArticle);
 
@@ -55,5 +46,14 @@ router.post("/deleteArticle",admin.deleteArticle);
 
 // 更新文章
 router.post("/updateArticle",admin.updateArticle);
+
+// 图片上传
+router.post("/upload",upload().single('file'),admin.upload);
+
+// 图片删除
+router.post("/remove",admin.remove);
+
+//文章列表管理
+router.post("/articleList",admin.articleList);
 
 module.exports = router;

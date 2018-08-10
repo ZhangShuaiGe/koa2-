@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken'); //生成token
 const secret = 'jwtlihailewodege'; //加密规则
 const {resJson,md5,captchapng,dateformat} = require("./utils");
 const sequelize = require("../config/dbConfig");
+const Op = sequelize.Op;
 
 // 首页
 exports.index = async (ctx) => {
@@ -13,9 +14,27 @@ exports.index = async (ctx) => {
     // 动态where
     function where() {
         if(ctx.query.type){
+            //如果有文章类型
             return {type: ctx.query.type};
+        }else if(ctx.query.serch){
+            //如果有 搜索参数
+            return {
+                [Op.or]:[
+                    {
+                        title:{
+                            [Op.like]: `%${ctx.query.serch}%`,
+                        }
+                    },
+                    {
+                        content:{
+                            [Op.like]: `%${ctx.query.serch}%`,
+                        }
+                    }
+                ],
+
+            }
         }
-        else{
+        else {
             return {};
         }
     }
@@ -24,7 +43,7 @@ exports.index = async (ctx) => {
         attributes:{exclude: ["content"]},
         limit:15,
         offset: currpage * 15 || 0, //跳过的数据数量
-        order:[['ID','DESC']],
+        order:[['istop','DESC'],['ID','DESC']],
         where: where(),
     }).then( data => {
          ctx.render("index",{
@@ -45,10 +64,8 @@ exports.articleDetail = async (ctx) => {
         currpage = Number(ctx.query.page) - 1;
     }
 
-    await sequelize.query("").spread((results, metadata) => {
-        console.log(1111);
-        // 结果将是一个空数组，元数据将包含受影响的行数。
-    });
+    //异步更新阅读数
+    sequelize.query(`update article_content set browse = browse+1 where id = ${ctx.query.id}`);
 
     // 查询对应文章的留言总数
     let reply_conut = await ArticleReplyModel.count({
@@ -73,6 +90,7 @@ exports.articleDetail = async (ctx) => {
             offset: currpage * 15 || 0, //跳过的数据数量
         }]
     }).then( data => {
+        console.log(111,data.rows[0]);
         ctx.render("article/detail",{
             "data":data.rows[0],
             "count":reply_conut,
@@ -206,7 +224,7 @@ exports.replay = async(ctx) => {
         }).then( data => {
             resJson(ctx,1);
         });
-    }else{
+    } else {
         resJson(ctx,0,"请先登录！");
     }
 };
