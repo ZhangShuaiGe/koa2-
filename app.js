@@ -5,6 +5,15 @@ const static = require('koa-static');
 const {GetRouter,PostRouter} = require("./router/index");
 const admin = require("./router/admin");
 const setting = require("./config/setting");
+const https = require("https");
+const http = require("http");
+let fs = require("fs");
+
+// https 配置
+const httpsOption = {
+    key : fs.readFileSync("./https/1537060945371.key"),
+    cert: fs.readFileSync("./https/1537060945371.pem")
+};
 
 // post参数 body配置
 app.use(bodyParser());
@@ -40,6 +49,12 @@ app.on('error', err => {
     console.log("报错：",err);
 });
 
-app.listen(3000);
-console.log("服务启动=======127.0.0.1:3000");
-info_logger.info("服务启动----监听3000端口");
+http.createServer(app).listen(80,function (err) {
+    console.log("服务启动=======80");
+    info_logger.info("服务启动----监听80端口");
+});
+
+https.createServer(httpsOption, app).listen(443,function (err) {
+    console.log("服务启动=======433");
+    info_logger.info("服务启动----监听433端口");
+});
