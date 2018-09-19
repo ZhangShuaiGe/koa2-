@@ -49,13 +49,30 @@ app.on('error', err => {
     console.log("报错：",err);
 });
 
-http.createServer(app.callback()).listen(80,function (err) {
+
+
+//开发
+http.createServer(app.callback()).listen(3000,function (err) {
     if(err){
+        error_logger.error(err);
+    }
+    info_logger.info("node 开发已启动,3000");
+});
+
+//生产 http
+http.createServer((req,res) => {
+    res.writeHead(301,{
+        'Location':'https://www.zhangshuaige.top'
+    });
+    res.end();
+}).listen(80,function (err) {
+    if (err) {
         error_logger.error(err);
     }
     info_logger.info("node已启动,监听80端口");
 });
 
+//生产 https
 https.createServer(httpsOption, app.callback()).listen(443,function (err) {
     if(err){
         error_logger.error(err);
