@@ -49,14 +49,15 @@ app.on('error', err => {
     console.log("报错：",err);
 });
 
-http.createServer(koa).listen(80,function (err) {
+// app.listen(3500);
+http.createServer(app.callback()).listen(3500,function (err) {
     if(err){
         error_logger.error(err);
     }
     info_logger.info("node已启动,监听80端口");
 });
 
-https.createServer(httpsOption, koa).listen(443,function (err) {
+https.createServer(httpsOption, app.callback()).listen(443,function (err) {
     if(err){
         error_logger.error(err);
     }
