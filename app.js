@@ -49,8 +49,7 @@ app.on('error', err => {
     console.log("报错：",err);
 });
 
-// app.listen(3500);
-http.createServer(app.callback()).listen(3500,function (err) {
+http.createServer(app.callback()).listen(80,function (err) {
     if(err){
         error_logger.error(err);
     }
