@@ -42,7 +42,12 @@ module.exports = function (sequelize, DataTypes) {
         istop: {
             type:DataTypes.INTEGER,
             defaultValue:0,
-            comment:'置顶',
+            comment:'置顶 0 否 1是',
+        },
+        isreprint:{
+            type:DataTypes.INTEGER,
+            defaultValue:0,
+            comment:'是否转载 0 否 1 是',
         },
         coverImgUrl:{
             type:DataTypes.STRING,
@@ -61,7 +66,7 @@ module.exports = function (sequelize, DataTypes) {
             comment:"浏览数",
         },
         //发布时间
-        time:{
+        time: {
             type: DataTypes.DATE,
             allowNull: false,
             defaultValue: DataTypes.NOW,

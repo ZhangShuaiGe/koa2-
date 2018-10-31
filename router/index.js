@@ -21,7 +21,7 @@ PostRouter.prefix('/api');
 
 PostRouter.use( async (ctx,next) => {
     // 登录，注册，验证码 不做登录验证
-    if(ctx.url == "/api/login" || ctx.url == "/api/register" || ctx.url == "/api/vercode" || ctx.url == "/api/test"){
+    if(ctx.url == "/api/login" || ctx.url == "/api/register" || ctx.url == "/api/vercode" || ctx.url == "/api/test" || ctx.url == "/api/menuList" || ctx.url == "/api/blogrollList" || ctx.url == "/api/toolList"){
         await next();
     } else {
         try {
@@ -51,6 +51,15 @@ PostRouter.post("/register",web.apiRegister);
 PostRouter.post("/replay",web.replay);
 //验证码
 PostRouter.post("/vercode",web.vercode);
+
+//首页菜单列表
+PostRouter.post("/menuList",web.menuList);
+
+//友情链接列表
+PostRouter.post("/blogrollList",web.blogrollList);
+
+//工具库链接 列表
+PostRouter.post("/toolList",web.toolList);
 
 // get 路由
 exports.GetRouter = router;

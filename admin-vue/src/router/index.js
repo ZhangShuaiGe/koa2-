@@ -25,7 +25,13 @@ export default new Router({
                     path: "/article",
                     name: "article",
                     component: resolve => require(["../page/article/article.vue"], resolve),
-                    meta: { title: '发表文章', keepAlive: true}
+                    meta: { title: '发表文章'}
+                },
+                {
+                    path: "/articleSet",
+                    name: "articleSet",
+                    component: resolve => require(["../page/article/articleSet.vue"], resolve),
+                    meta: { title: '文章设置'}
                 },
             ]
         },

@@ -20,6 +20,7 @@
     "sequelize": "^4.38.0"
   },
   "scripts": {
-    "dev": "supervisor app.js"
+    "dev": "supervisor app.js",
+    "dev2": "node app.js"
   }
 }

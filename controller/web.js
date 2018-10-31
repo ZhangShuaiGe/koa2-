@@ -46,7 +46,7 @@ exports.index = async (ctx) => {
         order:[['istop','DESC'],['ID','DESC']],
         where: where(),
     }).then( data => {
-         ctx.render("index",{
+         ctx.render("home/index",{
             "data":data.rows,
             "count": data.count,
             "type":ctx.query.type
@@ -239,4 +239,30 @@ exports.loginOut = async(ctx) => {
 exports.vercode = async(ctx) => {
     let imgURL = captchapng(ctx);
     resJson(ctx,1,{url:imgURL});
+};
+
+//菜单列表
+exports.menuList = async(ctx) => {
+    await ArticleTypeModel.findAll({
+        order:[['sort','asc']],
+    }).then( res => {
+        resJson(ctx,1,res);
+    });
+};
+
+//友链列表
+exports.blogrollList = async(ctx) => {
+    await WebBlogroll.findAll({
+        order:[['sort','DESC']],
+    }).then( res => {
+        resJson(ctx,1,res);
+    });
+};
+
+exports.toolList = async(ctx) => {
+    await WebTool.findAll({
+        order:[['sort','DESC']],
+    }).then( res => {
+        resJson(ctx,1,res);
+    });
 };

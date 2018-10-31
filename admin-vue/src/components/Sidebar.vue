@@ -44,6 +44,11 @@
                                 index: 'article',
                                 title: '文章发布'
                             },
+
+                            {
+                                index: 'articleSet',
+                                title: '文章设置',
+                            }
                         ]
                     }
                 ]

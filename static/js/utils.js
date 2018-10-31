@@ -15,6 +15,11 @@ $(function () {
         $.cookie('nikename',"");
         location.reload();
     });
+
+    $(".js-developed").on("click",function () {
+        layer.msg("正在开发，敬请期待！");
+        return false;
+    });
 });
 
 // 方法型公共js

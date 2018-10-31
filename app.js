@@ -51,7 +51,7 @@ app.on('error', err => {
 
 
 
-//开发
+//开发 http
 http.createServer(app.callback()).listen(3000,function (err) {
     if(err){
         error_logger.error(err);
@@ -59,7 +59,7 @@ http.createServer(app.callback()).listen(3000,function (err) {
     info_logger.info("node 开发已启动,3000");
 });
 
-//生产 http
+//生产 http 强制跳转 https
 http.createServer((req,res) => {
     res.writeHead(301,{
         'Location':'https://www.zhangshuaige.top'

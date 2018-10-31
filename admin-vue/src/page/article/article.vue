@@ -2,14 +2,14 @@
     <div>
         <div class="container">
             <el-form ref="form" :model="form" label-width="80px">
-                <el-form-item label="时间">
-                    <el-date-picker
-                        v-model="form.date"
-                        type="datetime"
-                        value-format="yyyy-MM-dd HH:mm:ss"
-                        placeholder="选择日期时间">
-                    </el-date-picker>
-                </el-form-item>
+                <!--<el-form-item label="时间">-->
+                    <!--<el-date-picker-->
+                        <!--v-model="form.date"-->
+                        <!--type="datetime"-->
+                        <!--value-format="yyyy-MM-dd HH:mm:ss"-->
+                        <!--placeholder="选择日期时间">-->
+                    <!--</el-date-picker>-->
+                <!--</el-form-item>-->
                 <el-form-item label="标题">
                     <el-input v-model="form.title"></el-input>
                 </el-form-item>
@@ -17,15 +17,19 @@
                     <el-form-item label="类型">
                         <el-select v-model="form.type" placeholder="请选择文章类型">
                             <el-option
-                                v-for="item in options"
-                                :key="item.label"
-                                :label="item.label"
-                                :value="item.label">
+                                v-for="item in typeList"
+                                :key="item.type"
+                                :label="item.type"
+                                :value="item.type">
                             </el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="置顶">
-                        <el-input v-model.number="form.istop" type="number"></el-input>
+                        <!--<el-input v-model.number="form.istop" type="number"></el-input>-->
+                        <el-switch v-model="form.istop" :inactive-value="0" :active-value="1"></el-switch>
+                    </el-form-item>
+                    <el-form-item label="转载">
+                        <el-switch v-model="form.isreprint" :inactive-value="0" :active-value="1"></el-switch>
                     </el-form-item>
                 </div>
             </el-form>
@@ -110,26 +114,16 @@
                     }
                 },
                 form: {
-                    date:"", //时间
                     title: "", //标题
                     type:"", //类型
                     content: '', //内容
-                    istop:"0", //置顶值,默认不置顶
+                    istop: 0, //置顶值,默认不置顶
+                    isreprint: 0, //是否转载 0 否 1 是
                     coverImg: "", //封面图片
                     id: this.$route.query.id || "" //编辑文章的时候用
                 },
-                //文章类型
-                options:[
-                    {
-                        label:"js"
-                    },
-                    {
-                        label:"html"
-                    },
-                    {
-                        label:"css"
-                    }
-                ],
+                value3: true,
+                typeList:[], //类型列表
                 url: sessionStorage.getItem("url") + "/upload" //上传地址
             }
         },
@@ -239,6 +233,12 @@
                     this.form = data;
                 })
             }
+            //类型列表
+            this.$http.post("/articleType",{
+
+            }, req => {
+                this.typeList = req;
+            });
         }
     }
 </script>

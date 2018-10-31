@@ -56,9 +56,18 @@ exports.mysql = async function () {
     // 文章回复表
     global.ArticleReplyModel = sequelize.import('../schema/article_reply');
     ArticleReplyModel.sync({alter:true});
+    // 文章分类
+    global.ArticleTypeModel = sequelize.import('../schema/article_Type');
+    ArticleTypeModel.sync({alter:true});
     //web用户表
     global.WebUserModel = sequelize.import('../schema/web_user');
     WebUserModel.sync({alter:true});
+    //友情链接
+    global.WebBlogroll = sequelize.import('../schema/web_blogroll.js');
+    WebBlogroll.sync({alter:true});
+    //工具链接
+    global.WebTool = sequelize.import('../schema/web_tool.js');
+    WebTool.sync({alter:true});
     // admin用户表
     global.AdminUserModel = sequelize.import('../schema/admin_user');
     AdminUserModel.sync({alter:true});

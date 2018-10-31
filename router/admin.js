@@ -56,4 +56,20 @@ router.post("/remove",admin.remove);
 //文章列表管理
 router.post("/articleList",admin.articleList);
 
+//文章类型查询,添加
+router.post("/articleType",admin.articleType);
+
+//文章类型编辑
+router.post("/articleCompile",admin.articleCompile);
+
+//文章类型删除
+router.post("/articleDelete",admin.articleDelete);
+
+//博客友情链接
+router.post("/blogroll",admin.blogroll);
+
+//工具类链接
+router.post("/tool",admin.tool);
+
+
 module.exports = router;
