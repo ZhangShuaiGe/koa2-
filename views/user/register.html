@@ -15,37 +15,37 @@
             <div class="layui-form layui-tab-content" id="LAY_ucm" style="padding: 20px 0;">
                 <div class="layui-tab-item layui-show">
                     <div class="layui-form layui-form-pane">
-                        <form method="post" class="js-register_form">
+                        <form method="post" class="js-register_form" action="/api/register">
                             <div class="layui-form-item">
                                 <label for="L_email" class="layui-form-label">邮箱</label>
                                 <div class="layui-input-inline">
-                                    <input type="text" id="L_email" name="email" required lay-verify="email" autocomplete="off" class="layui-input">
+                                    <input type="text" datatype="e" nullmsg="邮箱不能为空！" errormsg="邮箱格式错误！" id="L_email" name="email" required  autocomplete="off" class="layui-input">
                                 </div>
                                 <div class="layui-form-mid layui-word-aux">将会成为您唯一的登入名</div>
                             </div>
                             <div class="layui-form-item">
                                 <label for="L_username" class="layui-form-label">昵称</label>
                                 <div class="layui-input-inline">
-                                    <input type="text" id="L_username" name="username" required lay-verify="required" autocomplete="off" class="layui-input">
+                                    <input type="text" id="L_username" name="username" datatype="*" nullmsg="昵称不能为空！" class="layui-input">
                                 </div>
                             </div>
                             <div class="layui-form-item">
                                 <label for="L_pass" class="layui-form-label">密码</label>
                                 <div class="layui-input-inline">
-                                    <input type="password" id="L_pass" name="password" required lay-verify="required" autocomplete="off" class="layui-input">
+                                    <input type="password" id="L_pass" name="password" datatype="*6-16" nullmsg="密码不能为空！" errormsg="密码长度为6-16位！" class="layui-input">
                                 </div>
                                 <div class="layui-form-mid layui-word-aux">6到16个字符</div>
                             </div>
                             <div class="layui-form-item">
                                 <label for="L_repass" class="layui-form-label">确认密码</label>
                                 <div class="layui-input-inline">
-                                    <input type="password" id="L_repass" name="repass" required lay-verify="required" autocomplete="off" class="layui-input">
+                                    <input datatype="*6-16" recheck="password" nullmsg="确认密码不能为空！" errormsg="两次密码输入不同！" type="password" id="L_repass" name="repass" class="layui-input">
                                 </div>
                             </div>
                             <div class="layui-form-item">
                                 <label for="L_vercode" class="layui-form-label">人类验证</label>
                                 <div class="layui-input-inline">
-                                    <input type="text" id="L_vercode" name="vercode" required lay-verify="required" placeholder="请输入验证码" autocomplete="off" class="layui-input">
+                                    <input datatype="*4-4" nullmsg="验证码不能为空！" errormsg="验证码填写有误！" type="text" id="L_vercode" name="vercode" placeholder="请输入验证码" class="layui-input">
                                 </div>
                                 <div class="layui-form-mid">
                                     <a href="javascript:;" style="color: #c00;"><img class="js-vercode" src="{{vercode}}" alt=""></a>
@@ -71,27 +71,27 @@
 
 {{block "js"}}
     <script>
-//        http({
-//            url:"/test",
-//        },function (data) {
-//
-//        });
-        $(function () {
-            $(".js-register_btn").on("click",function () {
-                var data = $(".js-register_form").serialize();
-                http({
-                    url:"/register",
-                    data:data
-                },function (data) {
+        $.Tipmsg.r = null; //校验通过不提示
+        $(".js-register_form").Validform({
+            btnSubmit : ".js-register_btn",
+            ajaxPost : true,
+            tiptype : function (msg) {
+                layer.msg(msg);
+            },
+            callback : function (data) {
+                if(data.resultCode == "1"){
                     layer.msg(data.resultMsg, {
                         time: 1500
                     });
                     setTimeout(function () {
                         window.location.href="/login";
                     },1500);
-                });
-                return false;
-            });
-        })
+                }else if(data.resultCode == "0"){
+                    layer.msg(data.resultMsg, {
+                        time: 1500
+                    });
+                }
+            }
+        });
     </script>
 {{/block}}

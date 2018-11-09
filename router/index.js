@@ -15,6 +15,8 @@ router.get("/login",web.login);
 router.get("/register",web.register);
 //退出登录
 router.get("/loginOut",web.loginOut);
+//忘记密码
+router.get("/forget",web.forget);
 
 // post
 PostRouter.prefix('/api');

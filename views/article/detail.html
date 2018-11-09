@@ -3,7 +3,7 @@
 {{block "title"}}文章详情{{/block}}
 
 {{block "css"}}
-
+<link rel="stylesheet" href="/css/article-detail.css">
 {{/block}}
 
 {{block "content"}}
@@ -57,7 +57,7 @@
                                 </div>
                             </div>
                             <div class="detail-body jieda-body photos">
-                                {{$value.reply_con}}
+                                {{@ $value.reply_con}}
                             </div>
                             <div class="jieda-reply">
                                 <span class="jieda-zan" type="zan">
@@ -70,8 +70,8 @@
                                 </span>
 
                                 <div class="ui-textarea-box js-textarea" style="display: none">
-                                    <form action="/replay" method="post" class="js-replay-form">
-                                        <textarea name="content" required lay-verify="required" placeholder="请输入内容"  class="layui-textarea fly-editor js-replay-text ui-textarea" style="height: 150px;margin-bottom: 20px"> @{{$value.nikename}}：</textarea>
+                                    <form action="/replay" method="post" class="js-replay-form ui-replay-form">
+                                        <textarea name="content" required lay-verify="required" placeholder="请输入内容"  class="layui-textarea fly-editor js-replay-text" style="height: 150px;margin-bottom: 20px"> @{{$value.nikename}}： </textarea>
                                         <!--文章id-->
                                         <input type="hidden" name="articleId" value="{{data.id}}">
                                         <a href="javascript:;" class="layui-btn js-replay-submit">提交回复</a>
@@ -108,11 +108,15 @@
         $(function () {
             //留言和回复
             $(".js-replay-submit").on("click",function(){
-                var text = $(this).siblings(".js-replay-text").val();
+                var text = layui.fly.content($(this).siblings(".js-replay-text").val());
+                var articleId = $(this).siblings("input[name = 'articleId']").val();
                 if(text){
                     http({
                         "url":"/replay",
-                        "data": $(this).parent().serialize(),
+                        "data":{
+                            "content": text,
+                            "articleId": articleId
+                        },
                     },function (data) {
                         window.location.reload();
                     });

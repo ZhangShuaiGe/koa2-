@@ -109,6 +109,15 @@ exports.login = async(ctx) => {
     });
 };
 
+//忘记密码
+exports.forget = async(ctx) => {
+    //调用验证码
+    let vercode = captchapng(ctx);
+    ctx.render("user/forget",{
+        "vercode":vercode
+    });
+};
+
 //登录 post
 exports.apiLogin = async(ctx) => {
 
@@ -259,6 +268,7 @@ exports.blogrollList = async(ctx) => {
     });
 };
 
+//工具库链接 列表
 exports.toolList = async(ctx) => {
     await WebTool.findAll({
         order:[['sort','DESC']],

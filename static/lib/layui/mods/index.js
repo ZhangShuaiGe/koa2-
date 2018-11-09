@@ -69,10 +69,10 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function(
         data: data,
         url: url,
         success: function(res){
-          if(res.status === 0) {
+          if(res.resultCode == 0) {
             success && success(res);
           } else {
-            layer.msg(res.msg || res.code, {shift: 6});
+            layer.msg(res.resultMsg || res.resultMsg, {shift: 6});
             options.error && options.error();
           }
         }, error: function(e){
@@ -144,7 +144,7 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function(
                 ,'<div class="layui-input-inline">'
                     ,'<input required name="image" placeholder="支持直接粘贴远程图片地址" value="" class="layui-input">'
                   ,'</div>'
-                  ,'<button type="button" class="layui-btn layui-btn-primary" id="uploadImg"><i class="layui-icon">&#xe67c;</i>上传图片</button>'
+                  // ,'<button type="button" class="layui-btn layui-btn-primary" id="uploadImg"><i class="layui-icon">&#xe67c;</i>上传图片</button>'
               ,'</li>'
               ,'<li class="layui-form-item" style="text-align: center;">'
                 ,'<button type="button" lay-submit lay-filter="uploadImages" class="layui-btn">确认</button>'
@@ -533,8 +533,9 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function(
     fly.activate($(this).attr('email'));
   });
 
-  //点击@
+  //点击@ zs 修改
   $('body').on('click', '.fly-aite', function(){
+    return false;
     var othis = $(this), text = othis.text();
     if(othis.attr('href') !== 'javascript:;'){
       return;
@@ -612,7 +613,8 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function(
     ,bgcolor: '#009688'
     ,click: function(type){
       if(type === 'bar1'){
-        layer.msg('打开 index.js，开启发表新帖的路径');
+        // layer.msg('打开 index.js，开启发表新帖的路径');
+        layer.msg('正在开发，敬请期待！');
         //location.href = 'jie/add.html';
       }
     }

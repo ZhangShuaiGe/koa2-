@@ -31,31 +31,23 @@
     <script src="/lib/layui/layui/layui.all.js"></script>
     <script src="/js/ajax.js"></script>
     <script src="/js/utils.js"></script>
+    <script src="/lib/Validform_v5.3.2_min.js"></script>
     <script>
-        var nikename = $.cookie('nikename');
-        if (nikename) {
-            $(".js-login").show();
-            $(".js-nikename").html(decodeURI(nikename));
-        } else {
-            $(".js-loginOut").show();
-        }
+        layui.cache.page = '';
+        layui.cache.user = {
+            username: '游客'
+            ,uid: -1
+            ,avatar: '/lib/layui/images/avatar/00.jpg'
+            ,experience: 83
+            ,sex: '男'
+        };
+        layui.config({
+            version: "3.0.0"
+            ,base: '/lib/layui/mods/'
+        }).extend({
+            fly: 'index'
+        }).use('fly');
     </script>
-    <!--<script>-->
-        <!--layui.cache.page = '';-->
-        <!--layui.cache.user = {-->
-            <!--username: '游客'-->
-            <!--,uid: -1-->
-            <!--,avatar: 'lib/layui/images/avatar/00.jpg'-->
-            <!--,experience: 83-->
-            <!--,sex: '男'-->
-        <!--};-->
-        <!--layui.config({-->
-            <!--version: "3.0.0"-->
-            <!--,base: '/lib/layui/mods/' //这里实际使用时，建议改成绝对路径-->
-        <!--}).extend({-->
-            <!--fly: 'index'-->
-        <!--}).use('fly');-->
-    <!--</script>-->
     <!--私有js-->
     {{block 'js'}}{{/block}}
 </body>

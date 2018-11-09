@@ -15,23 +15,23 @@
             <div class="layui-form layui-tab-content" id="LAY_ucm" style="padding: 20px 0;">
                 <div class="layui-tab-item layui-show">
                     <div class="layui-form layui-form-pane">
-                        <form method="post" class="js-login_form">
+                        <form method="post" class="js-login_form" action="/api/login">
                             <div class="layui-form-item">
                                 <label for="L_email" class="layui-form-label">邮箱</label>
                                 <div class="layui-input-inline">
-                                    <input type="text" id="L_email" name="email" required lay-verify="required" autocomplete="off" class="layui-input">
+                                    <input datatype="e" nullmsg="邮箱不能为空！" errormsg="邮箱格式错误！" type="text" id="L_email" name="email" class="layui-input">
                                 </div>
                             </div>
                             <div class="layui-form-item">
                                 <label for="L_pass" class="layui-form-label">密码</label>
                                 <div class="layui-input-inline">
-                                    <input type="password" id="L_pass" name="password" required lay-verify="required" autocomplete="off" class="layui-input">
+                                    <input datatype="*6-16" nullmsg="密码不能为空！" errormsg="密码长度为6-16位！" type="password" id="L_pass" name="password" required lay-verify="required" autocomplete="off" class="layui-input">
                                 </div>
                             </div>
                             <div class="layui-form-item">
                                 <label for="L_vercode" class="layui-form-label">人类验证</label>
                                 <div class="layui-input-inline">
-                                    <input type="text" id="L_vercode" name="vercode" required lay-verify="required" placeholder="请输入验证码" autocomplete="off" class="layui-input">
+                                    <input datatype="*4-4" nullmsg="验证码不能为空！" errormsg="验证码填写有误！"  type="text" id="L_vercode" name="vercode" required lay-verify="required" placeholder="请输入验证码" autocomplete="off" class="layui-input">
                                 </div>
                                 <div class="layui-form-mid">
                                     <a href="javascript:;" style="color: #c00;"><img class="js-vercode ui-" src="{{vercode}}" alt=""></a>
@@ -40,7 +40,7 @@
                             <div class="layui-form-item">
                                 <button class="layui-btn js-login_btn" lay-filter="*">立即登录</button>
                                 <span style="padding-left:20px;">
-                  <a href="forget.html">忘记密码？</a>
+                  <a href="/forget">忘记密码？</a>
                 </span>
                             </div>
                             <div class="layui-form-item fly-form-app">
@@ -60,15 +60,26 @@
 {{block "js"}}
 <script>
     $(function () {
-        $(".js-login_btn").on("click",function () {
-            var data = $(".js-login_form").serialize();
-            http({
-                url:"/login",
-                data:data
-            },function (data) {
-                window.location.href="/";
-            });
-            return false;
+        $.Tipmsg.r = null; //校验通过不提示
+        $(".js-login_form").Validform({
+            btnSubmit : ".js-register_btn",
+            ajaxPost : true,
+            tiptype : function (msg) {
+                layer.msg(msg);
+            },
+            callback : function (data) {
+                if(data.resultCode == "1"){
+
+                    window.location.href="/";
+
+                }else if(data.resultCode == "0"){
+
+                    layer.msg(data.resultMsg, {
+                        time: 1500
+                    });
+
+                }
+            }
         });
     })
 </script>

@@ -1,4 +1,35 @@
-@import "reset.less";
+*{
+	margin: 0;
+	padding: 0;
+}
+img{
+	vertical-align: middle;
+	border: none;
+}
+ul,ol{
+	list-style: none;
+}
+.clearfix::after{
+	content: " ";
+	width: 0;
+	height: 0;
+	line-height: 0;
+	display: block;
+	clear: both;
+	overflow: visible;
+}
+body{
+	font-family: "微软雅黑";
+	font-size: 14px;
+}
+h1,h2,h3,h4,h5,h6{
+	font-weight: normal;
+}
+a,em{
+	font-style: normal;
+	display: inline-block;
+}
+
 .g-logo{
 	margin-top: 10px;
 	width: 107px;
@@ -7,11 +38,4 @@
 }
 .fly-logo{
 	top: 5px;
-}
-
-//帖子详情
-.ui-detail-box{
-	.ui-textarea{
-		margin: 20px 0 20px 0;
-	}
 }
