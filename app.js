@@ -7,7 +7,102 @@ const admin = require("./router/admin");
 const setting = require("./config/setting");
 const https = require("https");
 const http = require("http");
-let fs = require("fs");
+const fs = require("fs");
+
+const redis = require("redis");
+const redisClient = redis.createClient({
+    "host":"127.0.0.1",
+    "port": 6379
+});
+
+redisClient.on("connect", function () {
+    console.log("Redis 连接成功！ ");
+});
+
+redisClient.on("error", function (err) {
+    console.log("Redis 连接错误 " + err);
+});
+
+// redisClient.set("test","AAA",function (err,response) {
+//     if(err){
+//         console.log(err);
+//     }else{
+//         console.log(222222222222222,response);
+//         redisClient.get("test",function (err,res) {
+//             console.log(3333333333,res);
+//             redisClient.end();
+//         })
+//     }
+// });
+
+// redisClient.hset('filed005', '007', 'woshi777', function (err, res) {
+//     if (err) {
+//         console.log(err);
+//     } else {
+//         console.log('res:', res);
+//         redisClient.hget('filed005', '007', function (err, getRslt) {
+//             if (err) {
+//                 console.log(err);
+//             } else {
+//                 console.log('getRslt:', getRslt);
+//                 redisClient.end();
+//             }
+//         });
+//     }
+// });
+
+// var qe = {a: 1, b:2, c:1};
+// redisClient.hmset('field003', qe, function(err, response) {
+//     console.log("err:", err);
+//     console.log("response:", response);
+//     redisClient.hmget('field003', ['a'], function (err, res) {
+//         console.log(err);
+//         console.log(333333333,res);
+//         redisClient.end();
+//     });
+// });
+
+// redisClient.hkeys("field003", function (err, replies) {
+//     console.log(replies.length + " replies:");
+//     replies.forEach(function (reply, i) {
+//         console.log("    " + i + ": " + reply);
+//     });
+//     redisClient.quit();
+// });
+
+// redisClient.hget('filed005', '006', function (err, getRslt) {
+//     if (err) {
+//         console.log(err);
+//     } else {
+//         console.log('============', getRslt);
+//         redisClient.end();
+//     }
+// });
+
+var vals = [];
+for (var score = 0; score < 4; score++) {
+    for (var val = 10; val < 14; val++) {
+        vals.push(score);
+        vals.push(val);
+    }
+}
+console.log("vals=======",vals);
+
+redisClient.zadd('004', vals, function(err, res) {
+    console.log(err);
+    console.log(res);
+    redisClient.zrange('004', 0, -1, function(err, resp) {
+        console.log(err);
+        console.log('range result:', resp);
+        redisClient.zcount('004', -Infinity, Infinity, function(err, respo) {
+            console.log(err);
+            console.log("len:", respo);
+            redisClient.end();
+        });
+    });
+});
+
+
 
 // https 配置
 const httpsOption = {

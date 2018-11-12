@@ -22,17 +22,27 @@ router.get("/forget",web.forget);
 PostRouter.prefix('/api');
 
 PostRouter.use( async (ctx,next) => {
-    // 登录，注册，验证码 不做登录验证
-    if(ctx.url == "/api/login" || ctx.url == "/api/register" || ctx.url == "/api/vercode" || ctx.url == "/api/test" || ctx.url == "/api/menuList" || ctx.url == "/api/blogrollList" || ctx.url == "/api/toolList"){
+    //不做登录验证的路由
+    const unless = [
+        "/api/login",
+        "/api/register",
+        "/api/vercode",
+        "/api/test",
+        "/api/menuList",
+        "/api/blogrollList",
+        "/api/toolList",
+    ];
+    if(unless.includes(ctx.url)){
         await next();
     } else {
         try {
             ctx.user = jwt.verify(ctx.headers.authorization, secret);  // 解密payload，获取存入的user信息
+            console.log("=======",ctx.user);
             await next();
         } catch (err) {
             if(ctx.headers.authorization){
                 resJson(ctx,-1,"会话过期,请重新登录");
-            }else{
+            } else {
                 resJson(ctx,0,"请先登录！");
             }
         }

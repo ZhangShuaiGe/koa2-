@@ -7,7 +7,7 @@
     "koa": "^2.5.1",
     "koa-art-template": "^1.1.1",
     "koa-bodyparser": "^4.2.0",
-    "koa-jwt": "^3.3.2",
+    "koa-jwt": "^3.5.1",
     "koa-multer": "^1.0.2",
     "koa-router": "^7.4.0",
     "koa-session": "^5.8.1",
@@ -17,6 +17,7 @@
     "mysql": "^2.15.0",
     "mysql2": "^1.5.3",
     "nodemailer": "^4.6.7",
+    "redis": "^2.8.0",
     "sequelize": "^4.38.0"
   },
   "scripts": {
