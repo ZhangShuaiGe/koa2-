@@ -5,6 +5,27 @@ const path = require("path");
 const render = require('koa-art-template');
 // mysql 配置
 const sequelize = require("./dbConfig");
+// redis
+const redis = require("redis");
+
+// redis 配置
+exports.redis = function () {
+
+    const redisClient = redis.createClient({
+        "host":"127.0.0.1",
+        "port": 6379
+    });
+
+    redisClient.on("connect", function () {
+        console.log("Redis 连接成功！ ");
+    });
+
+    redisClient.on("error", function (err) {
+        console.log("Redis 连接错误 " + err);
+        redisClient.end();
+    });
+    global.redisClient = redisClient;
+};
 
 // 模板配置
 exports.template = function (app) {

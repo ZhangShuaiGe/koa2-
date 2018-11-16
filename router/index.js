@@ -38,6 +38,27 @@ PostRouter.use( async (ctx,next) => {
         try {
             ctx.user = jwt.verify(ctx.headers.authorization, secret);  // 解密payload，获取存入的user信息
             console.log("=======",ctx.user);
+            var status = await new Promise(function (success,err) {
+                redisClient.hget("token",ctx.user.email,async function (err,getToken) {
+                    if(err){
+                        console.log("err======没有这个用户",err);
+                        resJson(ctx,-1,"会话过期,请重新登录");
+                    }else{
+                        console.log("查到的token",getToken);
+                        console.log("header的token",ctx.headers.authorization);
+                        if(getToken != ctx.headers.authorization){
+                            resJson(ctx,-1,"会话过期,请重新登录");
+                        }else{
+
+                        }
+                    }
+                });
+            }).then( data => {
+                return data;
+            }).catch(err => {
+                return false;
+            });
+            console.log("=====================111111111");
             await next();
         } catch (err) {
             if(ctx.headers.authorization){

@@ -149,6 +149,14 @@ exports.apiLogin = async(ctx) => {
                 nikename:nikename,
             }, secret ,{ expiresIn: 60 * 60 });
 
+            redisClient.hset("token",email,token,function (err,res) {
+                if(err){
+                    error_logger.error(err);
+                } else {
+                    info_logger.info({email:token},"token已存入");
+                }
+            });
+
             // 存昵称到客户端，全局要用, cookie 不能设置中文 ，转为 Unicode 字符串
             ctx.cookies.set("nikename",encodeURI(nikename),{
                 maxAge:60*60*1000, //保持和session时间一致

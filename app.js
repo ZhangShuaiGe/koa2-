@@ -9,20 +9,6 @@ const https = require("https");
 const http = require("http");
 const fs = require("fs");
 
-const redis = require("redis");
-const redisClient = redis.createClient({
-    "host":"127.0.0.1",
-    "port": 6379
-});
-
-redisClient.on("connect", function () {
-    console.log("Redis 连接成功！ ");
-});
-
-redisClient.on("error", function (err) {
-    console.log("Redis 连接错误 " + err);
-});
-
 // redisClient.set("test","AAA",function (err,response) {
 //     if(err){
 //         console.log(err);
@@ -79,28 +65,28 @@ redisClient.on("error", function (err) {
 //     }
 // });
 
-var vals = [];
-for (var score = 0; score < 4; score++) {
-    for (var val = 10; val < 14; val++) {
-        vals.push(score);
-        vals.push(val);
-    }
-}
-console.log("vals=======",vals);
-
-redisClient.zadd('004', vals, function(err, res) {
-    console.log(err);
-    console.log(res);
-    redisClient.zrange('004', 0, -1, function(err, resp) {
-        console.log(err);
-        console.log('range result:', resp);
-        redisClient.zcount('004', -Infinity, Infinity, function(err, respo) {
-            console.log(err);
-            console.log("len:", respo);
-            redisClient.end();
-        });
-    });
-});
+// var vals = [];
+// for (var score = 0; score < 4; score++) {
+//     for (var val = 10; val < 14; val++) {
+//         vals.push(score);
+//         vals.push(val);
+//     }
+// }
+// console.log("vals=======",vals);
+//
+// redisClient.zadd('004', vals, function(err, res) {
+//     console.log(err);
+//     console.log(res);
+//     redisClient.zrange('004', 0, -1, function(err, resp) {
+//         console.log(err);
+//         console.log('range result:', resp);
+//         redisClient.zcount('004', -Infinity, Infinity, function(err, respo) {
+//             console.log(err);
+//             console.log("len:", respo);
+//             redisClient.end();
+//         });
+//     });
+// });
 
 
 
@@ -115,6 +101,10 @@ app.use(bodyParser());
 
 // cookie 加密
 app.keys = ["zhangshuai"];
+
+//redis 使用
+
+setting.redis();
 
 // 日志配置
 setting.logger();
