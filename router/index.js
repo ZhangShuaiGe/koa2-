@@ -17,6 +17,8 @@ router.get("/register",web.register);
 router.get("/loginOut",web.loginOut);
 //忘记密码
 router.get("/forget",web.forget);
+//网页抓取工具
+router.get("/webCapture",web.webCapture);
 
 // post
 PostRouter.prefix('/api');
@@ -35,31 +37,41 @@ PostRouter.use( async (ctx,next) => {
     if(unless.includes(ctx.url)){
         await next();
     } else {
+
         try {
+
             ctx.user = jwt.verify(ctx.headers.authorization, secret);  // 解密payload，获取存入的user信息
-            console.log("=======",ctx.user);
-            var status = await new Promise(function (success,err) {
-                redisClient.hget("token",ctx.user.email,async function (err,getToken) {
-                    if(err){
-                        console.log("err======没有这个用户",err);
+            // console.log("=======",ctx.user);
+
+            //单点登录
+            var status = await new Promise(function (resolve,reject) {
+                redisClient.get(ctx.user.email,async function (err,getToken) {
+                    if(err) {
                         resJson(ctx,-1,"会话过期,请重新登录");
-                    }else{
-                        console.log("查到的token",getToken);
-                        console.log("header的token",ctx.headers.authorization);
+                        reject(false);
+                    } else {
+
                         if(getToken != ctx.headers.authorization){
                             resJson(ctx,-1,"会话过期,请重新登录");
-                        }else{
-
+                            reject(false);
+                        } else {
+                            resolve(true);
                         }
+
                     }
                 });
             }).then( data => {
-                return data;
+                return true;
             }).catch(err => {
                 return false;
             });
-            console.log("=====================111111111");
-            await next();
+
+            if (status) {
+                await next();
+            } else {
+                resJson(ctx,-1,"会话过期,请重新登录");
+            }
+
         } catch (err) {
             if(ctx.headers.authorization){
                 resJson(ctx,-1,"会话过期,请重新登录");

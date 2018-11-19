@@ -1,0 +1,22 @@
+{{extend "../layout/layout.html"}}
+
+{{block "title"}}网页爬取{{/block}}
+
+{{block "css"}}
+
+{{/block}}
+
+{{block "content"}}
+    <div>
+        <input type="text">
+        <button>爬取</button>
+    </div>
+{{/block}}
+
+{{block "js"}}
+    <script>
+        http.post("/ajax",function () {
+
+        });
+    </script>
+{{/block}}

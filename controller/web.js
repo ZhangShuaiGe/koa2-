@@ -118,6 +118,11 @@ exports.forget = async(ctx) => {
     });
 };
 
+//网页抓取
+exports.webCapture = async(ctx) => {
+    ctx.render("tool/webCapture");
+};
+
 //登录 post
 exports.apiLogin = async(ctx) => {
 
@@ -149,13 +154,15 @@ exports.apiLogin = async(ctx) => {
                 nikename:nikename,
             }, secret ,{ expiresIn: 60 * 60 });
 
-            redisClient.hset("token",email,token,function (err,res) {
+            redisClient.set(email,token,function (err,res) {
                 if(err){
                     error_logger.error(err);
                 } else {
-                    info_logger.info({email:token},"token已存入");
+                    info_logger.info({"email":email,"token":token},"token已存入");
                 }
             });
+            redisClient.expire(email, 60*60); //过期时间1小时
+
 
             // 存昵称到客户端，全局要用, cookie 不能设置中文 ，转为 Unicode 字符串
             ctx.cookies.set("nikename",encodeURI(nikename),{

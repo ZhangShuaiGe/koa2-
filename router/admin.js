@@ -15,7 +15,7 @@ router.use( async (ctx,next) => {
         }else {
             await resJson(ctx,-1,"会话过期，请重新登录！");
         }
-    }else{
+    } else {
         // 登录接口不设置 token 验证
         if(ctx.url == "/admin/login"){
             await next();
