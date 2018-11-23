@@ -1,7 +1,8 @@
-const {resJson} = require("./utils");
+const {resJson,qiniu} = require("./utils");
 const fs = require("fs");
 const util = require('util');
 const unlink = util.promisify(fs.unlink);
+
 
 // 发布文章
 exports.article = async (ctx)=> {
@@ -25,10 +26,11 @@ exports.article = async (ctx)=> {
 
 //图片上传
 exports.upload = async (ctx) => {
-    resJson(ctx,1,{
-        url:"/blogUploads/" + ctx.req.file.filename,
-        name: ctx.req.file.filename
-    });
+    var result = await qiniu("bokeimg",ctx.req.file.filename);
+    // console.log("我是结果",result);
+    if(result){
+        resJson(ctx,1,result);
+    }
 };
 
 //删除图片

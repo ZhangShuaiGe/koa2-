@@ -8,15 +8,22 @@
 
 {{block "content"}}
     <div>
-        <input type="text">
-        <button>爬取</button>
+        <input type="text" class="js-url">
+        <button class="js-crawling">爬取</button>
     </div>
 {{/block}}
 
 {{block "js"}}
     <script>
-        http.post("/ajax",function () {
+        $(".js-crawling").on("click",function () {
+            http({
+                "url":"/webCapture",
+                "data":{
+                    "url": $(".js-url").val(),
+                }
+            }, (data) => {
 
+            });
         });
     </script>
 {{/block}}

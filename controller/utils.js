@@ -8,6 +8,8 @@ const dateFormat = require('dateformat');
 const multer = require('koa-multer');
 //发送邮件
 const nodemailer = require('nodemailer');
+//七牛
+const qiniu = require("qiniu");
 
 // 验证码
 exports.captchapng = (ctx) => {
@@ -84,6 +86,61 @@ exports.upload = () => {
     //加载配置
     return multer({ storage: storage });
 
+};
+
+//七牛上传 spaceName:空间名  fileName: 文件名  xxx.jpg
+exports.qiniu = async (spaceName,fileName) => {
+
+    var config = new qiniu.conf.Config();
+    // 空间对应的机房
+    config.zone = qiniu.zone.Zone_z1;
+    // 是否使用https域名
+    config.useHttpsDomain = true;
+    // 上传是否使用cdn加速
+    //config.useCdnDomain = true;
+
+    //需要填写你的 Access Key 和 Secret Key
+    var accessKey = 'td9RbKLbIWGhColG3johXIHrFnGtlAq-ApTZh74s';
+    var secretKey = '-rHSlqKLhjz0CxMt2B3JgnE3NkPjBvvpTJOtZdoJ';
+    var options = {
+        scope: spaceName, //空间名
+    };
+    //要上传的文件（在服务器中的位置）
+    var localFile = "./static/blogUploads/" + fileName;
+    // 上传的文件名  带文件类型 xxx.jpg
+    var key = fileName;
+
+    var putPolicy = new qiniu.rs.PutPolicy(options);
+    var mac = new qiniu.auth.digest.Mac(accessKey, secretKey);
+    var uploadToken=putPolicy.uploadToken(mac);
+    var formUploader = new qiniu.form_up.FormUploader(config);
+    var putExtra = new qiniu.form_up.PutExtra();
+
+    // 文件上传
+    var result = await new Promise(function (resolve, reject) {
+
+        formUploader.putFile(uploadToken, key, localFile, putExtra, function(respErr, respBody, respInfo) {
+            if (respErr) {
+                throw respErr;
+                reject(false);
+            }
+            if (respInfo.statusCode == 200) {
+                // console.log(respBody);
+                resolve(respBody);
+            } else {
+                // console.log(respInfo.statusCode);
+                // console.log(respBody);
+                reject(false);
+            }
+        });
+
+    }).then( (data) => {
+        return data;
+    }).catch( err => {
+        return err;
+    });
+
+    return result;
 };
 
 //发送邮件

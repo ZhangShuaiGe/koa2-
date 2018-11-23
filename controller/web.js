@@ -4,6 +4,11 @@ const {resJson,md5,captchapng,dateformat} = require("./utils");
 const sequelize = require("../config/dbConfig");
 const Op = sequelize.Op;
 
+//网页抓取 url
+const request = require("request");
+const cheerio = require("cheerio");
+const fs = require("fs");
+
 // 首页
 exports.index = async (ctx) => {
     // 当前页
@@ -152,7 +157,7 @@ exports.apiLogin = async(ctx) => {
             let token = jwt.sign({
                 email: email,
                 nikename:nikename,
-            }, secret ,{ expiresIn: 60 * 60 });
+            }, secret ,{ expiresIn: 3 * 60 * 60 });
 
             redisClient.set(email,token,function (err,res) {
                 if(err){
@@ -161,18 +166,18 @@ exports.apiLogin = async(ctx) => {
                     info_logger.info({"email":email,"token":token},"token已存入");
                 }
             });
-            redisClient.expire(email, 60*60); //过期时间1小时
+            redisClient.expire(email, 3 * 60 * 60); //过期时间3小时
 
 
             // 存昵称到客户端，全局要用, cookie 不能设置中文 ，转为 Unicode 字符串
             ctx.cookies.set("nikename",encodeURI(nikename),{
-                maxAge:60*60*1000, //保持和session时间一致
+                maxAge:3*60*60*1000, //保持和session时间一致
                 httpOnly:false //设置为false 客户端 才可以读取到
             });
 
             //token 客户端要读取放到 header 里 ，cookie不可以跨域
             ctx.cookies.set("token",token,{
-                maxAge:60*60*1000,
+                maxAge:3*60*60*1000,
                 httpOnly:false
             });
 
@@ -290,4 +295,125 @@ exports.toolList = async(ctx) => {
     }).then( res => {
         resJson(ctx,1,res);
     });
+};
+
+//网页抓取 api
+exports.apiWebCapture = async (ctx) => {
+
+    let {url,staticUrl} = ctx.request.body;
+
+    url = url + "/";
+    try {
+        request(url, function (error, response, body) {
+
+            if (response.statusCode == "200") {
+
+                //毫秒
+                var time = Date.parse(new Date());
+
+                // 提前创建文件夹
+                fs.mkdirSync("./static/" + time);
+                fs.mkdirSync("./static/" + time + "/images");
+                fs.mkdirSync("./static/" + time + "/js");
+                fs.mkdirSync("./static/" + time + "/css");
+                fs.writeFile("./static/" + time + "/index.html" , body,function (err) {
+                   if(err){
+                       console.log("写入错误：" + err);
+                   }
+                   console.log("写入成功！");
+                });
+                // 获取内容
+                let $ = cheerio.load(body);
+
+                let img = $("img[src != '']");
+                capture(img);
+
+                let css = $("link[href != '']");
+                capture(css);
+
+                let js = $("script[src != '']");
+                capture(js);
+
+                function capture (target) {
+
+                    //爬取资源
+                    function create(name,path) {
+                        if(name.includes("?")){
+                            name = name.substring(0,name.indexOf("?"));
+                        }
+                        console.log(111111,path);
+                        console.log(222222,name);
+                        if(name.includes("css")){
+
+                            try {
+                                request(path).pipe(fs.createWriteStream('./static/' + time + "/css/" + name));
+                            } catch(err) {
+                                console.log("1报错：" + err);
+                            }
+
+                        }else if(name.includes("js")){
+
+                            try {
+                                request(path).pipe(fs.createWriteStream('./static/' + time + "/js/" + name));
+                            } catch (err) {
+                                console.log("2报错：" + err);
+                            }
+
+                        } else {
+
+                            try {
+                                request(path).pipe(fs.createWriteStream('./static/' + time + "/images/" + name));
+                            } catch (err) {
+                                console.log("3报错：" + err);
+                            }
+
+                        }
+                    }
+
+                    for (let i = 0 ; i < target.length; i++) {
+
+                        let getUrl = "";
+
+                        if (target.eq(i).attr("href")) {
+
+                            getUrl = target.eq(i).attr("href");
+
+                        } else if (target.eq(i).attr("src")) {
+
+                            getUrl = target.eq(i).attr("src");
+
+                        }
+
+                        //获取文件名字和后缀 xxx.css || xxx.jpg || xxx.js
+                        let name = getUrl.substring(getUrl.lastIndexOf("/") + 1);
+
+                        if(getUrl.includes("https") || getUrl.includes("http")){
+
+                            create(name,getUrl);
+
+                        }else if(getUrl.includes("//")){
+
+                            getUrl = "https:" + getUrl;
+
+                            create(name,getUrl);
+
+                        }else{
+
+                            getUrl = url + getUrl;
+
+                            create(name,getUrl);
+                        }
+
+                    }
+                }
+            }
+            // console.log('error:', error);
+            // console.log('statusCode:', response && response.statusCode);
+            // console.log('body:', body);
+        });
+    } catch (err) {
+        error_logger.error("报错：" + err);
+        console.log("报错：" + err);
+    }
+
 };

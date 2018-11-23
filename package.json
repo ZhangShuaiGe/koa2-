@@ -2,6 +2,7 @@
   "dependencies": {
     "art-template": "^4.12.2",
     "captchapng": "^0.0.1",
+    "cheerio": "^1.0.0-rc.2",
     "dateformat": "^3.0.3",
     "jsonwebtoken": "^8.3.0",
     "koa": "^2.5.1",
@@ -17,11 +18,22 @@
     "mysql": "^2.15.0",
     "mysql2": "^1.5.3",
     "nodemailer": "^4.6.7",
+    "qiniu": "^7.2.1",
     "redis": "^2.8.0",
+    "request": "^2.88.0",
     "sequelize": "^4.38.0"
   },
   "scripts": {
-    "dev": "supervisor app.js",
+    "dev": "nodemon ./app.js",
     "dev2": "node app.js"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "logs/*",
+      "admin-vue/*",
+      "static/*",
+      "views/*"
+    ],
+    "delay": "0"
   }
 }

@@ -90,10 +90,13 @@ PostRouter.post("/test", (ctx) => {
 
 // 登录 post
 PostRouter.post("/login",web.apiLogin);
+
 // 注册 post
 PostRouter.post("/register",web.apiRegister);
+
 //回复
 PostRouter.post("/replay",web.replay);
+
 //验证码
 PostRouter.post("/vercode",web.vercode);
 
@@ -105,6 +108,9 @@ PostRouter.post("/blogrollList",web.blogrollList);
 
 //工具库链接 列表
 PostRouter.post("/toolList",web.toolList);
+
+//网页抓取接口
+PostRouter.post("/webCapture",web.apiWebCapture);
 
 // get 路由
 exports.GetRouter = router;
