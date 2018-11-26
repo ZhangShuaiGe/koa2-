@@ -10,6 +10,8 @@ const multer = require('koa-multer');
 const nodemailer = require('nodemailer');
 //七牛
 const qiniu = require("qiniu");
+//fs模块
+const fs = require("fs");
 
 // 验证码
 exports.captchapng = (ctx) => {
@@ -69,7 +71,7 @@ exports.dateformat = (nowdate,format) => {
     }
 };
 
-// 文件上传
+// 文件上传到本地
 exports.upload = () => {
     //配置
     var storage = multer.diskStorage({
@@ -86,6 +88,23 @@ exports.upload = () => {
     //加载配置
     return multer({ storage: storage });
 
+};
+
+//删除本地文件
+exports.deleteUpload = async (url) => {
+    return await new Promise(function (resolve, reject) {
+        fs.unlink("static" + url, (err) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve();
+            }
+        });
+    }).then( data => {
+        return true;
+    }).catch( err => {
+        return false;
+    });
 };
 
 //七牛上传 spaceName:空间名  fileName: 文件名  xxx.jpg
@@ -141,6 +160,65 @@ exports.qiniu = async (spaceName,fileName) => {
     });
 
     return result;
+};
+
+//七牛图片 删除
+exports.qiniuDelete = async (fileName) => {
+
+    var config = new qiniu.conf.Config();
+    // 空间对应的机房
+    config.zone = qiniu.zone.Zone_z1;
+    // 是否使用https域名
+    config.useHttpsDomain = true;
+
+    var accessKey = 'td9RbKLbIWGhColG3johXIHrFnGtlAq-ApTZh74s';
+    var secretKey = '-rHSlqKLhjz0CxMt2B3JgnE3NkPjBvvpTJOtZdoJ';
+    var bucket = "bokeimg"; //空间名
+    var key = fileName;  //文件名
+
+    var mac = new qiniu.auth.digest.Mac(accessKey, secretKey);
+    var bucketManager = new qiniu.rs.BucketManager(mac, config);
+
+    // 单张删除
+    var deleteOperations = [
+        qiniu.rs.deleteOp(bucket, key),
+    ];
+
+    //多张删除
+    // var deleteOperations = [
+    //     qiniu.rs.deleteOp(bucket, 'qiniu1.mp4'),
+    //     qiniu.rs.deleteOp(bucket, 'qiniu2.mp4'),
+    //     qiniu.rs.deleteOp(bucket, 'qiniu3.mp4'),
+    //     qiniu.rs.deleteOp(bucket, 'qiniu4x.mp4'),
+    // ];
+    return await new Promise((resolve, reject)=>{
+        bucketManager.batch(deleteOperations, function(err, respBody, respInfo) {
+            if (err) {
+                console.log("报错：",err);
+                //throw err;
+            } else {
+                // 200 is success, 298 is part success
+                if (parseInt(respInfo.statusCode / 100) == 2) {
+                    respBody.forEach(function(item) {
+                        if (item.code == 200) {
+                            console.log("成功！");
+                            resolve(true);
+                        } else {
+                            reject(false);
+                        }
+                    });
+                } else {
+                    reject(false);
+                    console.log(respInfo.deleteusCode);
+                    console.log(respBody);
+                }
+            }
+        });
+    }).then(res => {
+        return res;
+    }).catch(err => {
+        return err;
+    });
 };
 
 //发送邮件

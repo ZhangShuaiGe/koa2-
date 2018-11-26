@@ -171,7 +171,7 @@
             //图片删除
             handleRemove(file, fileList) {
                 this.$http.post("/remove",{
-                    url: file.url
+                    filename: file.name
                 }, req => {
                     this.$message({
                         message: '删除成功！',
@@ -183,30 +183,46 @@
 
             //上传成功
             upSuccess (file) {
-                this.$message({
-                    message: '上传成功！',
-                    type: 'success'
-                });
-                this.fileList.push({
-                    "name": file.resultdata.name,
-                    "url": file.resultdata.url,
-                });
-                this.form.content = this.form.content + "<img src='" + file.resultdata.url +"'>";
+                if(file.resultCode == "1"){
+                    this.$message({
+                        message: '上传成功！',
+                        type: 'success'
+                    });
+                    this.fileList.push({
+                        "hash": file.resultdata.hash,
+                        "url": file.resultdata.url,
+                        "name": file.resultdata.key,
+                    });
+                    this.form.content = this.form.content + "<img src='" + file.resultdata.url +"'>";
+                }else{
+                    this.$message({
+                        message: file.resultMsg,
+                        type: 'error'
+                    });
+                }
             },
 
 
             //封面上传成功
             upSuccessfm(file){
-                this.$message({
-                    message: '上传成功！',
-                    type: 'success'
-                });
-                this.form.coverImg = file.resultdata.url;
+                if(file.resultCode == "1"){
+                    this.$message({
+                        message: '上传成功！',
+                        type: 'success'
+                    });
+                    this.form.coverImg = file.resultdata.url;
+                } else {
+                    this.$message({
+                        message: file.resultMsg,
+                        type: 'error'
+                    });
+                }
+
             },
             //封面图片删除
             handleRemovefm(file, fileList) {
                 this.$http.post("/remove",{
-                    url: file.url
+                    filename: file.key
                 }, req => {
                     this.$message({
                         message: '删除成功！',

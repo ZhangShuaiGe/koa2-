@@ -1,4 +1,4 @@
-const {resJson,qiniu} = require("./utils");
+const {resJson,qiniu,deleteUpload,qiniuDelete} = require("./utils");
 const fs = require("fs");
 const util = require('util');
 const unlink = util.promisify(fs.unlink);
@@ -27,27 +27,30 @@ exports.article = async (ctx)=> {
 //图片上传
 exports.upload = async (ctx) => {
     var result = await qiniu("bokeimg",ctx.req.file.filename);
-    // console.log("我是结果",result);
+
+    // 上传七牛后删除本地资源
     if(result){
-        resJson(ctx,1,result);
+        var val = await deleteUpload("/blogUploads/" + ctx.req.file.filename);
+        if(val){
+            result.url = "http://img.zhangshuaige.top/" + result.key;
+            resJson(ctx,1,result);
+        } else {
+            resJson(ctx,0,"本地删除失败！");
+        }
+    }else{
+        resJson(ctx,0,"七牛上传失败！");
     }
+
 };
 
 //删除图片
 exports.remove = async (ctx) => {
-    await new Promise(function (resolve, reject) {
-        fs.unlink("static" + ctx.request.body.url, (err) => {
-            if (err){
-                reject(err);
-            }else{
-                resolve();
-            }
-        });
-    }).then( data => {
-        resJson(ctx,1)
-    }).catch( err => {
-        resJson(ctx,0,"删除失败！");
-    });
+    var resutl = qiniuDelete(ctx.request.body.filename);
+    if(resutl){
+        resJson(ctx,1);
+    }else{
+        resJson(ctx,0);
+    }
 };
 
 // 文章列表管理
