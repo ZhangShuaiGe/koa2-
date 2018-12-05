@@ -3,12 +3,12 @@
         <div class="container">
             <el-form ref="form" :model="form" label-width="80px">
                 <!--<el-form-item label="时间">-->
-                    <!--<el-date-picker-->
-                        <!--v-model="form.date"-->
-                        <!--type="datetime"-->
-                        <!--value-format="yyyy-MM-dd HH:mm:ss"-->
-                        <!--placeholder="选择日期时间">-->
-                    <!--</el-date-picker>-->
+                <!--<el-date-picker-->
+                <!--v-model="form.date"-->
+                <!--type="datetime"-->
+                <!--value-format="yyyy-MM-dd HH:mm:ss"-->
+                <!--placeholder="选择日期时间">-->
+                <!--</el-date-picker>-->
                 <!--</el-form-item>-->
                 <el-form-item label="标题">
                     <el-input v-model="form.title"></el-input>
@@ -33,9 +33,19 @@
                     </el-form-item>
                 </div>
             </el-form>
-            <!--{{form.content}}-->
-            <quill-editor class="ui-editor" ref="myTextEditor" v-model="form.content" :options="editorOption"></quill-editor>
+            <el-tabs v-model="activeName">
+                <el-tab-pane label="markdown编辑器" name="markdown">
+                    {{form.content}}
+                    <mavon-editor @imgAdd="$imgAdd" @change="htmlCode" v-model="value"/>
+                </el-tab-pane>
+                <el-tab-pane label="富文本编辑器" name="text">
+                    {{form.content}}
+                    <quill-editor v-if="activeName == 'text'" class="ui-editor" ref="myTextEditor" v-model="form.content" :options="editorOption"></quill-editor>
+                </el-tab-pane>
+            </el-tabs>
+
             <el-button class="editor-btn" type="primary" @click="submit">提交</el-button>
+
             <div class="ui-upload-box">
                 <div class="ui-coverImg">
                     <p class="ui-text">上传文章封面图片：</p>
@@ -67,12 +77,21 @@
 </template>
 
 <script>
+    //富文本
     import 'quill/dist/quill.core.css';
     import 'quill/dist/quill.snow.css';
     import 'quill/dist/quill.bubble.css';
-    import { quillEditor } from 'vue-quill-editor';
+    import {quillEditor} from 'vue-quill-editor';
+
+    //markdown
+    import Vue from 'vue'
+    import mavonEditor from 'mavon-editor'
+    import 'mavon-editor/dist/css/index.css'
+
+    Vue.use(mavonEditor);
+
     export default {
-        data: function(){
+        data: function () {
             const toolbarOptions = [
                 ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
                 ['blockquote', 'code-block'],
@@ -93,8 +112,10 @@
                 ['clean']                                         // remove formatting button
             ];
             return {
+                activeName:"markdown", //默认编辑器
                 //图片列表
                 fileList: [],
+                //富文本配置
                 editorOption: {
                     placeholder: 'Hello World',
                     modules: {
@@ -115,15 +136,20 @@
                 },
                 form: {
                     title: "", //标题
-                    type:"", //类型
+                    type: "", //类型
                     content: '', //内容
                     istop: 0, //置顶值,默认不置顶
                     isreprint: 0, //是否转载 0 否 1 是
                     coverImg: "", //封面图片
                     id: this.$route.query.id || "" //编辑文章的时候用
                 },
-                value3: true,
-                typeList:[], //类型列表
+                //markdown 编辑器内容
+                value: "",
+                value2:"",
+                test:{
+                    content: '', //内容
+                },
+                typeList: [], //类型列表
                 url: sessionStorage.getItem("url") + "/upload" //上传地址
             }
         },
@@ -131,13 +157,27 @@
             quillEditor
         },
         methods: {
+            //获取markdown的html内容
+            htmlCode (status, val) {
+                this.form.content = val;
+            },
+
+            //markdonw 图片上传
+            $imgAdd(pos, $file){
+                console.log(pos);
+                console.log($file);
+                alert(123);
+                document.querySelector(".upload-demo .el-upload__input").click();
+            },
+
             //文章提交
-            submit () {
+            submit() {
                 //编辑过来的
-                if(this.$route.query.id){
-                    this.$http.post("/updateArticle",{
-                        "form": this.form
-                    },(data)=>{
+                if (this.$route.query.id) {
+                    this.$http.post({
+                        "url":"/updateArticle",
+                        "data": this.form
+                    }, (data) => {
                         this.$message({
                             message: "修改成功！",
                             type: 'success',
@@ -145,11 +185,12 @@
                             center: true
                         });
                     })
-                }else{
+                } else {
                     //新文章提交
-                    this.$http.post("/article",{
-                        "form": this.form
-                    },(data)=>{
+                    this.$http.post({
+                        "url":"/article",
+                        "data": this.form
+                    }, (data) => {
                         this.$message({
                             message: "发布成功！",
                             type: 'success',
@@ -161,8 +202,8 @@
             },
             //去重函数
             removeByValue(arr, val) {
-                for(var i=0; i<arr.length; i++) {
-                    if(arr[i].url == val) {
+                for (var i = 0; i < arr.length; i++) {
+                    if (arr[i].url == val) {
                         arr.splice(i, 1);
                         return arr;
                     }
@@ -170,20 +211,23 @@
             },
             //图片删除
             handleRemove(file, fileList) {
-                this.$http.post("/remove",{
-                    filename: file.name
+                this.$http.post({
+                    url:"/remove",
+                    data:{
+                        filename: file.name
+                    }
                 }, req => {
                     this.$message({
                         message: '删除成功！',
                         type: 'success'
                     });
-                    this.fileList = this.removeByValue(this.fileList,file.url);
+                    this.fileList = this.removeByValue(this.fileList, file.url);
                 });
             },
 
             //上传成功
-            upSuccess (file) {
-                if(file.resultCode == "1"){
+            upSuccess(file) {
+                if (file.resultCode == "1") {
                     this.$message({
                         message: '上传成功！',
                         type: 'success'
@@ -193,8 +237,8 @@
                         "url": file.resultdata.url,
                         "name": file.resultdata.key,
                     });
-                    this.form.content = this.form.content + "<img src='" + file.resultdata.url +"'>";
-                }else{
+                    this.form.content = this.form.content + "<img src='" + file.resultdata.url + "'>";
+                } else {
                     this.$message({
                         message: file.resultMsg,
                         type: 'error'
@@ -204,8 +248,8 @@
 
 
             //封面上传成功
-            upSuccessfm(file){
-                if(file.resultCode == "1"){
+            upSuccessfm(file) {
+                if (file.resultCode == "1") {
                     this.$message({
                         message: '上传成功！',
                         type: 'success'
@@ -221,8 +265,11 @@
             },
             //封面图片删除
             handleRemovefm(file, fileList) {
-                this.$http.post("/remove",{
-                    filename: file.key
+                this.$http.post({
+                    url:"/remove",
+                    data:{
+                        filename: file.key
+                    }
                 }, req => {
                     this.$message({
                         message: '删除成功！',
@@ -233,25 +280,28 @@
             },
 
             //上传失败
-            upError (err, file, fileList) {
+            upError(err, file, fileList) {
                 this.$message({
                     message: '上传失败！',
                     type: 'success'
                 });
             }
         },
-        created () {
+        created() {
             //路由过来的是编辑
-            if(this.$route.query.id){
-                this.$http.post("/compileArticle",{
-                    "id": this.$route.query.id
-                },(data)=>{
+            if (this.$route.query.id) {
+                this.$http.post({
+                    url:"/compileArticle",
+                    data:{
+                        "id": this.$route.query.id
+                    }
+                }, (data) => {
                     this.form = data;
                 })
             }
             //类型列表
-            this.$http.post("/articleType",{
-
+            this.$http.post({
+                "url":"/articleType",
             }, req => {
                 this.typeList = req;
             });
@@ -259,31 +309,36 @@
     }
 </script>
 <style lang="less" scoped>
-    .ui-title{
+    .ui-title {
         margin-bottom: 20px;
-        .ui-h1{
+        .ui-h1 {
             width: 500px;
         }
         position: absolute;
     }
-    .editor-btn{
+
+    .editor-btn {
         margin-top: 20px;
     }
-    .ui-flex{
+
+    .ui-flex {
         display: flex;
     }
-    .ui-upload-box{
+
+    .ui-upload-box {
         display: flex;
         margin-top: 30px;
-        .ui-text{
+        .ui-text {
             font-size: 16px;
             color: #888;
             margin-bottom: 10px;
         }
     }
-    .ui-coverImg{
+
+    .ui-coverImg {
         margin-right: 20px;
     }
+
     .avatar-uploader .el-upload {
         border: 1px dashed #d9d9d9;
         border-radius: 6px;
@@ -291,9 +346,11 @@
         position: relative;
         overflow: hidden;
     }
+
     .avatar-uploader .el-upload:hover {
         border-color: #409EFF;
     }
+
     .avatar-uploader-icon {
         font-size: 28px;
         color: #8c939d;
@@ -302,6 +359,7 @@
         line-height: 178px;
         text-align: center;
     }
+
     .avatar {
         width: 178px;
         height: 178px;

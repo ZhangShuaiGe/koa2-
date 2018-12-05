@@ -1,7 +1,7 @@
 const router = require("koa-router")();
 const PostRouter = require("koa-router")();
 const web = require("../controller/web");
-const {resJson,sendEmail} = require("../controller/utils");
+const {resJson,sendEmail,upload} = require("../controller/utils");
 const jwt = require('jsonwebtoken'); //生成token
 const secret = 'jwtlihailewodege'; //加密规则
 
@@ -33,6 +33,7 @@ PostRouter.use( async (ctx,next) => {
         "/api/menuList",
         "/api/blogrollList",
         "/api/toolList",
+        "/api/webCapture",
     ];
     if(unless.includes(ctx.url)){
         await next();
@@ -110,7 +111,7 @@ PostRouter.post("/blogrollList",web.blogrollList);
 PostRouter.post("/toolList",web.toolList);
 
 //网页抓取接口
-PostRouter.post("/webCapture",web.apiWebCapture);
+PostRouter.post("/webCapture",upload().single('file'),web.apiWebCapture);
 
 // get 路由
 exports.GetRouter = router;

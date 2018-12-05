@@ -18,11 +18,11 @@ if (origin_url.indexOf("zhang") != "-1") {
 sessionStorage.setItem("url",axios.defaults.baseURL);
 
 export const http = {
-    post(url, data = {}, success, errcallback) {
+    post(config,success, errcallback) {
         return axios({
             method: "post", // 请求协议
-            url: url, // 请求的地址
-            data: data,
+            url: config.url, // 请求的地址
+            data: config.data,
         })
         .then((result) => {
             if (result.data.resultCode == "1") {

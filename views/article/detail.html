@@ -4,6 +4,7 @@
 
 {{block "css"}}
 <link rel="stylesheet" href="/css/article-detail.css">
+<link rel="stylesheet" href="/lib/highlight/styles/atom-one-dark.css">
 {{/block}}
 
 {{block "content"}}
@@ -15,7 +16,7 @@
                 <div class="fly-detail-info">
                     <span>{{data.createdAt}}</span>
                     <span class="fly-list-nums">
-                        <a href="#comment"><i class="iconfont" title="回答"></i>{{count}}</a>
+                        <a href="javascript:;"><i class="iconfont" title="回答"></i>{{count}}</a>
                         <i class="iconfont" title="人气"></i> {{data.browse}}
                     </span>
                 </div>
@@ -104,6 +105,7 @@
 {{/block}}
 
 {{block "js"}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/highlight.min.js"></script>
     <script>
         $(function () {
             //留言和回复

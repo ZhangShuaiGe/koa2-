@@ -8,6 +8,7 @@ const setting = require("./config/setting");
 const https = require("https");
 const http = require("http");
 const fs = require("fs");
+// const koaBody = require("koa-body");
 
 // redisClient.set("test","AAA",function (err,response) {
 //     if(err){
@@ -96,6 +97,8 @@ const httpsOption = {
     cert: fs.readFileSync("./https/1537060945371.pem")
 };
 
+// app.use(koaBody({ multipart: true }));
+
 // post参数 body配置
 app.use(bodyParser());
 
@@ -103,7 +106,6 @@ app.use(bodyParser());
 app.keys = ["zhangshuai"];
 
 //redis 使用
-
 setting.redis();
 
 // 日志配置

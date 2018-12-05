@@ -73,20 +73,26 @@
         methods:{
             //友链列表
             listApi (currentPage) {
-                this.$http.post("/blogroll",{
-                    "currentPage": currentPage || 1,
+                this.$http.post({
+                    url:"/blogroll",
+                    data:{
+                        "currentPage": currentPage || 1,
+                    }
                 }, res => {
                     this.list = res.rows;
                 })
             },
             //添加,编辑，删除
             submit () {
-                this.$http.post("/blogroll",{
-                    "name": this.form.name,
-                    "url": this.form.url,
-                    "blogId": this.selectId,
-                    "isRemove": this.isRemove,
-                    "isCompile": this.isCompile,
+                this.$http.post({
+                    url: "/blogroll",
+                    data: {
+                        "name": this.form.name,
+                        "url": this.form.url,
+                        "blogId": this.selectId,
+                        "isRemove": this.isRemove,
+                        "isCompile": this.isCompile,
+                    }
                 }, res => {
                     this.$message({
                         type: 'success',

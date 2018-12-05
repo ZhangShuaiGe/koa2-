@@ -73,20 +73,26 @@
         methods:{
             //友链列表
             listApi (currentPage) {
-                this.$http.post("/tool",{
-                    "currentPage": currentPage || 1,
+                this.$http.post({
+                    url:"/tool",
+                    data: {
+                        "currentPage": currentPage || 1,
+                    }
                 }, res => {
                     this.list = res.rows;
                 })
             },
             //添加,编辑，删除
             submit () {
-                this.$http.post("/tool",{
-                    "name": this.form.name,
-                    "url": this.form.url,
-                    "toolId": this.selectId,
-                    "isRemove": this.isRemove,
-                    "isCompile": this.isCompile,
+                this.$http.post({
+                    url:"/tool",
+                    data:{
+                        "name": this.form.name,
+                        "url": this.form.url,
+                        "toolId": this.selectId,
+                        "isRemove": this.isRemove,
+                        "isCompile": this.isCompile,
+                    }
                 }, res => {
                     this.$message({
                         type: 'success',

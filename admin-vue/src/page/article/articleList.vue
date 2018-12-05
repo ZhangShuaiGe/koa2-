@@ -63,7 +63,8 @@
         methods: {
             //获取文章列表数据
             getData (page) {
-                this.$http.post("/articleList",{
+                this.$http.post({
+                    "url":"/articleList",
                     "page": page || 1
                 },(data) => {
                     this.dataList = data.list;
@@ -82,7 +83,8 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    this.$http.post("/deleteArticle",{
+                    this.$http.post({
+                        "url":"/deleteArticle",
                         "id":id
                     },(data)=>{
                         this.$message({

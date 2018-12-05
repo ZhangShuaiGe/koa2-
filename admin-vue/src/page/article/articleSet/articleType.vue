@@ -74,8 +74,8 @@
         methods:{
             //分类api
             TypeApi(){
-                this.$http.post("/articleType",{
-
+                this.$http.post({
+                    url:"/articleType",
                 }, data => {
                     this.tableType = data;
                 })
@@ -87,8 +87,11 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    this.$http.post("/articleDelete",{
-                        "id":data.id
+                    this.$http.post({
+                        url:"/articleDelete",
+                        data:{
+                            "id":data.id
+                        }
                     }, res => {
                         this.$message({
                             type: 'success',
@@ -106,8 +109,11 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    this.$http.post("/articleDelete",{
-                        "id": this.TypeSelection
+                    this.$http.post({
+                        url:"/articleDelete",
+                        data:{
+                            "id": this.TypeSelection
+                        }
                     }, res => {
                         this.$message({
                             type: 'success',
@@ -123,10 +129,13 @@
             },
             submit(){
                 if(this.form.id){
-                    this.$http.post("/articleCompile",{
-                        "id": this.form.id,
-                        "type": this.form.type,
-                        "sort":this.form.sort,
+                    this.$http.post({
+                        url:"/articleCompile",
+                        data:{
+                            "id": this.form.id,
+                            "type": this.form.type,
+                            "sort":this.form.sort,
+                        }
                     }, data => {
                         this.$message({
                             type: 'success',
@@ -137,9 +146,12 @@
                         this.TypeApi();
                     })
                 }else{
-                    this.$http.post("/articleType",{
-                        "type": this.form.type,
-                        "sort": this.form.sort
+                    this.$http.post({
+                        url:"/articleType",
+                        data: {
+                            "type": this.form.type,
+                            "sort": this.form.sort
+                        }
                     }, data => {
                         this.$message({
                             type: 'success',

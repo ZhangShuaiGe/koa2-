@@ -31,6 +31,11 @@ $(function () {
         $(".js-loginOut").show();
     }
 
+    // 代码高亮插件调用
+    $('pre').each(function(i, block) {
+        hljs.highlightBlock(block);
+    });
+
     // 方法型公共js
     var global_utils = {
 
