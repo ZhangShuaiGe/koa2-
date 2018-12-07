@@ -221,6 +221,71 @@ exports.qiniuDelete = async (fileName) => {
     });
 };
 
+//七牛文件列表
+exports.qiniuList = async (config = {}) => {
+    var config = new qiniu.conf.Config();
+    // 空间对应的机房
+    config.zone = qiniu.zone.Zone_z1;
+    // 是否使用https域名
+    config.useHttpsDomain = true;
+
+    var accessKey = 'td9RbKLbIWGhColG3johXIHrFnGtlAq-ApTZh74s';
+    var secretKey = '-rHSlqKLhjz0CxMt2B3JgnE3NkPjBvvpTJOtZdoJ';
+    var bucket = "bokeimg"; //空间名
+
+    var mac = new qiniu.auth.digest.Mac(accessKey, secretKey);
+    var config = new qiniu.conf.Config();
+    //config.useHttpsDomain = true;
+    config.zone = qiniu.zone.Zone_z0;
+    var bucketManager = new qiniu.rs.BucketManager(mac, config);
+
+    // @param options 列举操作的可选参数
+    //prefix    列举的文件前缀
+    //marker    上一次列举返回的位置标记，作为本次列举的起点信息
+    //limit     每次返回的最大列举文件数量
+    //delimiter 指定目录分隔符
+    var options = {
+        limit: config.limit || 10,
+        prefix: config.prefix || "",
+        marker: config.marker || "",
+    };
+    return new Promise(function (resolve,reject) {
+        bucketManager.listPrefix(bucket, options, function(err, respBody, respInfo) {
+            if (err) {
+                console.log(err);
+                throw err;
+            }
+            if (respInfo.statusCode == 200) {
+                //如果这个nextMarker不为空，那么还有未列举完毕的文件列表，下次调用listPrefix的时候，
+                //指定options里面的marker为这个值
+                var nextMarker = respBody.marker;
+                var commonPrefixes = respBody.commonPrefixes;
+                var items = respBody.items;
+                // console.log("==========>>",items);
+                resolve({
+                    "nextMarker": nextMarker,
+                    "commonPrefixes": commonPrefixes,
+                    "items": items,
+                    "code":1,
+                });
+            } else {
+                // console.log(respInfo.statusCode);
+                // console.log(respBody);
+                reject({
+                    "code":0,
+                    "respInfo":respInfo.statusCode,
+                    "respBody":respBody,
+                });
+            }
+        });
+    }).then( res => {
+        return res;
+    }).catch( err => {
+        return err;
+    });
+
+};
+
 //发送邮件
 exports.sendEmail = (email) => {
     // 6位随机数

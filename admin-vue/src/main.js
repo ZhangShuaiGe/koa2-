@@ -2,6 +2,7 @@ import Vue from 'vue';
 import App from './App';
 import router from './router';
 import axios from 'axios';
+import {store} from "./store/index";
 import {
     Menu,
     Submenu,
@@ -32,7 +33,10 @@ import {
     TabPane,
     MessageBox,
     Dialog,
-    Switch
+    Switch,
+    Card,
+    Row,
+    Col,
 } from 'element-ui';
 
 import 'element-ui/lib/theme-chalk/index.css';    // 默认主题
@@ -70,6 +74,9 @@ Vue.use(Tabs);
 Vue.use(TabPane);
 Vue.use(Dialog);
 Vue.use(Switch);
+Vue.use(Card);
+Vue.use(Row);
+Vue.use(Col);
 
 Vue.prototype.$message = Message;
 Vue.prototype.$msgbox = MessageBox;
@@ -105,5 +112,6 @@ Vue.prototype.$axios = axios;
 
 new Vue({
     router,
+    store,
     render: h => h(App)
 }).$mount('#app');

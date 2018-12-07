@@ -1,4 +1,4 @@
-const {resJson,qiniu,deleteUpload,qiniuDelete} = require("./utils");
+const {resJson,qiniu,deleteUpload,qiniuDelete,qiniuList} = require("./utils");
 const fs = require("fs");
 const util = require('util');
 const unlink = util.promisify(fs.unlink);
@@ -6,7 +6,8 @@ const unlink = util.promisify(fs.unlink);
 
 // 发布文章
 exports.article = async (ctx)=> {
-    let {title,content,date,type,istop,coverImg,isreprint} = ctx.request.body.form;
+    console.log(111111111,ctx.request.body);
+    let {title,content,date,type,istop,coverImg,isreprint} = ctx.request.body;
     await ArticleModel.create({
         "title":title,
         "content":content,
@@ -50,6 +51,16 @@ exports.remove = async (ctx) => {
         resJson(ctx,1);
     }else{
         resJson(ctx,0);
+    }
+};
+
+exports.qiniuImgList = async (ctx) => {
+    var result = await qiniuList();
+    console.log(result);
+    if(result.code == 1){
+        resJson(ctx,1,result);
+    }else{
+        resJson(ctx,0,result);
     }
 };
 

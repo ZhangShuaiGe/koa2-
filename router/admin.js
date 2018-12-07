@@ -53,6 +53,9 @@ router.post("/upload",upload().single('file'),admin.upload);
 // 图片删除
 router.post("/remove",admin.remove);
 
+// 图片列表
+router.post("/qiniuImgList",admin.qiniuImgList);
+
 //文章列表管理
 router.post("/articleList",admin.articleList);
 

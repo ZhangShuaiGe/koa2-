@@ -24,7 +24,7 @@ export default new Router({
                 {
                     path: "/article",
                     name: "article",
-                    component: resolve => require(["../page/article/article.vue"], resolve),
+                    component: resolve => require(["../page/article/articlePublish.vue"], resolve),
                     meta: { title: '发表文章'}
                 },
                 {

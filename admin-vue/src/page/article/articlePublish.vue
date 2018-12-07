@@ -2,14 +2,6 @@
     <div>
         <div class="container">
             <el-form ref="form" :model="form" label-width="80px">
-                <!--<el-form-item label="时间">-->
-                <!--<el-date-picker-->
-                <!--v-model="form.date"-->
-                <!--type="datetime"-->
-                <!--value-format="yyyy-MM-dd HH:mm:ss"-->
-                <!--placeholder="选择日期时间">-->
-                <!--</el-date-picker>-->
-                <!--</el-form-item>-->
                 <el-form-item label="标题">
                     <el-input v-model="form.title"></el-input>
                 </el-form-item>
@@ -33,14 +25,13 @@
                     </el-form-item>
                 </div>
             </el-form>
+            <!--编辑器-->
             <el-tabs v-model="activeName">
                 <el-tab-pane label="markdown编辑器" name="markdown">
-                    {{form.content}}
-                    <mavon-editor @imgAdd="$imgAdd" @change="htmlCode" v-model="value"/>
+                    <MarkDown v-if="activeName == 'markdown'"></MarkDown>
                 </el-tab-pane>
                 <el-tab-pane label="富文本编辑器" name="text">
-                    {{form.content}}
-                    <quill-editor v-if="activeName == 'text'" class="ui-editor" ref="myTextEditor" v-model="form.content" :options="editorOption"></quill-editor>
+                    <QuillEditor v-if="activeName == 'text'" ></QuillEditor>
                 </el-tab-pane>
             </el-tabs>
 
@@ -71,103 +62,72 @@
                     <!--<el-button size="small" type="primary">上传内容图片</el-button>-->
                     <!--<div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>-->
                 </el-upload>
+                <a href="javascript:;" @click="imgList">图片列表</a>
             </div>
         </div>
+
+        <!--图片列表-->
+        <ImgList :dialogVisible="dialogVisible"></ImgList>
+
     </div>
 </template>
 
 <script>
-    //富文本
-    import 'quill/dist/quill.core.css';
-    import 'quill/dist/quill.snow.css';
-    import 'quill/dist/quill.bubble.css';
-    import {quillEditor} from 'vue-quill-editor';
-
-    //markdown
-    import Vue from 'vue'
-    import mavonEditor from 'mavon-editor'
-    import 'mavon-editor/dist/css/index.css'
-
-    Vue.use(mavonEditor);
-
+    import MarkDown from "./articlePublish/markdown.vue";
+    import QuillEditor from "./articlePublish/quillEditor.vue";
+    import ImgList from "./articlePublish/imgList.vue";
+    import {mapState,mapMutations} from "vuex";
     export default {
         data: function () {
-            const toolbarOptions = [
-                ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
-                ['blockquote', 'code-block'],
 
-                [{'header': 1}, {'header': 2}],               // custom button values
-                [{'list': 'ordered'}, {'list': 'bullet'}],
-                [{'script': 'sub'}, {'script': 'super'}],      // superscript/subscript
-                [{'indent': '-1'}, {'indent': '+1'}],          // outdent/indent
-                [{'direction': 'rtl'}],                         // text direction
-
-                [{'size': ['small', false, 'large', 'huge']}],  // custom dropdown
-                [{'header': [1, 2, 3, 4, 5, 6, false]}],
-
-                [{'color': []}, {'background': []}],          // dropdown with defaults from theme
-                [{'font': []}],
-                [{'align': []}],
-                ['link', 'image', 'video'],
-                ['clean']                                         // remove formatting button
-            ];
             return {
                 activeName:"markdown", //默认编辑器
                 //图片列表
                 fileList: [],
-                //富文本配置
-                editorOption: {
-                    placeholder: 'Hello World',
-                    modules: {
-                        toolbar: {
-                            container: toolbarOptions,  // 工具栏
-                            handlers: {
-                                'image': function (value) {
-                                    if (value) {
-                                        //触发ele上传
-                                        document.querySelector(".upload-demo .el-upload__input").click();
-                                    } else {
-                                        this.quill.format('image', false);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
+                dialogVisible:false, //图片列表 是否打开
                 form: {
                     title: "", //标题
                     type: "", //类型
-                    content: '', //内容
+                    content: "", //内容
                     istop: 0, //置顶值,默认不置顶
                     isreprint: 0, //是否转载 0 否 1 是
                     coverImg: "", //封面图片
                     id: this.$route.query.id || "" //编辑文章的时候用
                 },
-                //markdown 编辑器内容
-                value: "",
-                value2:"",
-                test:{
-                    content: '', //内容
-                },
+                value: "", //markdown 编辑器 转html 前的语法
                 typeList: [], //类型列表
                 url: sessionStorage.getItem("url") + "/upload" //上传地址
             }
+
+        },
+        computed: {
+            ...mapState([
+               "EditorContent",
+            ]),
+        },
+        watch:{
+            EditorContent (newValue) {
+                this.form.content = newValue;
+            },
         },
         components: {
-            quillEditor
+            QuillEditor,
+            MarkDown,
+            ImgList
         },
         methods: {
-            //获取markdown的html内容
-            htmlCode (status, val) {
-                this.form.content = val;
-            },
-
-            //markdonw 图片上传
-            $imgAdd(pos, $file){
-                console.log(pos);
-                console.log($file);
-                alert(123);
-                document.querySelector(".upload-demo .el-upload__input").click();
+            ...mapMutations([
+               "EDITOR_CONTENT",
+            ]),
+            //图片列表显示
+            imgList () {
+                this.dialogVisible = true;
+                this.$http.post({
+                    url:"/qiniuImgList",
+                }, res => {
+                    var a = res.items;
+//                    console.log(res);
+                });
             },
 
             //文章提交
@@ -200,6 +160,7 @@
                     });
                 }
             },
+
             //去重函数
             removeByValue(arr, val) {
                 for (var i = 0; i < arr.length; i++) {
@@ -209,6 +170,7 @@
                     }
                 }
             },
+
             //图片删除
             handleRemove(file, fileList) {
                 this.$http.post({
@@ -237,7 +199,9 @@
                         "url": file.resultdata.url,
                         "name": file.resultdata.key,
                     });
+
                     this.form.content = this.form.content + "<img src='" + file.resultdata.url + "'>";
+                    this.EDITOR_CONTENT(this.form.content);
                 } else {
                     this.$message({
                         message: file.resultMsg,
@@ -245,7 +209,6 @@
                     });
                 }
             },
-
 
             //封面上传成功
             upSuccessfm(file) {
@@ -263,6 +226,7 @@
                 }
 
             },
+
             //封面图片删除
             handleRemovefm(file, fileList) {
                 this.$http.post({
@@ -285,7 +249,8 @@
                     message: '上传失败！',
                     type: 'success'
                 });
-            }
+            },
+
         },
         created() {
             //路由过来的是编辑
@@ -297,6 +262,8 @@
                     }
                 }, (data) => {
                     this.form = data;
+                    console.log(data.content);
+                    this.EDITOR_CONTENT(data.content);
                 })
             }
             //类型列表

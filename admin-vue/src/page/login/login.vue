@@ -39,9 +39,12 @@
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        this.$http.post("/login",{
-                            "username": this.ruleForm.username,
-                            "password": this.ruleForm.password,
+                        this.$http.post({
+                            url:"/login",
+                            data : {
+                                "username": this.ruleForm.username,
+                                "password": this.ruleForm.password,
+                            }
                         },(res)=>{
                             this.$router.push("/");
                         });
