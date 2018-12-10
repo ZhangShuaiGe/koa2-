@@ -28,10 +28,12 @@
             <!--编辑器-->
             <el-tabs v-model="activeName">
                 <el-tab-pane label="markdown编辑器" name="markdown">
-                    <MarkDown v-if="activeName == 'markdown'"></MarkDown>
+                    <!--con：{{form.content}}-->
+                    <!--mark:{{form.markdownContent}}-->
+                    <MarkDown :markdown="form.markdownContent" @markHtml="markHtml" @markdown="markdown" v-if="activeName == 'markdown'"></MarkDown>
                 </el-tab-pane>
                 <el-tab-pane label="富文本编辑器" name="text">
-                    <QuillEditor v-if="activeName == 'text'" ></QuillEditor>
+                    <QuillEditor :html="form.content" @quillHtml="quillHtml" v-if="activeName == 'text'" ></QuillEditor>
                 </el-tab-pane>
             </el-tabs>
 
@@ -47,7 +49,7 @@
                         :on-success="upSuccessfm"
                         :on-remove="handleRemovefm"
                         :on-error="upError">
-                        <img v-if="form.coverImg" :src="form.coverImg" class="avatar">
+                        <img v-if="form.coverImgUrl" :src="form.coverImgUrl" class="avatar">
                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                     </el-upload>
                 </div>
@@ -76,7 +78,6 @@
     import MarkDown from "./articlePublish/markdown.vue";
     import QuillEditor from "./articlePublish/quillEditor.vue";
     import ImgList from "./articlePublish/imgList.vue";
-    import {mapState,mapMutations} from "vuex";
     export default {
         data: function () {
 
@@ -89,26 +90,16 @@
                     title: "", //标题
                     type: "", //类型
                     content: "", //内容
+                    markdownContent:"", //mark内容
                     istop: 0, //置顶值,默认不置顶
                     isreprint: 0, //是否转载 0 否 1 是
-                    coverImg: "", //封面图片
+                    coverImgUrl: "", //封面图片
                     id: this.$route.query.id || "" //编辑文章的时候用
                 },
-                value: "", //markdown 编辑器 转html 前的语法
                 typeList: [], //类型列表
                 url: sessionStorage.getItem("url") + "/upload" //上传地址
             }
 
-        },
-        computed: {
-            ...mapState([
-               "EditorContent",
-            ]),
-        },
-        watch:{
-            EditorContent (newValue) {
-                this.form.content = newValue;
-            },
         },
         components: {
             QuillEditor,
@@ -116,9 +107,22 @@
             ImgList
         },
         methods: {
-            ...mapMutations([
-               "EDITOR_CONTENT",
-            ]),
+
+            //文章内容
+            quillHtml (val) {
+                this.form.content = val;
+            },
+
+            //markdown html
+            markHtml(val){
+                this.form.content = val;
+            },
+
+            //markdown 内容
+            markdown (val) {
+                this.form.markdownContent = val;
+            },
+
             //图片列表显示
             imgList () {
                 this.dialogVisible = true;
@@ -201,7 +205,6 @@
                     });
 
                     this.form.content = this.form.content + "<img src='" + file.resultdata.url + "'>";
-                    this.EDITOR_CONTENT(this.form.content);
                 } else {
                     this.$message({
                         message: file.resultMsg,
@@ -217,7 +220,7 @@
                         message: '上传成功！',
                         type: 'success'
                     });
-                    this.form.coverImg = file.resultdata.url;
+                    this.form.coverImgUrl = file.resultdata.url;
                 } else {
                     this.$message({
                         message: file.resultMsg,
@@ -239,7 +242,7 @@
                         message: '删除成功！',
                         type: 'success'
                     });
-                    this.form.coverImg = "";
+                    this.form.coverImgUrl = "";
                 });
             },
 
@@ -262,8 +265,6 @@
                     }
                 }, (data) => {
                     this.form = data;
-                    console.log(data.content);
-                    this.EDITOR_CONTENT(data.content);
                 })
             }
             //类型列表

@@ -6,23 +6,13 @@ const unlink = util.promisify(fs.unlink);
 
 // 发布文章
 exports.article = async (ctx)=> {
-    console.log(111111111,ctx.request.body);
-    let {title,content,date,type,istop,coverImg,isreprint} = ctx.request.body;
-    await ArticleModel.create({
-        "title":title,
-        "content":content,
-        "time":date,
-        "type":type,
-        "istop":istop || 0,
-        "isreprint":isreprint || 0,
-        "coverImgUrl": coverImg,
-    }).then( data => {
+    console.log(ctx.request.body);
+    await ArticleModel.create(ctx.request.body).then( data => {
         resJson(ctx,1);
     }).catch( err => {
         console.log(err);
         resJson(ctx,0,err,"sql");
     });
-
 };
 
 //图片上传
@@ -114,9 +104,9 @@ exports.compileArticle = async (ctx) => {
 
 //更新文章
 exports.updateArticle = async (ctx) => {
-    let {id} = ctx.request.body.form;
+    let {id} = ctx.request.body;
 
-    await ArticleModel.update(ctx.request.body.form,{
+    await ArticleModel.update(ctx.request.body,{
         where:{
             "id":id
         }

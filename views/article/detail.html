@@ -4,7 +4,8 @@
 
 {{block "css"}}
 <link rel="stylesheet" href="/css/article-detail.css">
-<link rel="stylesheet" href="/lib/highlight/styles/atom-one-dark.css">
+<link rel="stylesheet" href="/css/atom-one-dark.css">
+<link rel="stylesheet" href="/css/markdown.min.css">
 {{/block}}
 
 {{block "content"}}
@@ -20,7 +21,7 @@
                         <i class="iconfont" title="人气"></i> {{data.browse}}
                     </span>
                 </div>
-                <div class="detail-body photos">
+                <div class="detail-body photos markdown-body custom-markdown">
                     {{@data.content}}
                 </div>
             </div>
@@ -57,7 +58,7 @@
                                     <span>{{$value.time}}</span>
                                 </div>
                             </div>
-                            <div class="detail-body jieda-body photos">
+                            <div class="detail-body jieda-body photos markdown-body">
                                 {{@ $value.reply_con}}
                             </div>
                             <div class="jieda-reply">
@@ -106,6 +107,7 @@
 
 {{block "js"}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/highlight.min.js"></script>
+    <!--<script src="/lib/highlight/highlight.min.js"></script>-->
     <script>
         $(function () {
             //留言和回复

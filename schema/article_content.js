@@ -31,6 +31,12 @@ module.exports = function (sequelize, DataTypes) {
                 },
             }
         },
+        markdownContent: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+            comment:'文章markdown源码内容',
+            defaultValue: null,
+        },
         type: {
             type: DataTypes.STRING,
             allowNull: false,

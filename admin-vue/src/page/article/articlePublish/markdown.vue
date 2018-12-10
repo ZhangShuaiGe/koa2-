@@ -9,7 +9,6 @@
     import Vue from 'vue'
     import mavonEditor from 'mavon-editor'
     import 'mavon-editor/dist/css/index.css'
-    import {mapState} from "vuex";
     Vue.use(mavonEditor);
 
     export default {
@@ -18,15 +17,30 @@
                 content:"",
             }
         },
+        watch:{
+            content (newValue) {
+                //markdonw 语法
+                this.$emit("markdown",newValue);
+            },
+            markdown () {
+                //编辑文章的时候，是异步传值，需要监听
+                this.content = this.markdown;
+            }
+        },
+
+        props:["markdown"],
+
         methods:{
-            //获取markdown的html内容
-            htmlCode (status, val) {
-                this.$store.commit("EDITOR_CONTENT",val);
+            htmlCode(status, html){
+                //html源码
+                this.$emit("markHtml",html);
             },
         },
+
         created () {
-            this.content = this.$store.state.EditorContent;
+            this.content = this.markdown;
         }
+
     }
 </script>
 

@@ -11,7 +11,6 @@
     import 'quill/dist/quill.snow.css';
     import 'quill/dist/quill.bubble.css';
     import {quillEditor} from 'vue-quill-editor';
-    import {mapState,mapMutations} from "vuex";
     export default {
         data () {
             const toolbarOptions = [
@@ -56,29 +55,23 @@
                 content:"",
             }
         },
-        computed:{
-            ...mapState([
-                "EditorContent",
-            ])
-        },
-        watch:{
-            content (newVaule) {
-                this.EDITOR_CONTENT(newVaule);
-            },
-            EditorContent (newValue) {
-                this.content = newValue;
-            },
-        },
-        created(){
-            this.content = this.EditorContent;
-        },
-        methods:{
-            ...mapMutations([
-               "EDITOR_CONTENT",
-            ]),
-        },
+
+        props:["html"],
+
         components:{
             quillEditor,
+        },
+
+        watch:{
+            html (newValue) {
+                this.content = newValue;
+            },
+            content (newValue) {
+                this.$emit("quillHtml",newValue);
+            }
+        },
+        created () {
+            this.content = this.html;
         }
     }
 </script>

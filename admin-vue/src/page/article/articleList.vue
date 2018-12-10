@@ -85,7 +85,9 @@
                 }).then(() => {
                     this.$http.post({
                         "url":"/deleteArticle",
-                        "id":id
+                        "data":{
+                            "id":id
+                        }
                     },(data)=>{
                         this.$message({
                             message: "删除成功",

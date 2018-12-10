@@ -95,6 +95,7 @@ exports.articleDetail = async (ctx) => {
             offset: currpage * 15 || 0, //跳过的数据数量
         }]
     }).then( data => {
+        console.log("内容：" + JSON.stringify(data.rows[0].content));
         ctx.render("article/detail",{
             "data":data.rows[0],
             "count":reply_conut,
