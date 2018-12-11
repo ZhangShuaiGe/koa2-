@@ -23,6 +23,9 @@
                     <el-form-item label="转载">
                         <el-switch v-model="form.isreprint" :inactive-value="0" :active-value="1"></el-switch>
                     </el-form-item>
+                    <el-form-item>
+                        <a class="ui2-imglist-btn" href="javascript:;" @click="imgIs(true)">图片列表</a>
+                    </el-form-item>
                 </div>
             </el-form>
             <!--编辑器-->
@@ -47,7 +50,7 @@
                         :action="url"
                         :show-file-list="false"
                         :on-success="upSuccessfm"
-                        :on-remove="handleRemovefm"
+                        :on-remove="imgRemovefm"
                         :on-error="upError">
                         <img v-if="form.coverImgUrl" :src="form.coverImgUrl" class="avatar">
                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -56,7 +59,7 @@
                 <el-upload
                     class="upload-demo"
                     :action="url"
-                    :on-remove="handleRemove"
+                    :on-remove="imgRemove"
                     :on-success="upSuccess"
                     :file-list="fileList"
                     :on-error="upError"
@@ -64,12 +67,11 @@
                     <!--<el-button size="small" type="primary">上传内容图片</el-button>-->
                     <!--<div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>-->
                 </el-upload>
-                <a href="javascript:;" @click="imgList">图片列表</a>
             </div>
         </div>
 
         <!--图片列表-->
-        <ImgList :dialogVisible="dialogVisible"></ImgList>
+        <ImgList :dialogVisible="dialogVisible" @imgIs="imgIs" @setCover="setCover"></ImgList>
 
     </div>
 </template>
@@ -123,15 +125,14 @@
                 this.form.markdownContent = val;
             },
 
-            //图片列表显示
-            imgList () {
-                this.dialogVisible = true;
-                this.$http.post({
-                    url:"/qiniuImgList",
-                }, res => {
-                    var a = res.items;
-//                    console.log(res);
-                });
+            //img 列表 显示
+            imgIs (val) {
+                this.dialogVisible = val;
+            },
+
+            //设置封面
+            setCover(val){
+                this.form.coverImgUrl = val;
             },
 
             //文章提交
@@ -176,7 +177,7 @@
             },
 
             //图片删除
-            handleRemove(file, fileList) {
+            imgRemove(file, fileList) {
                 this.$http.post({
                     url:"/remove",
                     data:{
@@ -231,7 +232,7 @@
             },
 
             //封面图片删除
-            handleRemovefm(file, fileList) {
+            imgRemovefm(file, fileList) {
                 this.$http.post({
                     url:"/remove",
                     data:{
@@ -291,6 +292,9 @@
 
     .ui-flex {
         display: flex;
+    }
+    .ui2-imglist-btn{
+        color: #606266;
     }
 
     .ui-upload-box {

@@ -21,3 +21,8 @@
   line-height: 30px;
   margin: 0 0 25px;
 }
+.markdown-body .highlight pre,
+.markdown-body pre {
+  font-size: 18px!important;
+  padding: 20px!important;
+}

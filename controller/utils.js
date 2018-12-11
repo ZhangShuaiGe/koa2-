@@ -222,21 +222,18 @@ exports.qiniuDelete = async (fileName) => {
 };
 
 //七牛文件列表
-exports.qiniuList = async (config = {}) => {
+exports.qiniuList = async (bodyconfig = {}) => {
     var config = new qiniu.conf.Config();
-    // 空间对应的机房
+    // // 空间对应的机房
     config.zone = qiniu.zone.Zone_z1;
-    // 是否使用https域名
-    config.useHttpsDomain = true;
+    // // 是否使用https域名
+    // config.useHttpsDomain = true;
 
     var accessKey = 'td9RbKLbIWGhColG3johXIHrFnGtlAq-ApTZh74s';
     var secretKey = '-rHSlqKLhjz0CxMt2B3JgnE3NkPjBvvpTJOtZdoJ';
     var bucket = "bokeimg"; //空间名
 
     var mac = new qiniu.auth.digest.Mac(accessKey, secretKey);
-    var config = new qiniu.conf.Config();
-    //config.useHttpsDomain = true;
-    config.zone = qiniu.zone.Zone_z0;
     var bucketManager = new qiniu.rs.BucketManager(mac, config);
 
     // @param options 列举操作的可选参数
@@ -245,9 +242,9 @@ exports.qiniuList = async (config = {}) => {
     //limit     每次返回的最大列举文件数量
     //delimiter 指定目录分隔符
     var options = {
-        limit: config.limit || 10,
-        prefix: config.prefix || "",
-        marker: config.marker || "",
+        limit: bodyconfig.limit || 10,
+        prefix: bodyconfig.prefix || "",
+        marker: bodyconfig.marker || "",
     };
     return new Promise(function (resolve,reject) {
         bucketManager.listPrefix(bucket, options, function(err, respBody, respInfo) {
@@ -262,6 +259,9 @@ exports.qiniuList = async (config = {}) => {
                 var commonPrefixes = respBody.commonPrefixes;
                 var items = respBody.items;
                 // console.log("==========>>",items);
+                items.map((val,key) => {
+                    return val.url = "http://img.zhangshuaige.top/" + val.key
+                });
                 resolve({
                     "nextMarker": nextMarker,
                     "commonPrefixes": commonPrefixes,

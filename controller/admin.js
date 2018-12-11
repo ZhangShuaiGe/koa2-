@@ -45,8 +45,7 @@ exports.remove = async (ctx) => {
 };
 
 exports.qiniuImgList = async (ctx) => {
-    var result = await qiniuList();
-    console.log(result);
+    var result = await qiniuList(ctx.request.body);
     if(result.code == 1){
         resJson(ctx,1,result);
     }else{
