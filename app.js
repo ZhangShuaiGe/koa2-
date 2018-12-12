@@ -5,9 +5,9 @@ const static = require('koa-static');
 const {GetRouter,PostRouter} = require("./router/index");
 const admin = require("./router/admin");
 const setting = require("./config/setting");
-const https = require("https");
+// const https = require("https");
 const http = require("http");
-const fs = require("fs");
+// const fs = require("fs");
 // const koaBody = require("koa-body");
 
 // redisClient.set("test","AAA",function (err,response) {
@@ -92,10 +92,10 @@ const fs = require("fs");
 
 
 // https 配置
-const httpsOption = {
-    key : fs.readFileSync("./https/1537060945371.key"),
-    cert: fs.readFileSync("./https/1537060945371.pem")
-};
+// const httpsOption = {
+//     key : fs.readFileSync("./https/1537060945371.key"),
+//     cert: fs.readFileSync("./https/1537060945371.pem")
+// };
 
 // app.use(koaBody({ multipart: true }));
 
@@ -147,22 +147,22 @@ http.createServer(app.callback()).listen(3000,function (err) {
 });
 
 //生产 http 强制跳转 https
-http.createServer((req,res) => {
-    res.writeHead(301,{
-        'Location':'https://www.zhangshuaige.top'
-    });
-    res.end();
-}).listen(80,function (err) {
-    if (err) {
-        error_logger.error(err);
-    }
-    info_logger.info("node已启动,监听80端口");
-});
+// http.createServer((req,res) => {
+//     res.writeHead(301,{
+//         'Location':'https://www.zhangshuaige.top'
+//     });
+//     res.end();
+// }).listen(3000,function (err) {
+//     if (err) {
+//         error_logger.error(err);
+//     }
+//     info_logger.info("node已启动,监听80端口");
+// });
 
 //生产 https
-https.createServer(httpsOption, app.callback()).listen(443,function (err) {
-    if(err){
-        error_logger.error(err);
-    }
-    info_logger.info("node https已启动,监听443端口");
-});
+// https.createServer(httpsOption, app.callback()).listen(443,function (err) {
+//     if(err){
+//         error_logger.error(err);
+//     }
+//     info_logger.info("node https已启动,监听443端口");
+// });
