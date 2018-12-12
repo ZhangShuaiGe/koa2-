@@ -25,7 +25,8 @@
   },
   "scripts": {
     "dev": "nodemon ./app.js",
-    "dev2": "node app.js"
+    "dev2": "node app.js",
+    "prd": "cross-env NODE_ENV=prd pm2 start app.js --name blog-node"
   },
   "nodemonConfig": {
     "ignore": [
@@ -35,5 +36,8 @@
       "views/*"
     ],
     "delay": "0"
+  },
+  "devDependencies": {
+    "cross-env": "^5.2.0"
   }
 }
