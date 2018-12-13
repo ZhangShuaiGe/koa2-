@@ -13,7 +13,8 @@ exports.redis = function () {
 
     const redisClient = redis.createClient({
         "host":"127.0.0.1",
-        "port": 6379
+        "port": 6379,
+        "password":"zs110120"
     });
 
     redisClient.on("connect", function () {
