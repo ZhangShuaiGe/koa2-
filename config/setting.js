@@ -19,10 +19,12 @@ exports.redis = function () {
 
     redisClient.on("connect", function () {
         console.log("Redis 连接成功！ ");
+        info_logger.info("Redis 连接成功!")
     });
 
     redisClient.on("error", function (err) {
         console.log("Redis 连接错误 " + err);
+        error_logger.error(err);
         redisClient.end();
     });
     global.redisClient = redisClient;
