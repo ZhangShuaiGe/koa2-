@@ -38,7 +38,7 @@ module.exports = function (sequelize, DataTypes) {
             defaultValue: null,
         },
         type: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             allowNull: false,
             comment:'文章分类',
             notEmpty: {

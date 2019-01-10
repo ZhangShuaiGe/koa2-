@@ -61,7 +61,7 @@ exports.session = function (app) {
         /** (number || 'session') maxAge in ms (default is 1 days) */
         /** 'session' will result in a cookie that expires when session/browser is closed */
         /** Warning: If a session cookie is stolen, this cookie will never expire */
-        maxAge: 60*60*1000,
+        maxAge: 8*60*60*1000,
         overwrite: true, /** (boolean) can overwrite or not (default true) */
         httpOnly: true, /** (boolean) httpOnly or not (default true) */
         signed: true, /** (boolean) signed or not (default true) */
@@ -95,8 +95,12 @@ exports.mysql = async function () {
     // admin用户表
     global.AdminUserModel = sequelize.import('../schema/admin_user');
     AdminUserModel.sync({alter:true});
+    // web 菜单表
+    global.WebNav = sequelize.import('../schema/web_nav');
+    WebNav.sync({alter:true});
     // 文章和回复表 关联
     ArticleModel.hasMany(ArticleReplyModel, {foreignKey: 'articleId', targetKey: 'id', as:"replay"});
+    ArticleTypeModel.hasMany(ArticleModel,{foreignKey: 'type', targetKey: 'id', as:"test"});
 };
 
 

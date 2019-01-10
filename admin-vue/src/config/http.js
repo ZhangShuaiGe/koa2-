@@ -1,17 +1,13 @@
 import axios from "axios";
 import { Message } from 'element-ui';
 
-var origin_url = window.location.origin;
-
 // 登录
 var login = window.location.origin + "/admin/login";
 
-// 开发 测试 生产
-if (origin_url.indexOf("zhang") != "-1") {
-    axios.defaults.baseURL = "/admin";
-} else {
-    // 本地
+if(process.env.NODE_ENV == "development"){
     axios.defaults.baseURL = "/api/admin";
+}else{
+    axios.defaults.baseURL = "/admin";
 }
 
 // 上传图片用，区分环境

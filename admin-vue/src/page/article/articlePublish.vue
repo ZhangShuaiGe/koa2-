@@ -12,7 +12,7 @@
                                 v-for="item in typeList"
                                 :key="item.type"
                                 :label="item.type"
-                                :value="item.type">
+                                :value="item.id">
                             </el-option>
                         </el-select>
                     </el-form-item>

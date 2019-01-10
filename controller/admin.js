@@ -1,7 +1,7 @@
 const {resJson,qiniu,deleteUpload,qiniuDelete,qiniuList} = require("./utils");
 const fs = require("fs");
 const util = require('util');
-const unlink = util.promisify(fs.unlink);
+const Sequelize = require("../config/dbConfig");
 
 
 // 发布文章
@@ -61,6 +61,10 @@ exports.articleList = async (ctx) => {
     await ArticleModel.findAndCountAll({
         attributes:{exclude: ["content"]},
         limit:15,
+        // include: [{
+        //     model: ArticleTypeModel,
+        //     where: { type: Sequelize.col('ArticleTypeModel.id') }
+        // }],
         offset: currpage * 15 || 0, //跳过的数据数量
         order:[['ID','DESC']],
     }).then( data => {
@@ -87,7 +91,6 @@ exports.deleteArticle =  async (ctx) => {
     }).catch( err => {
         resJson(ctx,0,"删除失败");
     });
-
 };
 
 // 根据id查询文章
