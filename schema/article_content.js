@@ -39,11 +39,7 @@ module.exports = function (sequelize, DataTypes) {
         },
         type: {
             type: DataTypes.INTEGER,
-            allowNull: false,
             comment:'文章分类',
-            notEmpty: {
-                msg: '文章分类不能为空'
-            },
         },
         istop: {
             type:DataTypes.INTEGER,

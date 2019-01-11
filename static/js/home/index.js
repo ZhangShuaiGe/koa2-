@@ -26,11 +26,11 @@ $(function () {
     },function (data) {
         for (var i = 0 ; i < data.length; i++) {
             var type = global_utils.getUrlParms("type");
-            if (type == data[i].type) {
+            if (type == data[i].id) {
                 $(".js-menu-box a").removeClass("layui-this");
-                $(".js-menu-box").append(`<a href="?type=${data[i].type}" class="layui-this">${data[i].type}</a>`);
+                $(".js-menu-box").append(`<a href="?type=${data[i].id}" class="layui-this">${data[i].type}</a>`);
             } else {
-                $(".js-menu-box").append(`<a href="?type=${data[i].type}">${data[i].type}</a>`);
+                $(".js-menu-box").append(`<a href="?type=${data[i].id}">${data[i].type}</a>`);
             }
         }
     });

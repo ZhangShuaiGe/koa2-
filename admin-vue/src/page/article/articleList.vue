@@ -17,7 +17,7 @@
                 label="标题">
             </el-table-column>
             <el-table-column
-                prop="type"
+                prop="article_Type.type"
                 label="类型"
                 width="180">
             </el-table-column>

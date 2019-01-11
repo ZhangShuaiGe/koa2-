@@ -41,9 +41,11 @@ exports.resJson = (ctx,code,data,sql) => {
     }else if(code == "0"){
         // sql 报错走这里
         if(sql){
+            error_logger.error(data);
             ctx.body = {
                 "resultCode":0,
-                "resultMsg": data.errors[0].message
+                // "resultMsg": data.errors[0].message
+                "resultMsg": "sql报错！"
             };
             return;
         }else{

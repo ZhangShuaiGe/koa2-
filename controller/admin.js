@@ -59,12 +59,11 @@ exports.articleList = async (ctx) => {
     let currpage = Number(ctx.request.body.page) - 1;
 
     await ArticleModel.findAndCountAll({
-        attributes:{exclude: ["content"]},
         limit:15,
-        // include: [{
-        //     model: ArticleTypeModel,
-        //     where: { type: Sequelize.col('ArticleTypeModel.id') }
-        // }],
+        include: [{
+            model: ArticleTypeModel,
+            attributes:["type"]
+        }],
         offset: currpage * 15 || 0, //跳过的数据数量
         order:[['ID','DESC']],
     }).then( data => {

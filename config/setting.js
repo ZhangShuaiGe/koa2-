@@ -95,12 +95,11 @@ exports.mysql = async function () {
     // admin用户表
     global.AdminUserModel = sequelize.import('../schema/admin_user');
     AdminUserModel.sync({alter:true});
-    // web 菜单表
-    global.WebNav = sequelize.import('../schema/web_nav');
-    WebNav.sync({alter:true});
     // 文章和回复表 关联
     ArticleModel.hasMany(ArticleReplyModel, {foreignKey: 'articleId', targetKey: 'id', as:"replay"});
-    ArticleTypeModel.hasMany(ArticleModel,{foreignKey: 'type', targetKey: 'id', as:"test"});
+    //文章 和 文章类型关联
+    ArticleTypeModel.hasOne(ArticleModel,{foreignKey: 'type', sourceKey: 'id'});
+    ArticleModel.belongsTo(ArticleTypeModel,{foreignKey: 'type', targetKey: 'id'});
 };
 
 
