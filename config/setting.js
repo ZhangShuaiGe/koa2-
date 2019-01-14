@@ -81,7 +81,7 @@ exports.mysql = async function () {
     global.ArticleReplyModel = sequelize.import('../schema/article_reply');
     ArticleReplyModel.sync({alter:true});
     // 文章分类
-    global.ArticleTypeModel = sequelize.import('../schema/article_Type');
+    global.ArticleTypeModel = sequelize.import('../schema/article_type');
     ArticleTypeModel.sync({alter:true});
     //web用户表
     global.WebUserModel = sequelize.import('../schema/web_user');
