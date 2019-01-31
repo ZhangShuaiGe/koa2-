@@ -2,7 +2,9 @@ const jwt = require('jsonwebtoken'); //生成token
 const secret = 'jwtlihailewodege'; //加密规则
 const {resJson,md5,captchapng,dateformat} = require("./utils");
 const sequelize = require("../config/dbConfig");
+const {articleDeatil} = require("../utils/seq.js");
 const Op = sequelize.Op;
+
 
 //网页抓取 url
 const request = require("request");
@@ -13,8 +15,8 @@ const fs = require("fs");
 exports.index = async (ctx) => {
     // 当前页
     let currpage = 0;
-    if(ctx.query.page){
-        currpage = Number(ctx.query.page) - 1;
+    if(ctx.query.page || ctx.request.body.page){
+        currpage = Number(ctx.query.page || ctx.request.body.page) - 1;
     }
     // 动态where
     function where() {
@@ -45,7 +47,6 @@ exports.index = async (ctx) => {
     }
 
     await ArticleModel.findAndCountAll({
-        attributes:{exclude: ["content"]},
         limit:15,
         offset: currpage * 15 || 0, //跳过的数据数量
         order:[['istop','DESC'],['ID','DESC']],
@@ -55,12 +56,20 @@ exports.index = async (ctx) => {
             attributes:["type","id"]
         }],
     }).then( data => {
-        console.log(data.rows);
-         ctx.render("home/index",{
-            "data":data.rows,
-            "count": data.count,
-            "type":ctx.query.type
-         });
+        if(ctx.get("X-Requested-With")){
+            // ajax请求
+            resJson(ctx,1,{
+                "data":data.rows,
+                "count": data.count,
+                "type":ctx.query.type
+            });
+        }else{
+            ctx.render("home/index",{
+                "data":data.rows,
+                "count": data.count,
+                "type":ctx.query.type
+            });
+        }
     }).catch( err => {
         error_logger.error(err);
     });
@@ -85,30 +94,22 @@ exports.articleDetail = async (ctx) => {
     }).then((data)=>{
         return data;
     });
-
-    // 查询文章内容
-    await ArticleModel.findAndCountAll({
-        where:{
-            id: ctx.query.id
-        },
-        // 查询关联的留言
-        include: [{
-            model: ArticleReplyModel,
-            as: 'replay',
-            order:[['ID','DESC']],
-            limit:15,
-            offset: currpage * 15 || 0, //跳过的数据数量
-        }]
-    }).then( data => {
-        console.log("内容：" + JSON.stringify(data.rows[0]));
+    if(ctx.get("X-Requested-With")){
+        // 查询文章内容
+        var data = await articleDeatil(ctx.request.body.id,currpage);
+        // ajax请求
+        resJson(ctx,1,{
+            "data":data.rows[0],
+            "count":reply_conut,
+        });
+    }else{
+        // 查询文章内容
+        var data = await articleDeatil(ctx.query.id,currpage);
         ctx.render("article/detail",{
             "data":data.rows[0],
             "count":reply_conut,
         });
-    }).catch( err => {
-        console.log("报错:",err);
-        error_logger.error(err);
-    });
+    }
 };
 
 // 登录

@@ -4,11 +4,12 @@ const web = require("../controller/web");
 const {resJson,sendEmail,upload} = require("../controller/utils");
 const jwt = require('jsonwebtoken'); //生成token
 const secret = 'jwtlihailewodege'; //加密规则
+const request = require("request");
 
 // 首页
-router.get("/",web.index);
+router.all("/",web.index);
 // 文章详情
-router.get("/articleDetail",web.articleDetail);
+router.all("/articleDetail",web.articleDetail);
 // 登录
 router.get("/login",web.login);
 // 注册
@@ -24,20 +25,11 @@ router.get("/webCapture",web.webCapture);
 PostRouter.prefix('/api');
 
 PostRouter.use( async (ctx,next) => {
-    //不做登录验证的路由
-    const unless = [
-        "/api/login",
-        "/api/register",
-        "/api/vercode",
-        "/api/test",
-        "/api/menuList",
-        "/api/blogrollList",
-        "/api/toolList",
-        "/api/webCapture",
+    //做登录验证的路由
+    const verify = [
+        "/api/replay",
     ];
-    if(unless.includes(ctx.url)){
-        await next();
-    } else {
+    if(verify.includes(ctx.url)){
 
         try {
 
@@ -80,6 +72,9 @@ PostRouter.use( async (ctx,next) => {
                 resJson(ctx,0,"请先登录！");
             }
         }
+
+    } else {
+        await next();
     }
 });
 
@@ -87,6 +82,34 @@ PostRouter.post("/test", (ctx) => {
     console.log("进入！！！！！！");
     var a = sendEmail("1071296726@qq.com");
     console.log("aaa=====",a);
+});
+
+// 微信登录
+PostRouter.post("/wxLogin", async (ctx) => {
+    console.log(ctx.request.body.code);
+    let appid = "wx5b3c23f56e5cdd45";
+    let secret = "82e298b0d5401e8b0992a9ddcbbe6171";
+    let js_code = ctx.request.body.code;
+    let result = await request({
+        method: 'GET',
+        url: `https://api.weixin.qq.com/sns/jscode2session?appid=${appid}&secret=${secret}&js_code=${js_code}&grant_type=authorization_code`,
+    }, (error, response, body) => {
+        if (error) {
+            error_logger.error("小程序登录异常：" + error);
+            console.error('小程序登录异常:', error);
+            resJson(ctx,0,"登录异常！");
+            return false;
+        }
+        console.log('Upload successful!  Server responded with:', body);
+        return true;
+    });
+
+    if (result) {
+        resJson(ctx,1);
+    } else {
+        resJson(ctx,0);
+    }
+
 });
 
 // 登录 post
