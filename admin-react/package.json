@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "antd": "^3.16.2",
+    "axios": "^0.18.0",
     "customize-cra": "^0.2.12",
     "react": "^16.8.6",
     "react-app-rewired": "^2.1.1",
@@ -11,6 +12,7 @@
     "react-router-dom": "^5.0.0",
     "react-scripts": "2.1.8"
   },
+  "proxy":"http://127.0.0.1:3000",
   "scripts": {
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
@@ -28,6 +30,9 @@
   ],
   "devDependencies": {
     "babel": "^6.23.0",
-    "babel-plugin-import": "^1.11.0"
+    "babel-plugin-import": "^1.11.0",
+    "css-loader": "^2.1.1",
+    "less": "^3.9.0",
+    "less-loader": "^4.1.0"
   }
 }

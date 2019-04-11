@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import { Menu, Icon} from 'antd';
 import {withRouter} from "react-router-dom";
 import "./menu.less";
-import "./menu.css";
 const SubMenu = Menu.SubMenu;
 
 class MenuList extends Component {

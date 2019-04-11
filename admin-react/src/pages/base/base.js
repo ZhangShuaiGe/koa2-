@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { Layout,Icon } from 'antd';
-import Menu from "@/pages/base/components/menu";
-import Router from "@/pages/base/components/router";
+import Menu from "@/pages/base/components/menu/menu";
+import Router from "@/pages/base/components/router/router";
 const { Header, Sider, Content } = Layout;
 class Base extends Component {
     constructor(){
