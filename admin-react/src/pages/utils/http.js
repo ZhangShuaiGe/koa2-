@@ -11,6 +11,8 @@ var login = window.location.origin + "/admin/login";
 //     axios.defaults.baseURL = "/admin";
 // }
 
+axios.defaults.baseURL = "/admin";
+
 export const http = {
     post(config,success, errcallback) {
         return axios({
@@ -19,18 +21,18 @@ export const http = {
             data: config.data,
         })
         .then((result) => {
-            if (result.data.resultCode == "1") {
+            if (result.data.resultCode === 1) {
                 success(result.data.resultdata);
-            } else if (result.data.resultCode == "0") {
+            } else if (result.data.resultCode === 0) {
                 message.error(result.data.resultMsg);
                 if(errcallback){
                     errcallback(result);
                 }
-            } else if (result.data.resultCode == "-1") {
+            } else if (result.data.resultCode === -1) {
                 message.error('登录超时，请重新登录！');
-                // setTimeout(function () {
-                //     window.location.href = login;
-                // },1500);
+                setTimeout(function () {
+                    window.location.href = login;
+                },1500);
             }
         }).catch((error) => {
             console.log(error);

@@ -57,9 +57,9 @@ exports.qiniuImgList = async (ctx) => {
 exports.articleList = async (ctx) => {
     // 当前页
     let currpage = Number(ctx.request.body.page) - 1;
-
+    let pageSize = Number(ctx.request.body.pageSize);
     await ArticleModel.findAndCountAll({
-        limit:15,
+        limit: pageSize || 15,
         include: [{
             model: ArticleTypeModel,
             attributes:["type"]
@@ -68,9 +68,12 @@ exports.articleList = async (ctx) => {
         order:[['ID','DESC']],
     }).then( data => {
         resJson(ctx,1,{
-            "currpage": currpage + 1, //当前页
-            "count":data.count, //总数量
             "list": data.rows, //总数据
+            "pages":{
+                "currpage": currpage + 1, //当前页
+                "count":data.count, //总数量
+                "pageSize": pageSize || 15,
+            },
         })
     }).catch( err => {
         console.log(err);

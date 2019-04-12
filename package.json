@@ -33,7 +33,8 @@
       "logs/*",
       "admin-vue/*",
       "static/*",
-      "views/*"
+      "views/*",
+      "admin-react/*"
     ],
     "delay": "0"
   },

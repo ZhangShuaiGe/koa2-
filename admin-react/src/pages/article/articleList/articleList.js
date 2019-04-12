@@ -1,31 +1,21 @@
 import React, {Component} from 'react';
-import {Table, Divider, Tag, Button } from 'antd';
+import {Table, Divider, Tag, Button, Pagination} from 'antd';
 import {http} from "@/pages/utils/http";
 
 const columns = [{
     title: '日期',
-    dataIndex: 'name',
-    key: 'name',
-    render: text => <a href="javascript:;">{text}</a>,
+    dataIndex: 'time',
+    key: 'time',
+    render: time => <span>{time}</span>,
     }, {
     title: '标题',
-    dataIndex: 'age',
-    key: 'age',
+    dataIndex: 'title',
+    key: 'title',
 }, {
     title: '类型',
-    key: 'tags',
-    dataIndex: 'tags',
-    render: tags => (
-            <span>
-                  {tags.map(tag => {
-                      let color = tag.length > 5 ? 'geekblue' : 'green';
-                      if (tag === 'loser') {
-                          color = 'volcano';
-                      }
-                      return <Tag color={color} key={tag}>{tag.toUpperCase()}</Tag>;
-                  })}
-            </span>
-    ),
+    key: 'article_type.type',
+    dataIndex: 'article_type.type',
+    render: type => <Tag>{type}</Tag>
 }, {
     title: '操作',
     key: 'action',
@@ -38,37 +28,42 @@ const columns = [{
     ),
 }];
 
-const data = [{
-    key: '1',
-    name: 'John Brown',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
-    tags: ['nice', 'developer'],
-}, {
-    key: '2',
-    name: 'Jim Green',
-    age: 42,
-    address: 'London No. 1 Lake Park',
-    tags: ['loser'],
-}, {
-    key: '3',
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-    tags: ['cool', 'teacher'],
-}];
+
 
 export default class ArticleList extends Component {
-    constructor(){
-        super();
-        http.post({
-            url:"/admin/articleList"
-        })
+    state = {
+        data:[],
+        pages:{},
+    };
+
+    componentDidMount() {
+        this.articleList();
     }
+
+    articleList(page) {
+        http.post({
+            url:"/articleList",
+            data:{
+                "page": page || 1
+            }
+        }, res => {
+            this.setState({
+                data: res.list,
+                pages:res.pages
+            })
+        });
+    }
+
     render() {
+        const {data,pages} = this.state;
         return (
                 <div>
-                    <Table columns={columns} dataSource={data}/>
+                    <Table  pagination={false} rowKey="id" columns={columns} dataSource={data}/>
+                    <Pagination
+                            hideOnSinglePage={false}
+                            // defaultPageSize={pages.pageSize}
+                    >
+                    </Pagination>
                 </div>
         )
     }
