@@ -68,8 +68,8 @@
                     "page": page || 1
                 },(data) => {
                     this.dataList = data.list;
-                    this.pageCount = data.count;
-                    this.currentPage = data.currpage;
+                    this.pageCount = data.pages.count;
+                    this.currentPage = data.pages.currpage;
                 });
             },
             //编辑文章

@@ -40,11 +40,12 @@ export default class ArticleList extends Component {
         this.articleList();
     }
 
+    //文章列表
     articleList(page) {
         http.post({
             url:"/articleList",
             data:{
-                "page": page || 1
+                "page": page || 1,
             }
         }, res => {
             this.setState({
@@ -54,17 +55,26 @@ export default class ArticleList extends Component {
         });
     }
 
+    // 分页改变
+    onShowSizeChange = (current, size) =>{
+        this.articleList(current);
+    };
+
     render() {
         const {data,pages} = this.state;
         return (
-                <div>
-                    <Table  pagination={false} rowKey="id" columns={columns} dataSource={data}/>
+            <div>
+                <Table  pagination={false} rowKey="id" columns={columns} dataSource={data}/>
+                <div style={{"textAlign":"center","marginTop":"20px"}}>
                     <Pagination
-                            hideOnSinglePage={false}
-                            // defaultPageSize={pages.pageSize}
+                            hideOnSinglePage={true}
+                            total={pages.count}
+                            defaultPageSize={15}
+                            onChange={this.onShowSizeChange}
                     >
                     </Pagination>
                 </div>
+            </div>
         )
     }
 }

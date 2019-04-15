@@ -5,7 +5,6 @@ import "./menu.less";
 const SubMenu = Menu.SubMenu;
 
 class MenuList extends Component {
-
     clickMenu = (e) => {
         this.props.history.push(e.key);
     }

@@ -57,22 +57,22 @@ exports.qiniuImgList = async (ctx) => {
 exports.articleList = async (ctx) => {
     // 当前页
     let currpage = Number(ctx.request.body.page) - 1;
-    let pageSize = Number(ctx.request.body.pageSize);
+    let pageSize = Number(ctx.request.body.pageSize) || 15;
     await ArticleModel.findAndCountAll({
-        limit: pageSize || 15,
+        limit: pageSize,
         include: [{
             model: ArticleTypeModel,
             attributes:["type"]
         }],
-        offset: currpage * 15 || 0, //跳过的数据数量
+        offset: currpage * pageSize || 0, //跳过的数据数量
         order:[['ID','DESC']],
     }).then( data => {
         resJson(ctx,1,{
             "list": data.rows, //总数据
             "pages":{
                 "currpage": currpage + 1, //当前页
-                "count":data.count, //总数量
-                "pageSize": pageSize || 15,
+                "count": Number(data.count), //总数量
+                "pageSize": Number(pageSize) || 15,
             },
         })
     }).catch( err => {

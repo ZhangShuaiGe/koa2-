@@ -25,7 +25,7 @@ class Base extends Component {
                     collapsible
                     collapsed={this.state.collapsed}
                 >
-                    <Menu />
+                    <Menu arr={135}/>
                 </Sider>
                 <Layout>
                     <Header style={{ background: '#fff', padding:"0 20px"}}>
@@ -39,9 +39,7 @@ class Base extends Component {
                         margin: '24px 16px', padding: 24, background: '#fff', minHeight: 280,
                     }}
                     >
-
-                        {this.props.match.url}
-                        {this.props.match.path}
+                        {/*{this.props.match.url}*/}
                         <Router></Router>
                     </Content>
                 </Layout>
