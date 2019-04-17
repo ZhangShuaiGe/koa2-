@@ -1,8 +1,12 @@
 const koa = require("koa");
 const app = new koa();
+// 配置绝对路径
+require('best-require')(process.cwd());
+
 const bodyParser = require('koa-bodyparser');
 const static = require('koa-static');
 const {GetRouter,PostRouter} = require("./router/index");
+const {articleRouter} = require("./router/article.js");
 const admin = require("./router/admin");
 const setting = require("./config/setting");
 // const https = require("https");
@@ -126,6 +130,7 @@ app.use(static(__dirname + '/static'));
 // 路由配置
 app.use(GetRouter.routes(), GetRouter.allowedMethods());
 app.use(PostRouter.routes(), PostRouter.allowedMethods());
+app.use(articleRouter.routes(), articleRouter.allowedMethods());
 
 // 后台路由
 app.use(admin.routes(), admin.allowedMethods());

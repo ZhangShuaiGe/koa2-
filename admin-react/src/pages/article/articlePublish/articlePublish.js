@@ -2,20 +2,35 @@ import React, {Component} from 'react';
 import MdEditor from 'react-markdown-editor-lite'
 const mock_content = "Hello.\n\n * This is markdown.\n * It is fun\n * Love it or leave it."
 export default class ArticlePublish extends Component{
-    state = {
-        markdown:"",
+
+    constructor(props){
+        super(props);
+        console.log(this.props.location.state);
+        this.mdEditor = null;
+        this.state = {
+            markdown:"",
+        }
     }
-    mdEditor = null
+
+    componentDidMount() {
+        if(this.props.location.state){
+
+        }
+        // this.articleList();
+    }
+
+
+
     handleGetMdValue = () => {
         this.mdEditor && alert(this.mdEditor.getMdValue())
     }
+
     handleGetHtmlValue = () => {
         this.mdEditor && alert(this.mdEditor.getHtmlValue())
     }
 
-
     handleEditorChange =  ({html, md}) => {
-        console.log('handleEditorChange', html)
+        console.log('handleEditorChange', html);
         console.log('md', md)
     }
 

@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "art-template": "^4.12.2",
+    "best-require": "^1.1.4",
     "captchapng": "^0.0.1",
     "cheerio": "^1.0.0-rc.2",
     "dateformat": "^3.0.3",
@@ -42,4 +43,3 @@
     "cross-env": "^5.2.0"
   }
 }
-

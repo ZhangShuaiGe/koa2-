@@ -1,6 +1,7 @@
+
 const router = require("koa-router")();
 const PostRouter = require("koa-router")();
-const web = require("../controller/web");
+const web = require("~/controller/web.js");
 const {resJson,sendEmail,upload} = require("../controller/utils");
 const jwt = require('jsonwebtoken'); //生成token
 const secret = 'jwtlihailewodege'; //加密规则
