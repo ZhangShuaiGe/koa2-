@@ -3,7 +3,8 @@ const secret = 'jwtlihailewodege'; //加密规则
 const {resJson,md5,captchapng,dateformat} = require("./utils");
 const sequelize = require("../config/dbConfig");
 const {articleDeatil} = require("../utils/seq.js");
-const Op = sequelize.Op;
+// const Op = sequelize.Op;
+const articleModel = require("~/model/article");
 
 
 //网页抓取 url
@@ -14,89 +15,52 @@ const fs = require("fs");
 // 首页
 exports.index = async (ctx) => {
     // 当前页
-    let currpage = 0;
-    if(ctx.query.page || ctx.request.body.page){
-        currpage = Number(ctx.query.page || ctx.request.body.page) - 1;
-    }
-    // 动态where
-    function where() {
-        if(ctx.query.type){
-            //如果有文章类型
-            return {type: ctx.query.type};
-        }else if(ctx.query.serch){
-            //如果有 搜索参数
-            return {
-                [Op.or]:[
-                    {
-                        title:{
-                            [Op.like]: `%${ctx.query.serch}%`,
-                        }
-                    },
-                    {
-                        content:{
-                            [Op.like]: `%${ctx.query.serch}%`,
-                        }
-                    }
-                ],
+    let currentPage = ctx.request.body.page || 1;
+    let pageSize = ctx.request.body.pageSize || 15;
+    let {type,serch} = ctx.query;
 
-            }
-        }
-        else {
-            return {};
-        }
-    }
-
-    await ArticleModel.findAndCountAll({
-        limit:15,
-        offset: currpage * 15 || 0, //跳过的数据数量
-        order:[['istop','DESC'],['ID','DESC']],
-        where: where(),
-        include: [{
-            model: ArticleTypeModel,
-            attributes:["type","id"]
-        }],
-    }).then( data => {
-        if(ctx.get("X-Requested-With")){
-            // ajax请求
-            resJson(ctx,1,{
-                "data":data.rows,
-                "count": data.count,
-                "type":ctx.query.type
-            });
-        }else{
-            ctx.render("home/index",{
-                "data":data.rows,
-                "count": data.count,
-                "type":ctx.query.type
-            });
-        }
-    }).catch( err => {
-        error_logger.error(err);
+    let data = await articleModel.articleList({
+        currentPage:currentPage,
+        pageSize:pageSize,
+        serch:serch,
+        type:type
     });
+
+    if(data.name == "SequelizeDatabaseError"){
+        resJson(ctx,0,"文章列表查询出错！");
+        return ;
+    }
+    ctx.render("home/index",{
+        "data":data.rows,
+        "count": data.count,
+        "type":ctx.query.type
+    });
+
 };
 
 //文章详情
 exports.articleDetail = async (ctx) => {
     // 当前页
-    let currpage = 0;
-    if(ctx.query.page){
-        currpage = Number(ctx.query.page) - 1;
-    }
+    let currentPage = Number(ctx.query.page);
+    // if(ctx.query.page){
+    //     currentPage = Number(ctx.query.page) - 1;
+    // }
 
     //异步更新阅读数
     sequelize.query(`update article_content set browse = browse+1 where id = ${ctx.query.id}`);
 
     // 查询对应文章的留言总数
-    let reply_conut = await ArticleReplyModel.count({
-        where:{
-            articleId: ctx.query.id
-        }
-    }).then((data)=>{
-        return data;
-    });
+    // let reply_conut = await ArticleReplyModel.count({
+    //     where:{
+    //         articleId: ctx.query.id
+    //     }
+    // }).then((data)=>{
+    //     return data;
+    // });
     if(ctx.get("X-Requested-With")){
         // 查询文章内容
-        var data = await articleDeatil(ctx.request.body.id,currpage);
+        articleModel.articleReply({id:ctx.request.body.id});
+        var data = await articleDeatil(ctx.request.body.id,currentPage);
         // ajax请求
         resJson(ctx,1,{
             "data":data.rows[0],
@@ -104,7 +68,8 @@ exports.articleDetail = async (ctx) => {
         });
     }else{
         // 查询文章内容
-        var data = await articleDeatil(ctx.query.id,currpage);
+        var data = await articleDeatil(ctx.query.id,currentPage);
+        console.log(JSON.stringify(data));
         ctx.render("article/detail",{
             "data":data.rows[0],
             "count":reply_conut,
