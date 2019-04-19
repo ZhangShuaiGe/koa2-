@@ -41,7 +41,7 @@
                         {{/if}}
                         <h2>
                             <a class="layui-badge ui-title">{{$value.article_type.type}}</a>
-                            <a href="/articleDetail?id={{$value.id}}">{{$value.title}}</a>
+                            <a href="/articleDetail?id={{$value.uuid}}">{{$value.title}}</a>
                             {{if $value.istop > 0}}
                             <div class="ui-article-label">
                                 置顶
@@ -58,7 +58,7 @@
                             <span class="fly-list-nums">
                                     <i class="iconfont icon-pinglun" title="阅读"></i>
                                     {{$value.browse}}
-                                </span>
+                            </span>
                         </div>
                     </li>
                     {{/each}}

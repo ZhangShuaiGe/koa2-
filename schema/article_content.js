@@ -9,6 +9,10 @@ module.exports = function (sequelize, DataTypes) {
             field:"id",
             comment:'文章ID',
         },
+        uuid: {
+            type: DataTypes.STRING(34),
+            allowNull: false,
+        },
         title: {
             type: DataTypes.TEXT,
             allowNull: false,

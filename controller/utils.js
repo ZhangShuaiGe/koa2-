@@ -58,7 +58,7 @@ exports.resJson = (ctx,code,data,sql) => {
     }else if(code == "-1"){
         ctx.body = {
             "resultCode":-1,
-            "resultMsg": data
+            "resultMsg": data || "会话过期,请重新登录!"
         };
         return;
     }

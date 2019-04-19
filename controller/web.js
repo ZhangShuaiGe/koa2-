@@ -38,45 +38,6 @@ exports.index = async (ctx) => {
 
 };
 
-//文章详情
-exports.articleDetail = async (ctx) => {
-    // 当前页
-    let currentPage = Number(ctx.query.page);
-    // if(ctx.query.page){
-    //     currentPage = Number(ctx.query.page) - 1;
-    // }
-
-    //异步更新阅读数
-    sequelize.query(`update article_content set browse = browse+1 where id = ${ctx.query.id}`);
-
-    // 查询对应文章的留言总数
-    // let reply_conut = await ArticleReplyModel.count({
-    //     where:{
-    //         articleId: ctx.query.id
-    //     }
-    // }).then((data)=>{
-    //     return data;
-    // });
-    if(ctx.get("X-Requested-With")){
-        // 查询文章内容
-        articleModel.articleReply({id:ctx.request.body.id});
-        var data = await articleDeatil(ctx.request.body.id,currentPage);
-        // ajax请求
-        resJson(ctx,1,{
-            "data":data.rows[0],
-            "count":reply_conut,
-        });
-    }else{
-        // 查询文章内容
-        var data = await articleDeatil(ctx.query.id,currentPage);
-        console.log(JSON.stringify(data));
-        ctx.render("article/detail",{
-            "data":data.rows[0],
-            "count":reply_conut,
-        });
-    }
-};
-
 // 登录
 exports.login = async(ctx) => {
     //调用验证码

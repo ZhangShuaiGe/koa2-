@@ -1,4 +1,25 @@
-2019-01-11 v1.0
-更新了 article_content type字段类型, 需要将 type 字段的文字 改为 article_type表对应类型的id值
-更新sql: alert table article_content modify column type int;
-更新sql: update article_content as a inner join article_type as b on a.type = b.type set a.type = b.id;
+v2.0 上线注意事项：
+
+1. 批量添加 文章表 uuid 字段
+执行：
+第一步：添加uuid字段
+ALTER TABLE article_content ADD uuid VARCHAR(34)  not Null;
+
+第二步： 设置uuid初始值
+UPDATE article_content SET uuid = (SELECT UUID());
+UPDATE article_content SET uuid = REPLACE(uuid,"-","");
+
+
+
+2. 修改 回复表结构 ， articleId 删除 新建 uuid；
+
+添加 articleUuid 字段
+ALTER TABLE article_reply ADD articleUuid VARCHAR(34)  not Null;
+
+设置articleUuid值 = 文章的 uuid 值
+UPDATE article_reply SET articleUuid = (SELECT UUID()); xxxxxxxxxxxxxxxx
+
+UPDATE article_reply SET articleUuid = REPLACE(articleUuid,"-","");
+
+
+3. 新添加了2个包， yarn install

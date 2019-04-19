@@ -9,8 +9,6 @@ const request = require("request");
 
 // 首页
 router.all("/",web.index);
-// 文章详情
-router.get("/articleDetail",web.articleDetail);
 // 登录
 router.get("/login",web.login);
 // 注册

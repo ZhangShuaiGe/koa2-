@@ -60,16 +60,16 @@ exports.articleList = (...params) => {
 
 /**
  * @name 文章详情
- * @param id 文章id
+ * @param uiid 文章的uuid
  * @returns {Promise.<T>}
  */
-exports.articleDetail = (id) => {
+exports.articleDetail = (uuid) => {
     return ArticleModel.findOne({
         include: [{
             model: ArticleTypeModel,
             attributes:["type","id"]
         }],
-        where:{id:id}
+        where:{uuid:uuid}
     }).then( data => {
         return data;
     }).catch( err => {
@@ -81,16 +81,23 @@ exports.articleDetail = (id) => {
 /**
  * @name 文章回复
  * @param id 文章id
+ * @param pageSize
+ * @param currentPage
  * @returns {Promise.<T>}
  */
 exports.articleReply = (...params) => {
     let id = params[0].id;
     let pageSize = params[0].pageSize || 15;
     let currentPage = params[0].currentPage || 1;
+    function where() {
+        if(id){
+            return {articleId: id};
+        }else{
+            return {};
+        }
+    }
     return ArticleReplyModel.findAndCountAll({
-        where:{
-            articleId: id
-        },
+        where: where(),
         limit: pageSize,
         offset: (currentPage - 1) * 15 || 0, //跳过的数据数量
         order:[['ID','DESC']],
@@ -99,6 +106,14 @@ exports.articleReply = (...params) => {
     }).catch(err => {
         error_logger.error("留言查询报错：" + err);
     });
+};
+
+/**
+ * @name 文章阅读 +1
+ * @param id
+ */
+exports.articleRead = (id) => {
+    sequelize.query(`update article_content set browse = browse+1 where id = ${ctx.query.id}`);
 };
 
 
