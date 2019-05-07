@@ -109,16 +109,21 @@
     <!--<script src="/lib/highlight/highlight.min.js"></script>-->
     <script>
         $(function () {
+            function getQueryString(name){
+                var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+                var r = window.location.search.substr(1).match(reg);
+                if(r!=null)return  unescape(r[2]); return null;
+            }
             //留言和回复
             $(".js-replay-submit").on("click",function(){
                 var text = layui.fly.content($(this).siblings(".js-replay-text").val());
-                var articleId = $(this).siblings("input[name = 'articleId']").val();
+                var articleUuid = getQueryString("id");
                 if(text){
                     http({
                         "url":"/replay",
                         "data":{
                             "content": text,
-                            "articleId": articleId
+                            "articleUuid": articleUuid
                         },
                     },function (data) {
                         window.location.reload();

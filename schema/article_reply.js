@@ -8,10 +8,10 @@ module.exports = function (sequelize, DataTypes) {
             autoIncrement: true,
             field:"id"
         },
-        articleId:{
-            type: DataTypes.INTEGER,
+        articleUuid:{
+            type: DataTypes.STRING(34),
             allowNull: false,
-            comment:'对应文章id',
+            comment:'对应文章的uuid',
         },
         nikename: {
             type: DataTypes.STRING,

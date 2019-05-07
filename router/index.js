@@ -2,13 +2,14 @@
 const router = require("koa-router")();
 const PostRouter = require("koa-router")();
 const web = require("~/controller/web.js");
+const article = require("~/controller/article.js");
 const {resJson,sendEmail,upload} = require("../controller/utils");
 const jwt = require('jsonwebtoken'); //生成token
 const secret = 'jwtlihailewodege'; //加密规则
 const request = require("request");
 
 // 首页
-router.all("/",web.index);
+router.all("/",article.articleList);
 // 登录
 router.get("/login",web.login);
 // 注册
@@ -31,10 +32,7 @@ PostRouter.use( async (ctx,next) => {
     if(verify.includes(ctx.url)){
 
         try {
-
             ctx.user = jwt.verify(ctx.headers.authorization, secret);  // 解密payload，获取存入的user信息
-            // console.log("=======",ctx.user);
-
             //单点登录
             var status = await new Promise(function (resolve,reject) {
                 redisClient.get(ctx.user.email,async function (err,getToken) {
@@ -42,7 +40,6 @@ PostRouter.use( async (ctx,next) => {
                         resJson(ctx,-1,"会话过期,请重新登录");
                         reject(false);
                     } else {
-
                         if(getToken != ctx.headers.authorization){
                             resJson(ctx,-1,"会话过期,请重新登录");
                             reject(false);

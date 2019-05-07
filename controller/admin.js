@@ -1,12 +1,15 @@
 const {resJson,qiniu,deleteUpload,qiniuDelete,qiniuList} = require("./utils");
 const fs = require("fs");
 const util = require('util');
-const Sequelize = require("../config/dbConfig");
+const sequelize = require("../config/dbConfig");
+const article = require("~/model/article");
+const uuidv1 = require('uuid/v1');
 
 
 // 发布文章
 exports.article = async (ctx)=> {
-    console.log(ctx.request.body);
+    let uuid = uuidv1().replace(/\-/g,"");
+    ctx.request.body.uuid = uuid;
     await ArticleModel.create(ctx.request.body).then( data => {
         resJson(ctx,1);
     }).catch( err => {
@@ -84,15 +87,40 @@ exports.articleList = async (ctx) => {
 
 // 删除文章
 exports.deleteArticle =  async (ctx) => {
-    await ArticleModel.destroy({
-        where:{
-            id: ctx.request.body.id
-        }
-    }).then( data => {
+    // await ArticleModel.destroy({
+    //     where:{
+    //         id: ctx.request.body.id
+    //     }
+    // }).then( data => {
+    //     resJson(ctx,1);
+    // }).catch( err => {
+    //     resJson(ctx,0,"删除失败");
+    // });
+    let {id,uuid} = ctx.request.body;
+    await sequelize.transaction(function (t) {
+
+        // 在这里链接您的所有查询。 确保你返回他们。
+        return ArticleModel.destroy({
+            where:{
+                id: id
+            }
+        },{transaction: t})
+        .then(function () {
+            return article.articleReplyDelete({
+                articleUuid:uuid
+            })
+        });
+
+    }).then(function (result) {
+        // 事务已被提交
+        // result 是 promise 链返回到事务回调的结果
         resJson(ctx,1);
-    }).catch( err => {
+    }).catch(function (err) {
+        // 事务已被回滚
+        // err 是拒绝 promise 链返回到事务回调的错误
         resJson(ctx,0,"删除失败");
     });
+
 };
 
 // 根据id查询文章

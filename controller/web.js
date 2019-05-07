@@ -12,32 +12,6 @@ const request = require("request");
 const cheerio = require("cheerio");
 const fs = require("fs");
 
-// 首页
-exports.index = async (ctx) => {
-    // 当前页
-    let currentPage = ctx.request.body.page || 1;
-    let pageSize = ctx.request.body.pageSize || 15;
-    let {type,serch} = ctx.query;
-
-    let data = await articleModel.articleList({
-        currentPage:currentPage,
-        pageSize:pageSize,
-        serch:serch,
-        type:type
-    });
-
-    if(data.name == "SequelizeDatabaseError"){
-        resJson(ctx,0,"文章列表查询出错！");
-        return ;
-    }
-    ctx.render("home/index",{
-        "data":data.rows,
-        "count": data.count,
-        "type":ctx.query.type
-    });
-
-};
-
 // 登录
 exports.login = async(ctx) => {
     //调用验证码
@@ -173,17 +147,20 @@ exports.apiRegister = async (ctx) => {
 
 //回复
 exports.replay = async(ctx) => {
-    let {articleId,content} = ctx.request.body;
+
+    let {articleUuid,content} = ctx.request.body;
 
     let {email,nikename} = ctx.user;
     if(ctx.user){
         await ArticleReplyModel.create({
-            articleId:articleId,
+            articleUuid:articleUuid,
             reply_con: content,
             email:email,
             nikename:nikename
         }).then( data => {
             resJson(ctx,1);
+        }).catch(e =>{
+            console.log("报错:" + e);
         });
     } else {
         resJson(ctx,0,"请先登录！");

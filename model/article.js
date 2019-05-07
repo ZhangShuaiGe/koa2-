@@ -86,12 +86,12 @@ exports.articleDetail = (uuid) => {
  * @returns {Promise.<T>}
  */
 exports.articleReply = (...params) => {
-    let id = params[0].id;
+    let articleUuid = params[0].articleUuid;
     let pageSize = params[0].pageSize || 15;
     let currentPage = params[0].currentPage || 1;
     function where() {
-        if(id){
-            return {articleId: id};
+        if(articleUuid){
+            return {articleUuid: articleUuid};
         }else{
             return {};
         }
@@ -114,6 +114,28 @@ exports.articleReply = (...params) => {
  */
 exports.articleRead = (id) => {
     sequelize.query(`update article_content set browse = browse+1 where id = ${ctx.query.id}`);
+};
+
+/**
+ * @name 删除指定文章的全部留言
+ * @param articleUuid
+ */
+exports.articleReplyDelete = (...params) => {
+    let id = params[0].id;
+    let articleUuid = params[0].articleUuid;
+    return ArticleReplyModel.destroy({
+        where:{
+            [Op.or]: [
+                {id:id},
+                {articleUuid: articleUuid}
+            ]
+        },
+    }).then( data => {
+        return data;
+    }).catch( err => {
+        error_logger.error("留言删除报错：" + err);
+        return err;
+    })
 };
 
 

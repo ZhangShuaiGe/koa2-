@@ -30,7 +30,7 @@
                     <el-button
                         size="mini"
                         type="danger"
-                        @click="handleDelete(scope.$index, scope.row.id)">删除
+                        @click="handleDelete(scope.$index, scope.row)">删除
                     </el-button>
                 </template>
             </el-table-column>
@@ -77,7 +77,7 @@
                 this.$router.push({path:"/article",query:{"id":id}});
             },
             //删除文章
-            handleDelete(index, id) {
+            handleDelete(index, row) {
                 this.$confirm('此操作将永久删除文章, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
@@ -86,7 +86,8 @@
                     this.$http.post({
                         "url":"/deleteArticle",
                         "data":{
-                            "id":id
+                            "id":row.id,
+                            "uuid":row.uuid
                         }
                     },(data)=>{
                         this.$message({

@@ -13,9 +13,9 @@
                     layer.msg('登录超时，请重新登录', {
                         time: 1500
                     });
-                    setTimeout(function () {
-                        window.location.href="/login";
-                    },1500);
+                    // setTimeout(function () {
+                    //     window.location.href="/login";
+                    // },1500);
                 } else {
                     layer.msg(data.resultMsg, {
                         time: 1500

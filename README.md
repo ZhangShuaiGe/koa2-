@@ -11,15 +11,18 @@ UPDATE article_content SET uuid = REPLACE(uuid,"-","");
 
 
 
-2. 修改 回复表结构 ， articleId 删除 新建 uuid；
+2. 修改 回复表结构 ， articleId 删除 新建 uuid;
 
 添加 articleUuid 字段
 ALTER TABLE article_reply ADD articleUuid VARCHAR(34)  not Null;
 
 设置articleUuid值 = 文章的 uuid 值
-UPDATE article_reply SET articleUuid = (SELECT UUID()); xxxxxxxxxxxxxxxx
+update article_reply as A, article_content as B set A.articleUuid = B.uuid where A.articleId = B.id;
 
-UPDATE article_reply SET articleUuid = REPLACE(articleUuid,"-","");
+删除articleId
+1. 删除外键，否则无法删除
+2. 执行 alter table article_reply drop column articleId;
+
 
 
 3. 新添加了2个包， yarn install
