@@ -87,15 +87,6 @@ exports.articleList = async (ctx) => {
 
 // 删除文章
 exports.deleteArticle =  async (ctx) => {
-    // await ArticleModel.destroy({
-    //     where:{
-    //         id: ctx.request.body.id
-    //     }
-    // }).then( data => {
-    //     resJson(ctx,1);
-    // }).catch( err => {
-    //     resJson(ctx,0,"删除失败");
-    // });
     let {id,uuid} = ctx.request.body;
     await sequelize.transaction(function (t) {
 

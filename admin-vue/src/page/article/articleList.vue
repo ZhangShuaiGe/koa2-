@@ -64,8 +64,10 @@
             //获取文章列表数据
             getData (page) {
                 this.$http.post({
-                    "url":"/articleList",
-                    "page": page || 1
+                    url:"/articleList",
+                    data: {
+                        page: page || 1
+                    }
                 },(data) => {
                     this.dataList = data.list;
                     this.pageCount = data.pages.count;
