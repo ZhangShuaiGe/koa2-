@@ -7,6 +7,7 @@ const bodyParser = require('koa-bodyparser');
 const static = require('koa-static');
 const {GetRouter,PostRouter} = require("./router/index");
 const {articleRouter} = require("./router/article.js");
+const userRouter = require("./router/user.js");
 const admin = require("./router/admin");
 const setting = require("./config/setting");
 // const https = require("https");
@@ -130,7 +131,11 @@ app.use(static(__dirname + '/static'));
 // 路由配置
 app.use(GetRouter.routes(), GetRouter.allowedMethods());
 app.use(PostRouter.routes(), PostRouter.allowedMethods());
+//文章路由
 app.use(articleRouter.routes(), articleRouter.allowedMethods());
+//用户路由
+app.use(userRouter.routes(), userRouter.allowedMethods());
+
 
 // 后台路由
 app.use(admin.routes(), admin.allowedMethods());

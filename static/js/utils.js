@@ -36,6 +36,12 @@ $(function () {
         hljs.highlightBlock(block);
     });
 
+    //github登录
+    $(".js-githubLogin").on("click",function () {
+        $("#js-random").val(Math.random());
+        $("#githubSubmit").submit();
+        return false;
+    });
     // 方法型公共js
     var global_utils = {
 
@@ -82,6 +88,38 @@ $(function () {
         },
 
     };
+
+    // github登录
+    if(global_utils.getUrlParms("code")){
+        $.ajax({
+            url:"https://github.com/login/oauth/access_token",
+            type:"post",
+            data:{
+                "client_id":"c3c5a21740b090d6e2e6",
+                "client_secret":"f5172492f382f6ef711e5e9c963959777b59bfad",
+                "code":global_utils.getUrlParms("code"),
+                "state":global_utils.getUrlParms("state"),
+            },
+            success:function (data) {
+                alert("陈宫！");
+                $.ajax({
+                    url:"https://api.github.com/user?" + data,
+                    type:"get",
+                    success:function (data2) {
+                        console.log(111,data2);
+                    }
+                });
+            }
+        })
+    }
+
+    // $.ajax({
+    //     url:"https://api.github.com/user?access_token=d36549fb6bd8abdc001576dbf13b78586069cfe4&scope=&token_type=bearer",
+    //     type:"get",
+    //     success:function (data2) {
+    //         console.log(111,data2);
+    //     }
+    // });
 
     window.global_utils = global_utils;
 });

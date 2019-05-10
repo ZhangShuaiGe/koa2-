@@ -1,7 +1,7 @@
 ;(function () {
     function http(setting,callback) {
         $.ajax({
-            type:"post",
+            type: setting.type || "post",
             url: "/api" + setting.url,
             data: setting.data,
             async: setting.async || false,
@@ -13,9 +13,9 @@
                     layer.msg('登录超时，请重新登录', {
                         time: 1500
                     });
-                    // setTimeout(function () {
-                    //     window.location.href="/login";
-                    // },1500);
+                    setTimeout(function () {
+                        window.location.href="/login";
+                    },1500);
                 } else {
                     layer.msg(data.resultMsg, {
                         time: 1500

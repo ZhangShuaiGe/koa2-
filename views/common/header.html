@@ -33,12 +33,12 @@
             <li class="layui-nav-item">
                 <a href="/register">注册</a>
             </li>
+            <!--<li class="layui-nav-item layui-hide-xs">-->
+                <!--<a href="javascript:;" title="QQ登入"-->
+                   <!--class="iconfont icon-qq js-developed"></a>-->
+            <!--</li>-->
             <li class="layui-nav-item layui-hide-xs">
-                <a href="/app/qq/" onclick="layer.msg('正在通过QQ登入', {icon:16, shade: 0.1, time:0})" title="QQ登入"
-                   class="iconfont icon-qq js-developed"></a>
-            </li>
-            <li class="layui-nav-item layui-hide-xs">
-                <a href="/app/weibo/" class="js-githubLogin" title="微博登入" class="iconfont icon-weibo js-developed"></a>
+
             </li>
         </ul>
 
@@ -54,8 +54,9 @@
                     <dd><a class="js-developed" href="user/set.html"><i class="layui-icon">&#xe620;</i>基本设置</a></dd>
                     <dd><a class="js-developed" href="user/message.html"><i class="iconfont icon-tongzhi"
                                                                             style="top: 4px;"></i>我的消息</a></dd>
-                    <dd><a class="js-developed" href="user/home.html"><i class="layui-icon"
-                                                                         style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>我的主页</a>
+                    <dd>
+                        <a class="js-developed" href="user/home.html">
+                            <i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>我的主页</a>
                     </dd>
                     <hr style="margin: 5px 0;">
                     <dd><a class="js-loginOut" href="javascript:;" style="text-align: center;">退出</a></dd>
@@ -64,4 +65,19 @@
         </ul>
 
     </div>
+</div>
+<div>
+    <form id="githubSubmit" action="https://github.com/login/oauth/authorize" method="get">
+        <div>
+            <input type="text" name="client_id" value="cd5ff8839b5e6448b7f3" />
+        </div>
+
+        <div>
+            <input id="js-random" type="text" name="state" value="" />
+        </div>
+        <div>
+            <input type="text" name="redirect_uri" value="http://192.168.1.44:3000/githubLogin" />
+        </div>
+        <button>提交</button>
+    </form>
 </div>
