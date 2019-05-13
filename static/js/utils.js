@@ -36,12 +36,21 @@ $(function () {
         hljs.highlightBlock(block);
     });
 
-    //github登录
+    //github登陆点击
+    var new_window = null;
     $(".js-githubLogin").on("click",function () {
-        $("#js-random").val(Math.random());
-        $("#githubSubmit").submit();
+        let Url = "https://github.com/login/oauth/authorize?client_id=cd5ff8839b5e6448b7f3&redirect=http://192.168.1.44:3000/githubLogin&state=" + Math.random();
+        let config = 'height=600, width=600, top=0, left=0';
+        new_window = window.open(Url,'newWindow',config);
         return false;
     });
+
+    //关闭github登录
+    $("#js-close_github").on("click",function () {
+        new_window.close();
+        window.location.href="/";
+    });
+
     // 方法型公共js
     var global_utils = {
 
