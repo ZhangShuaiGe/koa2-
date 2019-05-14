@@ -26,3 +26,5 @@ update article_reply as A, article_content as B set A.articleUuid = B.uuid where
 
 
 3. 新添加了2个包， yarn install
+
+4. 修改代码中github的 授权登录地址为线上环境

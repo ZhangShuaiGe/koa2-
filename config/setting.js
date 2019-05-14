@@ -86,6 +86,9 @@ exports.mysql = async function () {
     //web用户表
     global.WebUserModel = sequelize.import('../schema/web_user');
     WebUserModel.sync({alter:true});
+    //github用户表
+    global.githubUserModel = sequelize.import('../schema/github_user');
+    WebUserModel.sync({alter:true});
     //友情链接
     global.WebBlogroll = sequelize.import('../schema/web_blogroll.js');
     WebBlogroll.sync({alter:true});

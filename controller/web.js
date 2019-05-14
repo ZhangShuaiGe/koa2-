@@ -1,11 +1,5 @@
-const jwt = require('jsonwebtoken'); //生成token
-const secret = 'jwtlihailewodege'; //加密规则
 const {resJson,md5,captchapng,dateformat} = require("./utils");
-const sequelize = require("../config/dbConfig");
-const {articleDeatil} = require("../utils/seq.js");
-// const Op = sequelize.Op;
-const articleModel = require("~/model/article");
-
+const {jwtToken} = require("~/model/user");
 
 //网页抓取 url
 const request = require("request");
@@ -60,21 +54,10 @@ exports.apiLogin = async(ctx) => {
             // 存昵称node
             let nikename = data.dataValues.username;
 
-            // 创建token
-            let token = jwt.sign({
-                email: email,
+            let token = jwtToken({
                 nikename:nikename,
-            }, secret ,{ expiresIn: 3 * 60 * 60 });
-
-            redisClient.set(email,token,function (err,res) {
-                if(err){
-                    error_logger.error(err);
-                } else {
-                    info_logger.info({"email":email,"token":token},"token已存入");
-                }
+                email:email
             });
-            redisClient.expire(email, 3 * 60 * 60); //过期时间3小时
-
 
             // 存昵称到客户端，全局要用, cookie 不能设置中文 ，转为 Unicode 字符串
             ctx.cookies.set("nikename",encodeURI(nikename),{

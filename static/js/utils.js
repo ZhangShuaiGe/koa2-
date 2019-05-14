@@ -13,6 +13,7 @@ $(function () {
     $(".js-loginOut").on("click",function () {
         $.cookie('token',"");
         $.cookie('nikename',"");
+        $.cookie('avatarUrl',"");
         location.reload();
     });
 
@@ -39,11 +40,15 @@ $(function () {
     //github登陆点击
     var new_window = null;
     $(".js-githubLogin").on("click",function () {
-        let Url = "https://github.com/login/oauth/authorize?client_id=cd5ff8839b5e6448b7f3&redirect=http://192.168.1.44:3000/githubLogin&state=" + Math.random();
+        let Url = "https://github.com/login/oauth/authorize?client_id=cd5ff8839b5e6448b7f3&redirect=https://www.zhangshuaige.top/githubLogin&state=" + Math.random();
         let config = 'height=600, width=600, top=0, left=0';
         new_window = window.open(Url,'newWindow',config);
         return false;
     });
+
+    if($.cookie('avatarUrl')){
+        $(".js-avatar_url").attr("src",$.cookie('avatarUrl'));
+    }
 
     //关闭github登录
     $("#js-close_github").on("click",function () {
@@ -98,37 +103,6 @@ $(function () {
 
     };
 
-    // github登录
-    if(global_utils.getUrlParms("code")){
-        $.ajax({
-            url:"https://github.com/login/oauth/access_token",
-            type:"post",
-            data:{
-                "client_id":"c3c5a21740b090d6e2e6",
-                "client_secret":"f5172492f382f6ef711e5e9c963959777b59bfad",
-                "code":global_utils.getUrlParms("code"),
-                "state":global_utils.getUrlParms("state"),
-            },
-            success:function (data) {
-                alert("陈宫！");
-                $.ajax({
-                    url:"https://api.github.com/user?" + data,
-                    type:"get",
-                    success:function (data2) {
-                        console.log(111,data2);
-                    }
-                });
-            }
-        })
-    }
-
-    // $.ajax({
-    //     url:"https://api.github.com/user?access_token=d36549fb6bd8abdc001576dbf13b78586069cfe4&scope=&token_type=bearer",
-    //     type:"get",
-    //     success:function (data2) {
-    //         console.log(111,data2);
-    //     }
-    // });
 
     window.global_utils = global_utils;
 });

@@ -31,10 +31,14 @@
                 state:getUrlParms("state"),
             },
             success:function (data) {
-                layer.msg("登录成功！");
-                setTimeout(function () {
-                    window.opener.document.getElementById("js-close_github").click();
-                },1500)
+                if(data.resultCode == 1){
+                    layer.msg("登录成功！");
+                    setTimeout(function () {
+                        window.opener.document.getElementById("js-close_github").click();
+                    },1500)
+                }else{
+                    layer.msg("登录失败，请重新尝试！");
+                }
             }
         })
     </script>
