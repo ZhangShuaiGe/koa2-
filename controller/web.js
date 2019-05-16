@@ -1,5 +1,6 @@
 const {resJson,md5,captchapng,dateformat} = require("./utils");
 const {jwtToken} = require("~/model/user");
+const {uuid} = require("~/model/utils");
 
 //网页抓取 url
 const request = require("request");
@@ -52,15 +53,14 @@ exports.apiLogin = async(ctx) => {
     }).then( data => {
         if (data) {
             // 存昵称node
-            let nikename = data.dataValues.username;
-
+            let {username,user_uuid} = data.dataValues;
             let token = jwtToken({
-                nikename:nikename,
-                email:email
+                nikename:username,
+                user_uuid:user_uuid
             });
 
             // 存昵称到客户端，全局要用, cookie 不能设置中文 ，转为 Unicode 字符串
-            ctx.cookies.set("nikename",encodeURI(nikename),{
+            ctx.cookies.set("nikename",encodeURI(username),{
                 maxAge:3*60*60*1000, //保持和session时间一致
                 httpOnly:false //设置为false 客户端 才可以读取到
             });
@@ -116,7 +116,8 @@ exports.apiRegister = async (ctx) => {
         defaults:{
             email: email,
             password: md5(password),
-            username: username
+            username: username,
+            user_uuid:uuid(),
         }
     })
     .spread((user, created) => {
@@ -131,20 +132,25 @@ exports.apiRegister = async (ctx) => {
 //回复
 exports.replay = async(ctx) => {
 
-    let {articleUuid,content} = ctx.request.body;
-
-    let {email,nikename} = ctx.user;
+    let {articleUuid,content,replay_uuid,parent_id} = ctx.request.body;
+    console.log(ctx.request.body);
+    let {user_uuid} = ctx.user;
     if(ctx.user){
         await ArticleReplyModel.create({
             articleUuid:articleUuid,
             reply_con: content,
-            email:email,
-            nikename:nikename
+            user_uuid:user_uuid,
+            replay_uuid:replay_uuid,
+            parent_id:parent_id,
         }).then( data => {
             resJson(ctx,1);
         }).catch(e =>{
             console.log("报错:" + e);
         });
+        //如果是二级回复
+        // if(replay_uuid){
+        //     slect whear from
+        // }
     } else {
         resJson(ctx,0,"请先登录！");
     }

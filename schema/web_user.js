@@ -9,6 +9,10 @@ module.exports = function (sequelize, DataTypes) {
             field:"id",
             comment:"自增id",
         },
+        user_uuid: {
+            type: DataTypes.STRING(34),
+            allowNull: false,
+        },
         username: {
             type: DataTypes.STRING,
             allowNull:false,

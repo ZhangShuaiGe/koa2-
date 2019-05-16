@@ -13,20 +13,6 @@ module.exports = function (sequelize, DataTypes) {
             allowNull: false,
             comment:'对应文章的uuid',
         },
-        nikename: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            comment:'昵称',
-        },
-        time:{
-            type: DataTypes.DATE,
-            allowNull: false,
-            defaultValue: DataTypes.NOW,
-            comment:'时间',
-            get() {
-                return moment(this.getDataValue('time')).format('YYYY-MM-DD HH:mm:ss');
-            }
-        },
         reply_con:{
             type:DataTypes.TEXT,
             allowNull: false,
@@ -37,15 +23,25 @@ module.exports = function (sequelize, DataTypes) {
                 },
             }
         },
-        email:{
-            type: DataTypes.STRING,
-            allowNull:false,
-            comment:'邮箱',
+        replay_uuid:{
+            type: DataTypes.STRING(34),
+            comment:'被回复人的uuid',
+            defaultValue:0,
         },
-        like:{
-            type: DataTypes.STRING,
-            defaultValue: 0,
-            comment:'点赞数',
+        user_uuid:{
+            type: DataTypes.STRING(34),
+            allowNull: false,
+            comment:'回复人的uuid',
+        },
+        parent_id:{
+            type: DataTypes.STRING(255),
+            comment:'回复对应留言的id',
+            defaultValue:0,
+        },
+        replay_sum:{
+            type: DataTypes.STRING(255),
+            comment:'一级留言被回复总数',
+            defaultValue:0,
         },
         createdAt: {
             type: DataTypes.DATE,

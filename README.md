@@ -24,7 +24,15 @@ update article_reply as A, article_content as B set A.articleUuid = B.uuid where
 2. 执行 alter table article_reply drop column articleId;
 
 
-
 3. 新添加了2个包， yarn install
 
 4. 修改代码中github的 授权登录地址为线上环境
+
+5. user 表 和 github_user 表 添加 uuid 字段
+UPDATE web_user SET user_uuid = (SELECT UUID());
+UPDATE web_user SET user_uuid = REPLACE(user_uuid,"-","");
+
+UPDATE github_user SET user_uuid = (SELECT UUID());
+UPDATE github_user SET user_uuid = REPLACE(user_uuid,"-","");
+
+6.注意 回复表 有无用字段删除， 检查表同步 是否正确。。。

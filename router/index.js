@@ -35,7 +35,7 @@ PostRouter.use( async (ctx,next) => {
             ctx.user = jwt.verify(ctx.headers.authorization, secret);  // 解密payload，获取存入的user信息
             //单点登录
             var status = await new Promise(function (resolve,reject) {
-                redisClient.get(ctx.user.email,async function (err,getToken) {
+                redisClient.get(ctx.user.user_uuid,async function (err,getToken) {
                     if(err) {
                         resJson(ctx,-1,"会话过期,请重新登录");
                         reject(false);

@@ -1,7 +1,7 @@
 const request = require("request");
 const {resJson} = require("~/controller/utils");
 const {jwtToken} = require("~/model/user");
-
+const uuidv1 = require('uuid/v1');
 /**
  * github 登录
  * @param ctx
@@ -50,6 +50,7 @@ exports.gethubLogin = async ctx => {
 
     //查询用户名是否存在, 不存在创建
     let {login,email,avatar_url,created_at} = github_val;
+    let uuid = uuidv1().replace(/\-/g,"");
     await githubUserModel.findOrCreate({
         where:{
             email: email,
@@ -58,7 +59,8 @@ exports.gethubLogin = async ctx => {
             username: login,
             email: email,
             avatar_url: avatar_url,
-            github_createTime: created_at
+            github_createTime: created_at,
+            uuid: uuid,
         }
     })
     .spread((user, created) => {

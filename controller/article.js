@@ -71,6 +71,7 @@ exports.articleDetail = async (ctx) =>{
             currentPage:currentPage
         });
 
+
         await Promise.all([articleDetail,reply]).then( val => {
             ctx.render("article/detail",{
                 "data":val[0],
