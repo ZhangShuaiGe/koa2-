@@ -47,6 +47,11 @@ module.exports = function (sequelize, DataTypes) {
                 },
             }
         },
+        avatar_url:{
+            type: DataTypes.STRING,
+            comment:"头像",
+            defaultValue:"",
+        },
         createdAt: {
             type: DataTypes.DATE,
             comment:'创建时间',

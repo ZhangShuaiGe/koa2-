@@ -79,19 +79,25 @@ exports.articleDetail = (uuid) => {
 };
 
 /**
- * @name 文章回复
- * @param id 文章id
+ * @name 文章回复列表
+ * @param articleUuid 文章id
  * @param pageSize
  * @param currentPage
  * @returns {Promise.<T>}
  */
-exports.articleReply = (...params) => {
+exports.getArticleReplyList = (...params) => {
     let articleUuid = params[0].articleUuid;
     let pageSize = params[0].pageSize || 15;
     let currentPage = params[0].currentPage || 1;
+    let parent_id = params[0].parent_id || 0; //默认一级回复
     function where() {
         if(articleUuid){
-            return {articleUuid: articleUuid};
+            return {
+                [Op.and]: [
+                    {articleUuid: articleUuid},
+                    {parent_id: parent_id}
+                ]
+            };
         }else{
             return {};
         }

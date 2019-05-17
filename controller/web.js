@@ -147,10 +147,6 @@ exports.replay = async(ctx) => {
         }).catch(e =>{
             console.log("报错:" + e);
         });
-        //如果是二级回复
-        // if(replay_uuid){
-        //     slect whear from
-        // }
     } else {
         resJson(ctx,0,"请先登录！");
     }

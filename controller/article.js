@@ -1,4 +1,6 @@
-const articleModel = require("~/model/article");
+const {
+    getArticleReplyList
+} = require("~/model/article");
 const {resJson} = require("~/controller/utils");
 
 /**
@@ -87,12 +89,15 @@ exports.articleDetail = async (ctx) =>{
 };
 
 /**
- * @name 文章回复
+ * @name 文章回复列表
  * @returns {Promise.<void>}
  */
-exports.articleReply = async (ctx) => {
-    let {id} = ctx.request.body;
-    let data = await articleModel.articleReply({id:id});
+exports.getArticleReplyList = async (ctx) => {
+    let {articleUuid,parent_id} = ctx.request.body;
+    let data = await getArticleReplyList({
+        articleUuid:articleUuid,
+        parent_id:parent_id
+    });
     if(data.name == "SequelizeDatabaseError"){
         resJson(ctx,0,"留言列表查询出错！");
         return ;

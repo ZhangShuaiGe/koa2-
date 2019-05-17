@@ -24,3 +24,13 @@ exports.jwtToken = (...params) => {
     redisClient.expire(user_uuid, 3 * 60 * 60); //过期时间3小时
     return token;
 };
+
+//查询用户信息
+exports.getUser = (...params) => {
+    let {user_uuid} = params[0];
+    WebUserModel.findOne({
+
+    })
+    // WebUserModel
+    // githubUserModel
+};
