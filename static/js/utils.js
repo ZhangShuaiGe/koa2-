@@ -40,7 +40,7 @@ $(function () {
     //github登陆点击
     var new_window = null;
     $(".js-githubLogin").on("click",function () {
-        let Url = "https://github.com/login/oauth/authorize?client_id=cd5ff8839b5e6448b7f3&redirect=https://www.zhangshuaige.top/githubLogin&state=" + Math.random();
+        let Url = "https://github.com/login/oauth/authorize?client_id=cd5ff8839b5e6448b7f3&redirect=https://www.zhangshuaige.top/user/githubLogin&state=" + Math.random();
         let config = 'height=600, width=600, top=0, left=0';
         new_window = window.open(Url,'newWindow',config);
         return false;

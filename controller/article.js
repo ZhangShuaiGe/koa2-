@@ -1,6 +1,4 @@
-const {
-    getArticleReplyList
-} = require("~/model/article");
+const articleModel = require("~/model/article");
 const {resJson} = require("~/controller/utils");
 
 /**
@@ -68,7 +66,7 @@ exports.articleDetail = async (ctx) =>{
         let articleDetail = articleModel.articleDetail(id);
 
         // 回复数据
-        let reply = articleModel.articleReply({
+        let reply = articleModel.getArticleReplyList({
             articleUuid:id,
             currentPage:currentPage
         });
@@ -94,7 +92,7 @@ exports.articleDetail = async (ctx) =>{
  */
 exports.getArticleReplyList = async (ctx) => {
     let {articleUuid,parent_id} = ctx.request.body;
-    let data = await getArticleReplyList({
+    let data = await articleModel.getArticleReplyList({
         articleUuid:articleUuid,
         parent_id:parent_id
     });

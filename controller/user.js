@@ -1,6 +1,6 @@
 const request = require("request");
 const {resJson} = require("~/controller/utils");
-const {jwtToken} = require("~/model/user");
+const {jwtToken,queryGithubUser,queryUser} = require("~/model/user");
 const uuidv1 = require('uuid/v1');
 /**
  * github 登录
@@ -99,4 +99,34 @@ exports.gethubLogin = async ctx => {
  */
 exports.showGethubLogin = ctx => {
     ctx.render("user/githubLogin")
+};
+
+/**
+ *查询github用户信息
+ * @param ctx
+ */
+exports.queryGithubUser = async ctx => {
+    let data = await queryGithubUser({
+        user_uuid: ctx.request.body.user_uuid
+    })
+    if(data){
+        resJson(ctx,1,data);
+    }else{
+        resJson(ctx,0,"查询失败！");
+    }
+};
+
+/**
+ *查询 注册 用户信息
+ * @param ctx
+ */
+exports.queryUser = async ctx => {
+    let data = await queryUser({
+        user_uuid: ctx.request.body.user_uuid
+    })
+    if(data){
+        resJson(ctx,1,data);
+    }else{
+        resJson(ctx,0,"查询失败！");
+    }
 };

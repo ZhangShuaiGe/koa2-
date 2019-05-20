@@ -25,12 +25,60 @@ exports.jwtToken = (...params) => {
     return token;
 };
 
-//查询用户信息
-exports.getUser = (...params) => {
+//查询注册用户信息
+exports.queryUser = async (...params) => {
     let {user_uuid} = params[0];
-    WebUserModel.findOne({
+    return new Promise((resolve,reject)=>{
+        WebUserModel.findOne({
+            where:{
+                user_uuid: user_uuid
+            }
+        }).then(data => {
+            resolve(data);
+        })
+    }).then( data => {
+        return data;
+    }).catch(e => {
+        return false;
+    });
+};
 
-    })
-    // WebUserModel
-    // githubUserModel
+//查询 github 用户信息
+exports.queryGithubUser = async (...params) => {
+    let {user_uuid} = params[0];
+    return new Promise((resolve,reject)=>{
+        githubUserModel.findOne({
+            where:{
+                user_uuid: user_uuid
+            }
+        }).then(data => {
+            resolve(data);
+        }).catch( e => {
+            reject(false);
+        })
+    }).then( data => {
+        return data;
+    }).catch(e => {
+        return false;
+    });
+};
+
+//查询注册过来的用户信息
+exports.queryUser = async (...params) => {
+    let {user_uuid} = params[0];
+    return new Promise((resolve,reject)=>{
+        WebUserModel.findOne({
+            where:{
+                user_uuid: user_uuid
+            }
+        }).then(data => {
+            resolve(data);
+        }).catch( e => {
+            reject(false);
+        })
+    }).then( data => {
+        return data;
+    }).catch(e => {
+        return false;
+    });
 };
