@@ -144,4 +144,35 @@ exports.articleReplyDelete = (...params) => {
     })
 };
 
+/**
+ * 添加回复
+ * @param params
+ * @returns {Promise.<T>}
+ */
+exports.articleReplyAdd = async (...params) => {
+    let {articleUuid,
+        content,
+        replay_uuid,
+        parent_id,
+        user_userName,
+        replay_userName,
+        user_uuid
+    } = params[0];
+    return await ArticleReplyModel.create({
+        articleUuid:articleUuid,
+        reply_con: content,
+        user_uuid:user_uuid,
+        replay_uuid:replay_uuid,
+        parent_id:parent_id,
+        replay_userName:replay_userName,
+        user_userName:user_userName,
+    }).then( data => {
+        return true;
+    }).catch(e =>{
+        error_logger.error("留言添加报错：" + err);
+        console.log("报错:" + e);
+        return false;
+    });
+};
+
 

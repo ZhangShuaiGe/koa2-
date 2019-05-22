@@ -1,5 +1,6 @@
 const {resJson,md5,captchapng,dateformat} = require("./utils");
 const {jwtToken} = require("~/model/user");
+const {articleReplyAdd} = require("~/model/article");
 const {uuid} = require("~/model/utils");
 
 //网页抓取 url
@@ -55,10 +56,9 @@ exports.apiLogin = async(ctx) => {
             // 存昵称node
             let {username,user_uuid} = data.dataValues;
             let token = jwtToken({
-                nikename:username,
-                user_uuid:user_uuid
+                user_name:username,
+                user_uuid:user_uuid,
             });
-
             // 存昵称到客户端，全局要用, cookie 不能设置中文 ，转为 Unicode 字符串
             ctx.cookies.set("nikename",encodeURI(username),{
                 maxAge:3*60*60*1000, //保持和session时间一致
@@ -132,21 +132,28 @@ exports.apiRegister = async (ctx) => {
 //回复
 exports.replay = async(ctx) => {
 
-    let {articleUuid,content,replay_uuid,parent_id} = ctx.request.body;
-    console.log(ctx.request.body);
-    let {user_uuid} = ctx.user;
+    let {articleUuid,
+        content,
+        replay_uuid,
+        parent_id,
+        replay_userName,
+    } = ctx.request.body;
     if(ctx.user){
-        await ArticleReplyModel.create({
+        console.log(ctx.user);
+        let data = await articleReplyAdd({
             articleUuid:articleUuid,
-            reply_con: content,
-            user_uuid:user_uuid,
             replay_uuid:replay_uuid,
-            parent_id:parent_id,
-        }).then( data => {
-            resJson(ctx,1);
-        }).catch(e =>{
-            console.log("报错:" + e);
+            content:content,
+            parent_id:parent_id || 0,
+            user_uuid: ctx.user.user_uuid,
+            user_userName: ctx.user.user_name,
+            replay_userName:replay_userName,
         });
+        if(data){
+            resJson(ctx,1);
+        }else{
+            resJson(ctx,0,data);
+        }
     } else {
         resJson(ctx,0,"请先登录！");
     }

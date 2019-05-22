@@ -26,12 +26,20 @@ module.exports = function (sequelize, DataTypes) {
         replay_uuid:{
             type: DataTypes.STRING(34),
             comment:'被回复人的uuid',
-            defaultValue:0,
+            defaultValue:"",
+        },
+        replay_userName:{
+            type: DataTypes.STRING(255),
+            comment:'被回复人的用户名',
+            defaultValue:"",
         },
         user_uuid:{
             type: DataTypes.STRING(34),
-            allowNull: false,
             comment:'回复人的uuid',
+        },
+        user_userName:{
+            type: DataTypes.STRING(255),
+            comment:'回复人的用户名',
         },
         parent_id:{
             type: DataTypes.STRING(255),

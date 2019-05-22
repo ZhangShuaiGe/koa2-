@@ -50,11 +50,11 @@
                                 </a>
                                 <div class="fly-detail-user">
                                     <a href="" class="fly-link">
-                                        <cite>{{$value.nikename}}</cite>
+                                        <cite>{{$value.user_userName}}</cite>
                                     </a>
                                 </div>
                                 <div class="detail-hits">
-                                    <span>{{$value.time}}</span>
+                                    <span>{{$value.createdAt}}</span>
                                 </div>
                             </div>
                             <div class="detail-body jieda-body photos markdown-body">
@@ -72,10 +72,15 @@
 
                                 <div class="ui-textarea-box js-textarea" style="display: none">
                                     <form action="/replay" method="post" class="js-replay-form ui-replay-form">
-                                        <textarea name="content" required lay-verify="required" placeholder="请输入内容"  class="layui-textarea fly-editor js-replay-text" style="height: 150px;margin-bottom: 20px"> @{{$value.nikename}}： </textarea>
+                                        <textarea name="content" required lay-verify="required" placeholder="请输入内容"  class="layui-textarea fly-editor js-replay-text" style="height: 150px;margin-bottom: 20px"></textarea>
                                         <!--文章id-->
                                         <input type="hidden" name="articleId" value="{{data.id}}">
-                                        <a href="javascript:;" class="layui-btn js-replay-submit">提交回复</a>
+                                        <a href="javascript:;"
+                                           data-userName="{{$value.user_userName}}"
+                                           data-userId="{{$value.user_uuid}}"
+                                           class="layui-btn js-replay-submit">
+                                            提交回复
+                                        </a>
                                     </form>
                                 </div>
                                 <!--<div class="jieda-admin">-->
@@ -116,14 +121,22 @@
             }
             //留言和回复
             $(".js-replay-submit").on("click",function(){
+                //用户名
+                var userName = $(this).attr("data-userName");
+                //用户id
+                var userid = $(this).attr("data-userId");
+                //内容
                 var text = layui.fly.content($(this).siblings(".js-replay-text").val());
+                //文章id
                 var articleUuid = getQueryString("id");
                 if(text){
                     http({
                         "url":"/replay",
                         "data":{
                             "content": text,
-                            "articleUuid": articleUuid
+                            "articleUuid": articleUuid,
+                            "user_userName":userName,
+                            "user_uuid":userid,
                         },
                     },function (data) {
                         window.location.reload();

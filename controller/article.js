@@ -71,8 +71,8 @@ exports.articleDetail = async (ctx) =>{
             currentPage:currentPage
         });
 
-
         await Promise.all([articleDetail,reply]).then( val => {
+            console.log(111,val[1].rows);
             ctx.render("article/detail",{
                 "data":val[0],
                 "count":val[1].count,
@@ -96,6 +96,7 @@ exports.getArticleReplyList = async (ctx) => {
         articleUuid:articleUuid,
         parent_id:parent_id
     });
+
     if(data.name == "SequelizeDatabaseError"){
         resJson(ctx,0,"留言列表查询出错！");
         return ;

@@ -7,11 +7,11 @@ const secret = 'jwtlihailewodege'; //加密规则
  * @returns token
  */
 exports.jwtToken = (...params) => {
-    let {user_uuid,nikename} = params[0];
+    let {user_uuid,user_name} = params[0];
     // 创建token
     let token = jwt.sign({
         user_uuid: user_uuid,
-        nikename:nikename,
+        user_name:user_name,
     }, secret ,{ expiresIn: 3 * 60 * 60 });
 
     redisClient.set(user_uuid,token,function (err,res) {
