@@ -22,7 +22,7 @@ $(function () {
 
     //菜单 列表
     http({
-        "url":"/menuList"
+        "url":"/api/menuList"
     },function (data) {
         for (var i = 0 ; i < data.length; i++) {
             var type = global_utils.getUrlParms("type");
@@ -37,7 +37,7 @@ $(function () {
 
     // 友情链接 列表
     http({
-        "url":"/blogrollList"
+        "url":"/api/blogrollList"
     },function (data) {
         data.forEach(function (res) {
             $(".js-friendship").append(
@@ -50,7 +50,7 @@ $(function () {
 
     //工具库 列表
     http({
-        "url":"/toolList"
+        "url":"/api/toolList"
     },function (data) {
         data.forEach(function (res) {
             $(".js-toollist").append(

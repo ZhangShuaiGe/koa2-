@@ -139,14 +139,13 @@ exports.replay = async(ctx) => {
         replay_userName,
     } = ctx.request.body;
     if(ctx.user){
-        console.log(ctx.user);
         let data = await articleReplyAdd({
             articleUuid:articleUuid,
-            replay_uuid:replay_uuid,
             content:content,
             parent_id:parent_id || 0,
             user_uuid: ctx.user.user_uuid,
             user_userName: ctx.user.user_name,
+            replay_uuid:replay_uuid,
             replay_userName:replay_userName,
         });
         if(data){

@@ -49,7 +49,7 @@
                                          alt=" ">
                                 </a>
                                 <div class="fly-detail-user">
-                                    <a href="" class="fly-link">
+                                    <a href="javascript:;" class="fly-link">
                                         <cite>{{$value.user_userName}}</cite>
                                     </a>
                                 </div>
@@ -69,13 +69,28 @@
                                     <i class="iconfont icon-svgmoban53"></i>
                                     回复
                                 </span>
-
+                                {{if $value.replay_sum > 0}}
+                                <span type="reply" class="js-reply-child" data-parentId="{{$value.id}}">
+                                    <i class="iconfont icon-svgmoban53"></i>
+                                    显示回帖({{$value.replay_sum}})
+                                </span>
+                                <ul class="js-reply-ul-list ui-reply-ul-list">
+                                    <li>
+                                        <a href="javascript:;" data-id="cab6c78077ab11e996b7bdd96eb92cb4">张帅</a>
+                                        ：牛啊
+                                        <div>
+                                            <a href="javascript:;">回复</a>
+                                        </div>
+                                    </li>
+                                </ul>
+                                {{/if}}
                                 <div class="ui-textarea-box js-textarea" style="display: none">
                                     <form action="/replay" method="post" class="js-replay-form ui-replay-form">
                                         <textarea name="content" required lay-verify="required" placeholder="请输入内容"  class="layui-textarea fly-editor js-replay-text" style="height: 150px;margin-bottom: 20px"></textarea>
                                         <!--文章id-->
                                         <input type="hidden" name="articleId" value="{{data.id}}">
                                         <a href="javascript:;"
+                                           data-parentId="{{$value.id}}"
                                            data-userName="{{$value.user_userName}}"
                                            data-userId="{{$value.user_uuid}}"
                                            class="layui-btn js-replay-submit">
@@ -119,24 +134,28 @@
                 var r = window.location.search.substr(1).match(reg);
                 if(r!=null)return  unescape(r[2]); return null;
             }
+            //文章id
+            var articleUuid = getQueryString("id");
             //留言和回复
             $(".js-replay-submit").on("click",function(){
                 //用户名
                 var userName = $(this).attr("data-userName");
                 //用户id
                 var userid = $(this).attr("data-userId");
+                //评论id
+                var parent_id = $(this).attr("data-parentid");
                 //内容
                 var text = layui.fly.content($(this).siblings(".js-replay-text").val());
-                //文章id
-                var articleUuid = getQueryString("id");
+
                 if(text){
                     http({
-                        "url":"/replay",
+                        "url":"/api/replay",
                         "data":{
                             "content": text,
                             "articleUuid": articleUuid,
-                            "user_userName":userName,
-                            "user_uuid":userid,
+                            "replay_userName":userName,
+                            "replay_uuid":userid,
+                            "parent_id":parent_id,
                         },
                     },function (data) {
                         window.location.reload();
@@ -155,6 +174,34 @@
             //调用分页
             var page_count = $(".js-page-count").val();
             global_utils.page(page_count,".js-pages");
+
+            //点击显示回帖
+            $(".js-reply-child").on("click",function () {
+                $(".js-reply-ul-list").show();
+                //评论id
+                var parent_id = $(this).attr("data-parentid");
+                var _this = this;
+                http({
+                    url:"/getArticleReplyList",
+                    data:{
+                        articleUuid:articleUuid,
+                        parent_id: parent_id,
+                    },
+                },function (data) {
+                    $(_this).hide();
+//                <a href="javascript:;" data-id="${val.replay_uuid}">${val.replay_userName}</a>
+                    data.rows.forEach((val,key) => {
+                        $(_this).siblings(".js-reply-ul-list").append(`
+                            <li>
+                                <a href="javascript:;" data-id="${val.user_uuid}">${val.user_userName}</a>
+                                回复
+
+                                ：${val.reply_con}
+                            </li>
+                        `)
+                    });
+                });
+            });
        })
     </script>
 {{/block}}

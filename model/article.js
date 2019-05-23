@@ -158,6 +158,10 @@ exports.articleReplyAdd = async (...params) => {
         replay_userName,
         user_uuid
     } = params[0];
+    //更新留言条数信息
+    if(parent_id){
+        sequelize.query(`update article_reply set replay_sum = replay_sum+1 where id = ${parent_id}`);
+    }
     return await ArticleReplyModel.create({
         articleUuid:articleUuid,
         reply_con: content,

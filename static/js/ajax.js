@@ -2,7 +2,7 @@
     function http(setting,callback) {
         $.ajax({
             type: setting.type || "post",
-            url: "/api" + setting.url,
+            url: setting.url,
             data: setting.data,
             async: setting.async || false,
             headers: {'Authorization': $.cookie('token')},
