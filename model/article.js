@@ -64,6 +64,8 @@ exports.articleList = (...params) => {
  * @returns {Promise.<T>}
  */
 exports.articleDetail = (uuid) => {
+    //阅读+1
+    this.articleRead(uuid);
     return ArticleModel.findOne({
         include: [{
             model: ArticleTypeModel,
@@ -118,8 +120,8 @@ exports.getArticleReplyList = (...params) => {
  * @name 文章阅读 +1
  * @param id
  */
-exports.articleRead = (id) => {
-    sequelize.query(`update article_content set browse = browse+1 where id = ${ctx.query.id}`);
+exports.articleRead = (uuid) => {
+    sequelize.query(`update article_content set browse = browse+1 where uuid = '${uuid}'`);
 };
 
 /**

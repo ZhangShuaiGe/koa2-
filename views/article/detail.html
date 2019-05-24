@@ -49,7 +49,7 @@
                                          alt=" ">
                                 </a>
                                 <div class="fly-detail-user">
-                                    <a href="javascript:;" class="fly-link">
+                                    <a href="javascript:;" data-userName="{{$value.user_uuid}}" class="fly-link">
                                         <cite>{{$value.user_userName}}</cite>
                                     </a>
                                 </div>
@@ -70,18 +70,12 @@
                                     回复
                                 </span>
                                 {{if $value.replay_sum > 0}}
-                                <span type="reply" class="js-reply-child" data-parentId="{{$value.id}}">
+                                <span type="reply" class="js-reply-child" data-userId="{{$value.user_uuid}}" data-parentId="{{$value.id}}">
                                     <i class="iconfont icon-svgmoban53"></i>
                                     显示回帖({{$value.replay_sum}})
                                 </span>
                                 <ul class="js-reply-ul-list ui-reply-ul-list">
-                                    <li>
-                                        <a href="javascript:;" data-id="cab6c78077ab11e996b7bdd96eb92cb4">张帅</a>
-                                        ：牛啊
-                                        <div>
-                                            <a href="javascript:;">回复</a>
-                                        </div>
-                                    </li>
+
                                 </ul>
                                 {{/if}}
                                 <div class="ui-textarea-box js-textarea" style="display: none">
@@ -147,6 +141,7 @@
                 //内容
                 var text = layui.fly.content($(this).siblings(".js-replay-text").val());
 
+                return ;
                 if(text){
                     http({
                         "url":"/api/replay",
@@ -171,15 +166,26 @@
                 $(this).parent().find(".js-textarea").slideToggle("400");
             });
 
+            //子回复
+            $("body").on("click",".js-reply-child-btn",function () {
+                var userId = $(this).attr("data-userId");
+                var userName = $(this).attr("data-userName");
+                $(this).parents(".ui-reply-ul-list").siblings(".js-textarea").find(".js-replay-text").text("@"+userName+"：");
+                $(this).parents(".ui-reply-ul-list").siblings(".js-textarea").slideToggle("400");
+                $(this).parents(".ui-reply-ul-list").siblings(".js-textarea").find(".js-replay-submit").attr("data-userId",userId);
+                $(this).parents(".ui-reply-ul-list").siblings(".js-textarea").find(".js-replay-submit").attr("data-userName",userName);
+            });
+
             //调用分页
             var page_count = $(".js-page-count").val();
             global_utils.page(page_count,".js-pages");
 
             //点击显示回帖
             $(".js-reply-child").on("click",function () {
-                $(".js-reply-ul-list").show();
+                $(this).siblings(".js-reply-ul-list").show();
                 //评论id
                 var parent_id = $(this).attr("data-parentid");
+                var userid = $(this).attr("data-userid");
                 var _this = this;
                 http({
                     url:"/getArticleReplyList",
@@ -189,15 +195,33 @@
                     },
                 },function (data) {
                     $(_this).hide();
-//                <a href="javascript:;" data-id="${val.replay_uuid}">${val.replay_userName}</a>
                     data.rows.forEach((val,key) => {
                         $(_this).siblings(".js-reply-ul-list").append(`
-                            <li>
-                                <a href="javascript:;" data-id="${val.user_uuid}">${val.user_userName}</a>
-                                回复
-
-                                ：${val.reply_con}
-                            </li>
+                            ${
+                                userid == val.replay_uuid?
+                                `
+                                 <li>
+                                    <a href="javascript:;" data-id="${val.user_uuid}">${val.user_userName}</a>
+                                      ：${val.reply_con}
+                                    <div>
+                                        <a data-userId="${val.user_uuid}" data-userName="${val.user_userName}" class="js-reply-child-btn" href="javascript:;">回复</a>
+                                        <a data-userId="${val.user_uuid}" href="javascript:;">删除</a>
+                                    </div>
+                                 </li>
+                              `:
+                                `
+                                <li>
+                                    <a href="javascript:;" data-id="${val.user_uuid}">${val.user_userName}</a>
+                                    回复
+                                     <a href="javascript:;" data-id="${val.replay_uuid}">${val.replay_userName}</a>
+                                    ：${val.reply_con}
+                                    <div>
+                                        <a data-userId="${val.user_uuid}" data-userName="${val.user_userName}" class="js-reply-child-btn" href="javascript:;">回复</a>
+                                        <a data-userId="${val.user_uuid}" href="javascript:;">删除</a>
+                                    </div>
+                                </li>
+                                `
+                            }
                         `)
                     });
                 });
