@@ -2,6 +2,7 @@ const request = require("request");
 const {resJson} = require("~/controller/utils");
 const {jwtToken,queryGithubUser,queryUser} = require("~/model/user");
 const uuidv1 = require('uuid/v1');
+const {articleReplyDelete} = require("~/model/article");
 /**
  * github 登录
  * @param ctx

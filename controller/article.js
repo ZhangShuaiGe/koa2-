@@ -105,10 +105,18 @@ exports.getArticleReplyList = async (ctx) => {
 
 /**
  *
- * @name 删除留言
+ * @name 删除指定id留言
  * @returns {Promise.<void>}
  */
 exports.articleReplyDelete = async (ctx) => {
-    let {id} = ctx.request.body;
-    let data = await articleModel.articleReplyDelete(id);
+    let {id,parent_id} = ctx.request.body;
+    let data = await articleModel.articleReplyDelete({
+        id:id,
+        parent_id:parent_id,
+    });
+    if(data){
+        resJson(ctx,1);
+    }else{
+        resJson(ctx,0,"留言删除失败");
+    }
 };

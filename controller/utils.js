@@ -35,7 +35,7 @@ exports.resJson = (ctx,code,data,sql) => {
     if(code == "1"){
        ctx.body = {
            "resultCode":1,
-           "resultdata":data
+           "resultdata":data || "",
        };
        return;
     }else if(code == "0"){

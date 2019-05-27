@@ -7,5 +7,7 @@ router.post("/articleList", article.articleList);
 router.all("/articleDetail", article.articleDetail);
 //查询文章留言列表
 router.post("/getArticleReplyList", article.getArticleReplyList);
+//删除指定id的留言
+router.post("/deleteReply",article.articleReplyDelete);
 
 exports.articleRouter = router;

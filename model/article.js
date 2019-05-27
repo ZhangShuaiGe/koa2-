@@ -125,12 +125,17 @@ exports.articleRead = (uuid) => {
 };
 
 /**
- * @name 删除指定文章的全部留言
+ * @name 删除指定文章的全部留言，或单条留言
  * @param articleUuid
  */
 exports.articleReplyDelete = (...params) => {
     let id = params[0].id;
+    let parent_id = params[0].parent_id;
     let articleUuid = params[0].articleUuid;
+    if(id){
+        //刪除单条子留言，回复数 -1
+        sequelize.query(`update article_reply set replay_sum = replay_sum-1 where id = '${parent_id}' and replay_sum > 0`);
+    }
     return ArticleReplyModel.destroy({
         where:{
             [Op.or]: [
@@ -142,7 +147,7 @@ exports.articleReplyDelete = (...params) => {
         return data;
     }).catch( err => {
         error_logger.error("留言删除报错：" + err);
-        return err;
+        return false;
     })
 };
 

@@ -69,15 +69,14 @@
                                     <i class="iconfont icon-svgmoban53"></i>
                                     回复
                                 </span>
-                                {{if $value.replay_sum > 0}}
-                                <span type="reply" class="js-reply-child" data-userId="{{$value.user_uuid}}" data-parentId="{{$value.id}}">
+
+                                <span type="reply" {{if $value.replay_sum <= 0}}hidden{{/if}} class="js-reply-child" data-userId="{{$value.user_uuid}}" data-parentId="{{$value.id}}">
                                     <i class="iconfont icon-svgmoban53"></i>
                                     显示回帖({{$value.replay_sum}})
                                 </span>
                                 <ul class="js-reply-ul-list ui-reply-ul-list">
 
                                 </ul>
-                                {{/if}}
                                 <div class="ui-textarea-box js-textarea" style="display: none">
                                     <form action="/replay" method="post" class="js-replay-form ui-replay-form">
                                         <textarea name="content" required lay-verify="required" placeholder="请输入内容"  class="layui-textarea fly-editor js-replay-text" style="height: 150px;margin-bottom: 20px"></textarea>
@@ -139,9 +138,9 @@
                 //评论id
                 var parent_id = $(this).attr("data-parentid");
                 //内容
-                var text = layui.fly.content($(this).siblings(".js-replay-text").val());
+                var text = layui.fly.content($(this).siblings(".js-replay-text").val().replace(/^@[^：]{1,30}\:/,""));
+                var _this = this;
 
-                return ;
                 if(text){
                     http({
                         "url":"/api/replay",
@@ -153,7 +152,11 @@
                             "parent_id":parent_id,
                         },
                     },function (data) {
-                        window.location.reload();
+                        if(parent_id){
+                            $(_this).parents(".js-textarea").siblings(".js-reply-child").click();
+                        }else{
+                            window.location.reload();
+                        }
                     });
                 }else{
                     layer.msg("请输入留言内容");
@@ -170,7 +173,7 @@
             $("body").on("click",".js-reply-child-btn",function () {
                 var userId = $(this).attr("data-userId");
                 var userName = $(this).attr("data-userName");
-                $(this).parents(".ui-reply-ul-list").siblings(".js-textarea").find(".js-replay-text").text("@"+userName+"：");
+                $(this).parents(".ui-reply-ul-list").siblings(".js-textarea").find(".js-replay-text").text("@"+userName+":");
                 $(this).parents(".ui-reply-ul-list").siblings(".js-textarea").slideToggle("400");
                 $(this).parents(".ui-reply-ul-list").siblings(".js-textarea").find(".js-replay-submit").attr("data-userId",userId);
                 $(this).parents(".ui-reply-ul-list").siblings(".js-textarea").find(".js-replay-submit").attr("data-userName",userName);
@@ -185,7 +188,10 @@
                 $(this).siblings(".js-reply-ul-list").show();
                 //评论id
                 var parent_id = $(this).attr("data-parentid");
+                //一级评论的用户user_id;
                 var userid = $(this).attr("data-userid");
+                //当前登录用户的user_id;
+                var user_uuid = decodeURI($.cookie("user_uuid"));
                 var _this = this;
                 http({
                     url:"/getArticleReplyList",
@@ -195,6 +201,8 @@
                     },
                 },function (data) {
                     $(_this).hide();
+                    //先清空
+                    $(_this).siblings(".js-reply-ul-list").html("");
                     data.rows.forEach((val,key) => {
                         $(_this).siblings(".js-reply-ul-list").append(`
                             ${
@@ -204,8 +212,10 @@
                                     <a href="javascript:;" data-id="${val.user_uuid}">${val.user_userName}</a>
                                       ：${val.reply_con}
                                     <div>
-                                        <a data-userId="${val.user_uuid}" data-userName="${val.user_userName}" class="js-reply-child-btn" href="javascript:;">回复</a>
-                                        <a data-userId="${val.user_uuid}" href="javascript:;">删除</a>
+                                        ${user_uuid == val.user_uuid?`
+                                            <a class="js-delete-replay" data-parentId="${val.parent_id}" data-id="${val.id}" href="javascript:;">删除</a>`
+                                        :
+                                        `<a data-userId="${val.user_uuid}" data-userName="${val.user_userName}" class="js-reply-child-btn" href="javascript:;">回复</a>`}
                                     </div>
                                  </li>
                               `:
@@ -216,8 +226,12 @@
                                      <a href="javascript:;" data-id="${val.replay_uuid}">${val.replay_userName}</a>
                                     ：${val.reply_con}
                                     <div>
-                                        <a data-userId="${val.user_uuid}" data-userName="${val.user_userName}" class="js-reply-child-btn" href="javascript:;">回复</a>
-                                        <a data-userId="${val.user_uuid}" href="javascript:;">删除</a>
+
+                                        ${user_uuid == val.user_uuid?`
+                                            <a class="js-delete-replay" data-parentId="${val.parent_id}" data-id="${val.id}" href="javascript:;">删除</a>`
+                                        :
+                                            `<a data-userId="${val.user_uuid}" data-userName="${val.user_userName}" class="js-reply-child-btn" href="javascript:;">回复</a>`}
+
                                     </div>
                                 </li>
                                 `
@@ -225,6 +239,23 @@
                         `)
                     });
                 });
+            });
+
+            //删除回帖
+            $("body").on("click",".js-delete-replay",function () {
+                var replay_id = $(this).attr("data-id");
+                var parent_id = $(this).attr("data-parentid");
+                var _this = this;
+                http({
+                    url:"/deleteReply",
+                    data:{
+                        id: replay_id,
+                        parent_id: parent_id,
+                    }
+                },function (data) {
+                    layer.msg("删除成功！");
+                    $(_this).parent().parent().remove();
+                })
             });
        })
     </script>

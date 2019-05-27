@@ -71,6 +71,12 @@ exports.apiLogin = async(ctx) => {
                 httpOnly:false
             });
 
+            //token 客户端要读取放到 header 里 ，cookie不可以跨域
+            ctx.cookies.set("user_uuid",user_uuid,{
+                maxAge:3*60*60*1000,
+                httpOnly:false
+            });
+
             resJson(ctx,1);
         } else {
             resJson(ctx,0,"用户名或密码错误！");
