@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>博客在线聊天室</title>
+    <script src="/lib/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.dev.js"></script>
+</head>
+<body>
+<!--房间1-->
+<div>
+    <div class="content">
+
+    </div>
+
+    <textarea name="" class="text" cols="30" rows="10"></textarea>
+    <button class="submit">提交</button>
+</div>
+<!--房间2-->
+<div style="margin-top: 50px">
+    <div class="content2">
+
+    </div>
+
+    <textarea name="" class="text2" cols="30" rows="10"></textarea>
+    <button class="submit2">提交</button>
+</div>
+
+<script>
+    //emit 推送给服务器消息
+    //on 监听 news 频道
+//    var socket = io('http://127.0.0.1:3000/');
+//    socket.on('server', function (data) {
+//        $("#content").append(`<p>${data}</p>`)
+//    });
+//
+//    socket.on('client', function (data) {
+//        $("#content").append(`<p>${data}</p>`)
+//    });
+//
+//    $(".submit").on("click",function () {
+//        var text = $(".text").val();
+//        socket.emit("client",text);
+//    });
+    var socket3 = io('http://127.0.0.1:3000/');
+    socket3.on('user connected', function (data) {
+        console.log(111,data);
+    });
+
+
+    var socket = io.connect('http://127.0.0.1:3000/chat');
+    var socket2 = io.connect('http://127.0.0.1:3000/news');
+    socket.on('server', function (data) {
+        $(".content").append(`<p>${data}</p>`)
+    });
+
+    socket.on('client', function (data) {
+        $(".content").append(`<p>${data}</p>`)
+    });
+
+    $(".submit").on("click",function () {
+        var text = $(".text").val();
+        socket.emit("client",text);
+    });
+
+    socket2.on("server",function (data) {
+        $(".content2").append(`<p>${data}</p>`)
+    });
+    socket2.on('client', function (data) {
+        $(".content2").append(`<p>${data}</p>`)
+    });
+
+    $(".submit2").on("click",function () {
+        var text = $(".text2").val();
+        socket2.emit("client",text);
+    });
+
+</script>
+</body>
+</html>

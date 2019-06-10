@@ -11,7 +11,35 @@ const userRouter = require("./router/user.js");
 const admin = require("./router/admin");
 const setting = require("./config/setting");
 // const https = require("https");
-const http = require("http");
+const server = require('http').createServer(app.callback());
+
+const io = require('socket.io')(server);
+
+const chat = io.of("/chat").on('connection', function (socket) {
+
+    socket.emit('server',"欢迎进入房间1");
+
+    socket.on('client', function (from, msg , fn) {
+        chat.emit('client',from);
+    });
+
+
+});
+
+const news = io.of("/news").on('connection', function (socket) {
+
+    socket.emit('server',"欢迎来到房间2");
+
+    socket.on('client', function (from, msg) {
+        news.emit('client',from);
+    });
+
+
+});
+
+
+
+
 // const fs = require("fs");
 // const koaBody = require("koa-body");
 
@@ -149,7 +177,7 @@ app.on('error', err => {
 
 
 //开发 http
-http.createServer(app.callback()).listen(3000,function (err) {
+server.listen(3000,function (err) {
     if(err){
         error_logger.error(err);
     }

@@ -131,3 +131,12 @@ exports.queryUser = async ctx => {
         resJson(ctx,0,"查询失败！");
     }
 };
+
+/**
+ * 聊天室
+ *
+ */
+exports.chatroom = ctx => {
+    ctx.render("chatRoom/index");
+};
+

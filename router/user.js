@@ -1,5 +1,6 @@
 const Router = require('koa-router');
 const user = require("~/controller/user");
+
 const router = new Router({
     prefix: '/user'
 });
@@ -12,5 +13,6 @@ router.post("/queryGithubUser",user.queryGithubUser);
 router.post("/queryUser",user.queryUser);
 //github 登录过度页
 router.get("/githubLogin",user.showGethubLogin);
-
+//聊天室
+router.get("/chatroom",user.chatroom);
 module.exports = router;
