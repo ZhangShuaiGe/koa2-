@@ -21,13 +21,14 @@ exports.gethubLogin = async ctx => {
                 }
             }, function (err,httpResponse,body) {
                 if(err){
-                    error(err);
+                    error_logger.error(err);
                     return;
                 }
                 console.log(body);
                 resolve(body);
             })
         } catch (e) {
+            error_logger.error(err);
             console.log("报错：" + e);
             reject(e);
         }
