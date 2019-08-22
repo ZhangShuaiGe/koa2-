@@ -22,14 +22,15 @@ exports.gethubLogin = async ctx => {
             }, function (err,httpResponse,body) {
                 if(err){
                     error_logger.error(err);
+                    console.log("报错1：",err)
                     return;
                 }
                 console.log(body);
                 resolve(body);
             })
         } catch (e) {
-            error_logger.error(err);
-            console.log("报错：" + e);
+            error_logger.error(e);
+            console.log("报错2：" + e);
             reject(e);
         }
     });
@@ -45,10 +46,15 @@ exports.gethubLogin = async ctx => {
             }, function (error, response, body) {
                 resolve(JSON.parse(body));
             });
-        }catch(err){
+        } catch (err){
+            console.log("报错3：" + err);
+            error_logger.error(err);
             reject(err);
         }
     });
+
+    console.log("github用户信息:" + github_val);
+    info_logger("github用户信息:" + github_val);
 
     //查询用户名是否存在, 不存在创建
     let {login,email,avatar_url,created_at} = github_val;
