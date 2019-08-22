@@ -68,7 +68,7 @@ exports.gethubLogin = async ctx => {
             email: email,
             avatar_url: avatar_url,
             github_createTime: created_at,
-            uuid: uuid,
+            user_uuid: uuid,
         }
     })
     .spread((user, created) => {
