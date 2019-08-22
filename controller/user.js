@@ -54,7 +54,7 @@ exports.gethubLogin = async ctx => {
     });
 
     console.log("github用户信息:" + github_val);
-    info_logger("github用户信息:" + github_val);
+    info_logger.info("github用户信息:" + github_val);
 
     //查询用户名是否存在, 不存在创建
     let {login,email,avatar_url,created_at} = github_val;
