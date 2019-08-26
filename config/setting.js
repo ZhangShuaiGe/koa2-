@@ -1,4 +1,4 @@
-const loggers = require("logger");
+// const loggers = require("logger");
 const {dateformat} = require("../controller/utils");
 const session = require("koa-session");
 const path = require("path");
@@ -7,6 +7,9 @@ const render = require('koa-art-template');
 const sequelize = require("./dbConfig");
 // redis
 const redis = require("redis");
+
+const log4js = require('log4js');
+
 
 // redis 配置
 exports.redis = function () {
@@ -42,16 +45,37 @@ exports.template = function (app) {
 
 // 日志配置
 exports.logger = function () {
-    // 业务日志  日志类型：'fatal', 'error', 'warn', 'info', 'debug'
-    global.info_logger = loggers.createLogger("logs/info/log_" + dateformat(Date.now(),"yyyy-mm-dd") + ".log");
-    info_logger.format = function (level, date, message) {
-        return "[" + level + "]" + ":" + dateformat(new Date()) + message;
-    };
-    // 报错日志
-    global.error_logger = loggers.createLogger("logs/error/log_" + dateformat(Date.now(),"yyyy-mm-dd") + ".log");
-    error_logger.format = function (level, date, message) {
-        return "[" + level + "]" + ":" + dateformat(new Date()) + message;
-    };
+
+    log4js.configure({
+        appenders: {
+            error: {
+                type: 'dateFile',
+                //最后面的 error 是文件前缀，不是具体目录
+                filename: path.resolve(__dirname,'../logs/error/error'),//
+                pattern: "-yyyy-MM-dd.log",
+                //包含模型
+                alwaysIncludePattern: true,
+            },
+            info: {
+                type: 'dateFile',
+                //最后面的 info 是文件前缀，不是具体目录
+                filename: path.resolve(__dirname,'../logs/info/info'),
+                pattern: "-yyyy-MM-dd.log",
+                //包含模型
+                alwaysIncludePattern: true,
+            },
+            console: {
+                type: 'console'
+            }
+        },
+        categories: {
+            error: { appenders: ['error'], level: 'warn' },
+            // another: { appenders: ['console'], level: 'trace' },
+            default: { appenders: ['console', 'info'], level: 'info'}
+        }
+    });
+    global.error_logger = log4js.getLogger('error');
+    global.info_logger = log4js.getLogger('info');
 };
 
 // session 配置
