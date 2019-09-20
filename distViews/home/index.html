@@ -1,0 +1,112 @@
+{{extend "../layout/layout.html"}}
+
+{{block "title"}}首页{{/block}}
+
+{{block "css"}}
+<link rel="stylesheet" href=/rev/css/css//index-2b6264c4cf.css">
+{{/block}}
+
+{{block "content"}}
+<div class="ui-title-nav">
+    <div>
+        <div class="fly-panel-title fly-filter">
+            <div class="ui-menu-box js-menu-box">
+                <a href="/" class="layui-this">综合</a>
+            </div>
+            <div class="ui-serch-box">
+                <input type="text" class="ui-serch js-serch-val" placeholder="请输入搜索关键字">
+                <i class="layui-icon ui-serch-icon js-serch">&#xe615;</i>
+            </div>
+            <input type="hidden" class="js-type" value="{{type}}">
+        </div>
+    </div>
+    <input type="hidden" class="js-type" value="{{type}}">
+</div>
+<div class="layui-container">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md9">
+
+            <div class="fly-panel" style="margin-bottom: 0;">
+                <ul class="fly-list">
+                    {{each data}}
+                    <li>
+                        {{if $value.coverImgUrl}}
+                        <a href="javascript:;" class="fly-avatar">
+                            <img src="{{$value.coverImgUrl}}">
+                        </a>
+                        {{else}}
+                        <a href="javascript:;" class="fly-avatar">
+                            <img src="/images/index_public.jpg">
+                        </a>
+                        {{/if}}
+                        <h2>
+                            <a class="layui-badge ui-title">{{$value.article_type.type}}</a>
+                            <a href="/articleDetail?id={{$value.uuid}}">{{$value.title}}</a>
+                            {{if $value.istop > 0}}
+                            <div class="ui-article-label">
+                                置顶
+                            </div>
+                            {{/if}}
+                            {{if $value.isreprint > 0}}
+                            <div class="ui-article-label ui-artice-green">
+                                转载
+                            </div>
+                            {{/if}}
+                        </h2>
+                        <div class="fly-list-info">
+                            <span>{{$value.createdAt}}</span>
+                            <span class="fly-list-nums">
+                                    <i class="iconfont icon-pinglun" title="阅读"></i>
+                                    {{$value.browse}}
+                            </span>
+                        </div>
+                    </li>
+                    {{/each}}
+                    <li>
+                        <!--分页-->
+                        <div style="text-align: center" class="js-pages"></div>
+                        <!--总数据个数-->
+                        <input type="hidden" class="js-page-count" value="{{count}}">
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="layui-col-md3">
+
+            <div class="fly-panel">
+                <h3 class="fly-panel-title">温馨通道</h3>
+                <ul class="fly-panel-main fly-list-static js-toollist">
+                    <!--<li>-->
+                        <!--<a href="http://fly.layui.com/jie/4281/" target="_blank">layui 的 GitHub 及 Gitee (码云)-->
+                            <!--仓库，欢迎Star</a>-->
+                    <!--</li>-->
+                </ul>
+            </div>
+
+            <div class="fly-panel fly-link">
+                <h3 class="fly-panel-title">友情链接</h3>
+                <dl class="fly-panel-main js-friendship">
+
+                </dl>
+            </div>
+
+            <!--<dl class="fly-panel fly-list-one">-->
+                <!--<dt class="fly-panel-title">本周热议</dt>-->
+                <!--<dd>-->
+                    <!--<a href="jie/detail.html">基于 layui 的极简社区页面模版</a>-->
+                    <!--<span><i class="iconfont icon-pinglun1"></i> 16</span>-->
+                <!--</dd>-->
+                <!--&lt;!&ndash; 无数据时 &ndash;&gt;-->
+                <!--&lt;!&ndash;-->
+                <!--<div class="fly-none">没有相关数据</div>-->
+                <!--&ndash;&gt;-->
+            <!--</dl>-->
+
+        </div>
+    </div>
+</div>
+{{/block}}
+
+{{block "js"}}
+<script scr=/rev/js/js//home/index-a6c257a1b1.js"></script>
+{{/block}}

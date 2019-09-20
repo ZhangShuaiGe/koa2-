@@ -1,0 +1,71 @@
+<div class="fly-header layui-bg-black">
+    <div class="layui-container">
+        <a class="fly-logo" href="/">
+            <!--<img src="/lib/layui/images/logo.png" alt="layui">-->
+            <img class="g-logo" src="/images/logo.png" alt="">
+        </a>
+        <ul class="layui-nav fly-nav layui-hide-xs">
+            <li class="layui-nav-item layui-this">
+                <a href="/"><i class="iconfont icon-jiaoliu"></i>首页</a>
+            </li>
+            <li class="layui-nav-item">
+                <a class="js-developed" href="javascript:;"><i class="iconfont icon-jiaoliu"></i>社区</a>
+            </li>
+            <li class="layui-nav-item">
+                <a class="js-developed" href="javascript:;"><i class="iconfont icon-jiaoliu"></i>聊天室</a>
+            </li>
+            <li class="layui-nav-item">
+                <a class="js-developed" href="javascript:;"><i class="iconfont icon-jiaoliu"></i>留言</a>
+            </li>
+            <li class="layui-nav-item">
+                <a class="js-developed" href="javascript:;"><i class="iconfont icon-jiaoliu"></i>关于</a>
+            </li>
+        </ul>
+
+        <ul class="layui-nav fly-nav-user js-loginOut" style="display: none">
+            <!-- 未登入的状态 -->
+            <li class="layui-nav-item">
+                <a class="iconfont icon-touxiang layui-hide-xs" href="/login"></a>
+            </li>
+            <li class="layui-nav-item">
+                <a href="/login">登入</a>
+            </li>
+            <li class="layui-nav-item">
+                <a href="/register">注册</a>
+            </li>
+            <!--<li class="layui-nav-item layui-hide-xs">-->
+                <!--<a href="javascript:;" title="QQ登入"-->
+                   <!--class="iconfont icon-qq js-developed"></a>-->
+            <!--</li>-->
+            <li class="layui-nav-item layui-hide-xs">
+
+            </li>
+        </ul>
+
+        <ul class="layui-nav fly-nav-user js-login" style="display: none">
+            <!-- 登入后的状态 -->
+            <li class="layui-nav-item">
+                <a class="fly-nav-avatar" href="javascript:;">
+                    <cite class="layui-hide-xs js-nikename">昵称</cite>
+                    <i class="iconfont icon-renzheng layui-hide-xs"></i>
+                    <img class="js-avatar_url" src="/images/head.jpg">
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a class="js-developed" href="user/set.html"><i class="layui-icon">&#xe620;</i>基本设置</a></dd>
+                    <dd><a class="js-developed" href="user/message.html"><i class="iconfont icon-tongzhi"
+                                                                            style="top: 4px;"></i>我的消息</a></dd>
+                    <dd>
+                        <a class="js-developed" href="user/home.html">
+                            <i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>我的主页</a>
+                    </dd>
+                    <hr style="margin: 5px 0;">
+                    <dd><a class="js-loginOut" href="javascript:;" style="text-align: center;">退出</a></dd>
+                </dl>
+            </li>
+        </ul>
+
+        <div style="display: none" id="js-close_github">
+            关闭github窗口
+        </div>
+    </div>
+</div>

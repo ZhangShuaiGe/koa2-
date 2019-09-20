@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>github登录</title>
+    <script src="/lib/jquery.min.js"></script>
+    <script src="/lib/layui/layui/layui.all.js"></script>
+</head>
+<body>
+    <h3 style="text-align: center;position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%)">
+        正在登陆...
+    </h3>
+    <script>
+        //获取地址栏参数，name:参数名称
+        function getUrlParms(name) {
+            var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if( r!= null )
+                return unescape(r[2]);
+            return null;
+        }
+
+        $.ajax({
+            url:"/user/githubLogin",
+            type:"post",
+            data:{
+                code:getUrlParms("code"),
+                state:getUrlParms("state"),
+            },
+            success:function (data) {
+                if(data.resultCode == 1){
+                    layer.msg("登录成功！");
+                    setTimeout(function () {
+                        window.opener.document.getElementById("js-close_github").click();
+                    },1500)
+                }else{
+                    layer.msg("登录失败，请重新尝试！");
+                }
+            }
+        })
+    </script>
+</body>
+</html>

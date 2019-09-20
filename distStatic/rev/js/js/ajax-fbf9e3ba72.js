@@ -1,0 +1,1 @@
+"use strict";window.http=function(t,e){$.ajax({type:t.type||"post",url:t.url,data:t.data,async:t.async||!1,headers:{Authorization:$.cookie("token")},success:function(t){"1"==t.resultCode?e(t.resultdata):"-1"==t.resultCode?(layer.msg("登录超时，请重新登录",{time:1500}),setTimeout(function(){window.location.href="/login"},1500)):layer.msg(t.resultMsg,{time:1500})}})};

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="张帅的个人博客,前端技术博客,node,javascript">
+    <meta name="description" content="研究前端技术，共享和交流前端技术">
+    <meta name="Author" content="张帅，1071296726@qq.com">
+    <link rel="icon" href="favicon.ico" />
+    <link rel="stylesheet" href="/lib/layui/layui/css/layui.css">
+    <link rel="stylesheet" href="/lib/layui/css/global.css">
+    <!--公共css-->
+    <link rel="stylesheet" href="/rev/css/css//public-97eab5cb32.css">
+    <title>张帅的博客-{{block 'title'}} {{/block}}</title>
+    <!--私有css-->
+    {{block 'css'}}{{/block}}
+</head>
+<body>
+    <!--头部-->
+    {{include "../common/header.html"}}
+
+    <!--内容-->
+    {{block 'content'}}{{/block}}
+
+    <!--尾部-->
+    {{include "../common/footer.html" }}
+
+    <!--公共js-->
+    <script src="/lib/jquery.min.js"></script>
+    <script src="/lib/jquery.cookie.js"></script>
+    <script src="/lib/layui/layui/layui.all.js"></script>
+    <script scr=/rev/js/js//ajax-fbf9e3ba72.js"></script>
+    <script scr=/rev/js/js//utils-98d38d2695.js"></script>
+    <script src="/lib/Validform_v5.3.2_min.js"></script>
+    <script>
+        layui.cache.page = '';
+        layui.cache.user = {
+            username: '游客'
+            ,uid: -1
+            ,avatar: '/lib/layui/images/avatar/00.jpg'
+            ,experience: 83
+            ,sex: '男'
+        };
+        layui.config({
+            version: "3.0.0"
+            ,base: '/lib/layui/mods/'
+        }).extend({
+            fly: 'index'
+        }).use('fly');
+    </script>
+    <!--私有js-->
+    {{block 'js'}}{{/block}}
+</body>
+</html>

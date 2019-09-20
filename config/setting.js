@@ -8,6 +8,8 @@ const sequelize = require("./dbConfig");
 // redis
 const redis = require("redis");
 
+const static = require('koa-static');
+
 const log4js = require('log4js');
 
 
@@ -36,11 +38,26 @@ exports.redis = function () {
 // 模板配置
 exports.template = function (app) {
     // 模板引擎配置
+    let viewsPath = null;
+    process.env.NODE_ENV==="prd"? viewsPath = '../distViews':viewsPath="../views";
+    info_logger.info("views目录：", path.join(__dirname,viewsPath));
     render(app, {
-        root: path.join(__dirname,'../views'),
+        root: path.join(__dirname,viewsPath),
         extname: '.html',
-        debug: process.env.NODE_ENV !== 'production'
+        debug: process.env.NODE_ENV !== 'prd'
     });
+};
+
+//静态资源配置
+exports.staticUrl = function (app) {
+    // 静态资源配置
+    if(process.env.NODE_ENV === "prd"){
+        app.use(static(path.join(__dirname,'../distStatic')));
+        info_logger.info("static目录：",path.join(__dirname,'../distStatic'));
+    }else{
+        app.use(static(path.join(__dirname,'../static')));
+        info_logger.info("static目录：", path.join(__dirname,'../static'));
+    }
 };
 
 // 日志配置

@@ -1,0 +1,60 @@
+{{extend "../layout/layout.html"}}
+
+{{block "title"}}网页爬取{{/block}}
+
+{{block "css"}}
+
+{{/block}}
+
+{{block "content"}}
+    <div>
+        <input type="text" class="js-url">
+        <button class="js-crawling">爬取</button>
+    </div>
+<form id="test">
+    <!--<input type="file" name="file">-->
+    <input type="text" name="ago">
+    <input type="text" name="test">
+    <a href="javascript:;" id="submit">提交</a>
+</form>
+{{/block}}
+
+{{block "js"}}
+    <script>
+
+        $("#submit").on("click",function () {
+            var formData = new FormData($("#test")[0]);
+//            var formData = {"data":123,"test":222};
+//            var xhr=new XMLHttpRequest();
+//            xhr.open("post","/api/webCapture");
+//            xhr.send(formData);
+//            xhr.onload=function () {
+//                if(xhr.status==200){
+//                    //...
+//                }
+//            }
+
+            $.ajax({
+                url:"/api/webCapture",
+                data:formData,
+                processData: false,  //不加工 数据
+                contentType: false, //不重复 处理请求类型
+                type:"post",
+                success:function (data) {
+                    console.log(data);
+                }
+            })
+        });
+
+        $(".js-crawling").on("click",function () {
+            http({
+                "url":"/webCapture",
+                "data":{
+                    "url": $(".js-url").val(),
+                }
+            }, (data) => {
+
+            });
+        });
+    </script>
+{{/block}}

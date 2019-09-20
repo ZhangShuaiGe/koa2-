@@ -5,9 +5,10 @@ const cleanCSS = require('gulp-clean-css'); //压缩css
 const del = require('del');//清空文件夹
 const debug = require('gulp-debug'); //编译过程
 const rename = require("gulp-rename"); //重命名
-
 const rev = require('gulp-rev'); //打hash值
-const revCollector = require('gulp-rev-collector');
+const revCollector = require('gulp-rev-collector'); //将html中的资源引用 替换为hash
+const replace = require('gulp-replace'); //替换插件
+// const htmlmin = require('gulp-htmlmin'); //html压缩
 
 
 const config = {
@@ -31,15 +32,10 @@ const config = {
             "!static/adminStatic/**/*.js",
             "!static/lib/**/*.js"
         ],
+        // css忽略压缩的文件
         css: [
             "!static/lib/**/*.css",
             "!static/adminStatic/**/*.css",
-        ]
-    },
-    // 要删除的文件
-    deleteFile: {
-        css: [
-            "distStatic/css"
         ]
     }
 };
@@ -66,21 +62,22 @@ task("js", function () {
             .pipe(dest(config.outPath.static))
 });
 
-task('css', async function (cb) {
-    return src([config.entryPath.css,...config.ignore.css])
-            .pipe(debug({title: 'css压缩：'}))
-            .pipe(cleanCSS({debug: true}, (details) => {
-                console.log(`${details.name}: ${details.stats.originalSize}`);
-                console.log(`${details.name}: ${details.stats.minifiedSize}`);
-            }))
-            .pipe(rename({suffix: ".min",}))
-            .pipe(dest(config.outPath.static))
-});
+// task('css', async function (cb) {
+//     return src([config.entryPath.css,...config.ignore.css])
+//             .pipe(debug({title: 'css压缩：'}))
+//             .pipe(cleanCSS({debug: true}, (details) => {
+//                 console.log(`${details.name}: ${details.stats.originalSize}`);
+//                 console.log(`${details.name}: ${details.stats.minifiedSize}`);
+//             }))
+//             .pipe(rename({suffix: ".min",}))
+//             .pipe(dest(config.outPath.static))
+// });
 
 
 //CSS生成文件hash编码并生成 rev-manifest.json文件名对照映射
 task('revcss', function(){
     return src([config.entryPath.css,...config.ignore.css])
+            .pipe(debug({title: 'css压缩打hash中：'}))
             .pipe(cleanCSS({debug: true}, (details) => {
                 console.log(`${details.name}: ${details.stats.originalSize}`);
                 console.log(`${details.name}: ${details.stats.minifiedSize}`);
@@ -108,11 +105,15 @@ task('revjs', function(){
 
 //Html替换css、js文件版本
 task('revHtmlCssJS', function () {
-    return src(['./distStatic/**/*.json', './views/**/*.html'])
+    return src(['./distStatic/rev/**/*.json', './views/**/*.html'])
+            .pipe(debug({title: 'html生成替换引用资源中：'}))
             .pipe(revCollector({
                 replaceReved: true,
-            }))                         //替换html中对应的记录
-            .pipe(dest('./distViews'));                     //输出到该文件夹中
+            }))//替换html中对应的记录
+            .pipe(replace(/\bhref\b\s*=\s*[\'\"]?[.]*\/css/g,"href=/rev/css/css/"))
+            .pipe(replace(/\bsrc\b\s*=\s*[\'\"]?[.]*\/js/g,"scr=/rev/js/js/"))
+            // .pipe(htmlmin({ collapseWhitespace: true }))
+            .pipe(dest('./distViews'));//输出到该文件夹中
 });
 
 

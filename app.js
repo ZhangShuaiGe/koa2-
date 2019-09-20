@@ -4,7 +4,6 @@ const app = new koa();
 require('best-require')(process.cwd());
 
 const bodyParser = require('koa-bodyparser');
-const static = require('koa-static');
 const {GetRouter,PostRouter} = require("./router/index");
 const {articleRouter} = require("./router/article.js");
 const userRouter = require("./router/user.js");
@@ -153,8 +152,9 @@ setting.template(app);
 // sql全局
 setting.mysql();
 
-// 静态资源配置
-app.use(static(__dirname + '/static'));
+//静态资源配置
+setting.staticUrl(app);
+
 
 // 路由配置
 app.use(GetRouter.routes(), GetRouter.allowedMethods());
@@ -181,7 +181,8 @@ server.listen(3000,function (err) {
     if(err){
         error_logger.error(err);
     }
-    info_logger.info("node 开发已启动,3000");
+    console.log("环境变量：" + process.env.NODE_ENV);
+    info_logger.info("node 开发已启动,3000",process.env.NODE_ENV);
 });
 
 //生产 http 强制跳转 https

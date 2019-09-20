@@ -29,7 +29,8 @@
     "uuid": "^3.3.2"
   },
   "scripts": {
-    "dev": "nodemon ./app.js",
+    "dev": "cross-env NODE_ENV=dev nodemon ./app.js",
+    "test": "cross-env NODE_ENV=prd nodemon ./app.js",
     "dev2": "node app.js",
     "prd": "cross-env NODE_ENV=prd pm2 start app.js --name blog-node"
   },
@@ -52,7 +53,9 @@
     "gulp-babel": "^8.0.0",
     "gulp-clean-css": "^4.2.0",
     "gulp-debug": "^4.0.0",
+    "gulp-htmlmin": "^5.0.1",
     "gulp-rename": "^1.4.0",
+    "gulp-replace": "^1.0.0",
     "gulp-rev": "^9.0.0",
     "gulp-rev-collector": "^1.3.1",
     "gulp-uglify": "^3.0.2"
