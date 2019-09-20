@@ -110,8 +110,8 @@ task('revHtmlCssJS', function () {
             .pipe(revCollector({
                 replaceReved: true,
             }))//替换html中对应的记录
-            .pipe(replace(/\bhref\b\s*=\s*[\'\"]?[.]*\/css/g,"href=/rev/css/css/"))
-            .pipe(replace(/\bsrc\b\s*=\s*[\'\"]?[.]*\/js/g,"scr=/rev/js/js/"))
+            .pipe(replace(/\bhref\b\s*=\s*[\'\"]?[.]*\/css/g,"href=\"/rev/css/css/"))
+            .pipe(replace(/\bsrc\b\s*=\s*[\'\"]?[.]*\/js/g,"src=\"/rev/js/js/"))
             // .pipe(htmlmin({ collapseWhitespace: true }))
             .pipe(dest('./distViews'));//输出到该文件夹中
 });
