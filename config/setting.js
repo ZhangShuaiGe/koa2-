@@ -140,7 +140,7 @@ exports.mysql = async function () {
     global.AdminUserModel = sequelize.import('../schema/admin_user');
     AdminUserModel.sync({alter:true});
     // 文章和回复表 关联
-    ArticleModel.hasMany(ArticleReplyModel, {foreignKey: 'articleUuid', targetKey: 'uuid', as:"replay"});
+    ArticleModel.hasMany(ArticleReplyModel, {foreignKey: 'articleUuid', targetKey: 'id', as:"replay"});
     //文章 和 文章类型关联
     ArticleTypeModel.hasOne(ArticleModel,{foreignKey: 'type', sourceKey: 'id'});
     ArticleModel.belongsTo(ArticleTypeModel,{foreignKey: 'type', targetKey: 'id'});
